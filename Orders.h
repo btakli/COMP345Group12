@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 
@@ -12,9 +13,9 @@ public:
 
     Order(Order& o);//copy constructor
 
-    virtual bool validate();
+    bool validate();
 
-    virtual void execute();
+    void execute();
 
     friend std::ostream& operator<<(std::ostream& description, Order order);//stream insertion operator
 
@@ -131,10 +132,12 @@ class OrdersList {
 
     void addOrder(Order order);
 
-	void move(int Move, int Location);
+    void move(int Move, int Location);
 
-	void remove(int Remove);
+    void remove(int Remove);
 
     friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
+	
+    std::vector<Order*> OrderList;
 
 };
