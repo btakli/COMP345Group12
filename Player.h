@@ -1,22 +1,23 @@
 #pragma once
+#include <string>
 
-
-#include <list>
 #include <vector>
 #include <iostream>
 
 #include "Map.h"
 #include "Orders.h"
 
-using namespace std;
 
-class Player
-{
+
+class Player {
 public:
     Player();
-    Player(std::vector<Territory>* collection, std::vector<Country> * hand, std::vector<OrdersList>* listOfOrders);   //Replace Country with Cards
-    std::vector<Territory>* toDefend();
-    std::vector<Territory>* toAttack();
+    Player(string name);   //Replace Country with Cards
+    Player(string name, vector<Territory*> collection, vector<Territory*> hand, OrdersList* listOfOrders);   //Replace Country with Cards
+    vector<Territory*> toDefend();
+
+
+    vector<Territory*> toAttack();
     void issueOrder();
 
     Player(Player& p);                      //copy constructor
@@ -24,24 +25,26 @@ public:
     ~Player();                              //Destructor
 
 
-    void set_collection(std::vector<Territory>* collection);
-    std::vector<Territory> get_collection();
+    void set_collection(vector<Territory*> collection);
+    vector<Territory*> get_collection();
 
     void add_to_collection(Territory* addTerr);
 
-    void set_hand(std::vector<Territory>* hand);
-    std::vector<Territory> get_hand();
+    void set_hand(vector<Territory*> hand);
+    vector<Territory*> get_hand();
 
     void add_to_hand(Territory* addHand);
 
-    void set_listOfOrders(std::vector<OrdersList>*);
-    std::vector<OrdersList> get_listOfOrders();
+    void set_listOfOrders(vector<OrdersList*>);
+    OrdersList* get_listOfOrders();
 
     void add_to_ListOfOrder (Order* addOrd);
-private:
-    std::vector<Territory>* _collection;
-    std::vector<Territory>* _hand;
-    std::vector<OrdersList>* _listOfOrders;
+
+    friend ostream &operator<<(ostream &out, const Player &player);
+    string name;
+    vector<Territory*> collection;
+    vector<Territory*> hand;
+    OrdersList* listOfOrders;
 
 //player owns collection of territories
 //player owns a hand of Cards
