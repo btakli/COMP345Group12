@@ -210,16 +210,29 @@ vector<Card*> Deck::getCards()
 
 Card* Deck::draw()
 {
-	srand(clock()); //Generate a random number, use clock as the seed
-	int randomIndex = rand() % _cards->size(); //Generate a random index to ge the card from
-	Card* card = _cards->at(randomIndex); //Since we have a pointer to a vector, we can use at() to get the item we want
-	_cards->erase(_cards->begin() + randomIndex); //remove the card from the deck (need to use begin(), so that random index is an offset from that.
-	return card;
+	//If the deck is not empty
+	if (_cards->size() != 0) {
+		srand(clock()); //Generate a random number, use clock as the seed
+		int randomIndex = rand() % _cards->size(); //Generate a random index to ge the card from
+		Card* card = _cards->at(randomIndex); //Since we have a pointer to a vector, we can use at() to get the item we want
+		_cards->erase(_cards->begin() + randomIndex); //remove the card from the deck (need to use begin(), so that random index is an offset from that.
+		return card;
+	}
+	else {
+		std::cout << "The Deck is Empty";
+		return nullptr;
+	}
+
 }
 
 void Deck::returnToDeck(Card* card)
 {
 	_cards->push_back(card);
+}
+
+bool Deck::isEmpty()
+{
+	return _cards->size() == 0;
 }
 
 Hand::Hand(): _cards(new vector<Card*>())
@@ -270,6 +283,16 @@ void Hand::addCard(Card* card)
 vector<Card*> Hand::getCards()
 {
 	return *_cards;
+}
+
+int Hand::size()
+{
+	return _cards->size();
+}
+
+Card* Hand::getCard(int index)
+{
+	return _cards->at(index);
 }
 
 Card* Hand::returnCardToDeck(int index)
