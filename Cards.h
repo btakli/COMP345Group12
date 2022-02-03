@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include<vector>
+#include "Orders.h"
 
 class Card {
 public:
@@ -13,7 +14,7 @@ public:
 	Card& operator = (const Card& rightSide); //assignment operator
 
 	std::string getType() const;
-	//Order play() Play the card and return an order TODO!!!
+	//Order play(); //Play the card and return an order.
 
 private:
 	std::string* _type; //The card type
@@ -27,7 +28,7 @@ public:
 	BombCard(BombCard& otherCard); //Copy constructor
 	~BombCard();  //Destructor
 	BombCard& operator = (const BombCard& rightSide); //assignment operator
-
+	//Bomb play(); //Play the card and return a Bomb order.
 };
 
 class BlockadeCard : public Card {
@@ -36,7 +37,7 @@ public:
 	BlockadeCard(BlockadeCard& otherCard); //Copy constructor
 	~BlockadeCard(); //Destructor
 	BlockadeCard& operator = (const BlockadeCard& rightSide); //assignment operator
-
+	//Blockade play(); //Play the card and return a Blockade order.
 };
 
 class AirliftCard : public Card {
@@ -45,7 +46,7 @@ public:
 	AirliftCard(AirliftCard& otherCard); //Copy constructor
 	~AirliftCard(); //Destructor
 	AirliftCard& operator = (const AirliftCard& rightSide); //assignment operator
-
+	//Airlift play(); //Play the card and return an Airlift order.
 };
 
 class DiplomacyCard : public Card {
@@ -54,7 +55,7 @@ public:
 	DiplomacyCard(DiplomacyCard& otherCard); //Copy constructor
 	~DiplomacyCard(); //Destructor
 	DiplomacyCard& operator = (const DiplomacyCard& rightSide); //assignment operator
-
+	//Negotiate play(); //Play the card and return a Negotiate order.
 };
 
 class Deck {

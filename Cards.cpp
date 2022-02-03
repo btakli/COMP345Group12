@@ -56,6 +56,11 @@ string Card::getType() const
 	return *(_type);
 }
 
+//Order Card::play()
+//{
+//	return Order();
+//}
+
 BombCard::BombCard() : Card("bomb")
 {
 
@@ -77,6 +82,11 @@ BombCard& BombCard::operator=(const BombCard& rightSide)
 	return *this;
 }
 
+//Bomb BombCard::play()
+//{
+//	return Bomb();
+//}
+
 BlockadeCard::BlockadeCard() : Card("blockade")
 {
 }
@@ -95,6 +105,11 @@ BlockadeCard& BlockadeCard::operator=(const BlockadeCard& rightSide)
 	//TODO add other necessary items if need be.
 	return *this;
 }
+
+//Blockade BlockadeCard::play()
+//{
+//	return Blockade();
+//}
 
 AirliftCard::AirliftCard() : Card("airlift")
 {
@@ -115,6 +130,11 @@ AirliftCard& AirliftCard::operator=(const AirliftCard& rightSide)
 	return *this;
 }
 
+//Airlift AirliftCard::play()
+//{
+//	return Airlift();
+//}
+
 DiplomacyCard::DiplomacyCard() : Card("diplomacy")
 {
 }
@@ -133,6 +153,11 @@ DiplomacyCard& DiplomacyCard::operator=(const DiplomacyCard& rightSide)
 	//TODO add other necessary items if need be.
 	return *this;
 }
+
+//Negotiate DiplomacyCard::play()
+//{
+//	return Negotiate();
+//}
 
 Deck::Deck()
 {
