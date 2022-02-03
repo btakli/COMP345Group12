@@ -15,7 +15,6 @@ int main()
     Card* c4 = new DiplomacyCard();
     Card* c5 = new Card(*c4); //Testing copy constuctor
 
-    cout << "BLAH" << endl;
     std::vector<Card*> cards = std::vector<Card*>(); //Adding cards to a vector to pass in to Deck.
     cards.push_back(c1);
     cards.push_back(c2);
