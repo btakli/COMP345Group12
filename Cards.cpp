@@ -192,6 +192,11 @@ Card* Deck::draw()
 	return card;
 }
 
+void Deck::returnToDeck(Card* card)
+{
+	_cards->push_back(card);
+}
+
 Hand::Hand(): _cards(new vector<Card*>())
 {
 }
@@ -240,5 +245,12 @@ void Hand::addCard(Card* card)
 vector<Card*> Hand::getCards()
 {
 	return *_cards;
+}
+
+Card* Hand::returnCardToDeck(int index)
+{
+	Card* card = _cards->at(index);
+	_cards->erase(_cards->begin() + index); //remove card from the vector
+	return card;
 }
 

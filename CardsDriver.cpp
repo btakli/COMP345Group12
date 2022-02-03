@@ -35,7 +35,7 @@ int main()
     cout << *c5 << endl;
     cout << *c6 << endl;
 
-    
+    cout << *deck << endl;
     hand->addCard(deck->draw());
     /*hand->addCard(deck->draw());
     hand->addCard(deck->draw());
@@ -43,6 +43,11 @@ int main()
     hand->addCard(deck->draw());*/
     cout << *deck << endl;
    
+    cout << *hand << endl;
+
+    deck->returnToDeck(hand->returnCardToDeck(0));
+
+    cout << *deck << endl;
     cout << *hand << endl;
 
     delete(c1);

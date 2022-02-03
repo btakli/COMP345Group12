@@ -68,6 +68,7 @@ public:
 	std::vector<Card*> getCards(); //Gets the list of cards in the deck
 
 	Card* draw(); //Returns a reference to a random card and removes it from the deck.
+	void returnToDeck(Card* card);
 private:
 	std::vector<Card*>* _cards; //The list of cards
 	friend std::ostream& operator<<(std::ostream& strm, const Deck& deck); //stream insertion operator overload for Deck
@@ -84,6 +85,7 @@ public:
 	Hand& operator = (const Hand& rightSide); //assignment operator
 	void addCard(Card* card); //add a card to you hand
 	std::vector<Card*> getCards(); //gets all cards in the hand
+	Card* returnCardToDeck(int index); //Return the card pointer and remove it from _cards based on passed in indes
 
 private:
 	std::vector<Card*>* _cards;
