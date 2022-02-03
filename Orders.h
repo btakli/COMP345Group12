@@ -7,15 +7,17 @@ using namespace std;
 class Order {
 
 public:
-    Order();//constructor
+    Order();
 
-    ~Order();//destructor
+    ~Order();
 
-    Order(Order& o);//copy constructor
+    Order(const Order& o);
 
-    bool validate();
+    Order& operator=(const Order& o);
 
-    void execute();
+    virtual bool validate();
+
+    virtual void execute();
 
     friend std::ostream& operator<<(std::ostream& description, Order order);//stream insertion operator
 
@@ -28,7 +30,9 @@ public:
 
     ~Deploy();
 
-    Deploy(Deploy& dep);
+    Deploy(const Deploy& dep);
+
+    Deploy& operator=(const Deploy& dep);
 
     bool validate();
 
@@ -45,7 +49,9 @@ public:
 
     ~Advance();
 
-    Advance(Advance& adv);
+    Advance(const Advance& adv);
+
+    Advance& operator=(const Advance& adv);
 
     bool validate();
 
@@ -61,7 +67,9 @@ public:
 
     ~Bomb();
 
-    Bomb(Bomb& bmb);
+    Bomb(const Bomb& bmb);
+
+    Bomb& operator=(const Bomb& bmb);
 
     bool validate();
 
@@ -78,7 +86,9 @@ public:
 
     ~Blockade();
 
-    Blockade(Blockade& blck);
+    Blockade(const Blockade& blck);
+
+    Blockade& operator=(const Blockade& blck);
 
     bool validate();
 
@@ -95,7 +105,9 @@ public:
 
     ~Airlift();
 
-    Airlift(Airlift& al);
+    Airlift(const Airlift& al);
+
+    Airlift& operator=(const Airlift& al);
 
     bool validate();
 
@@ -108,11 +120,13 @@ public:
 class Negotiate : public Order{
 	
 public:
-    Negotiate(); 
+    Negotiate();
 
     ~Negotiate();
 
-    Negotiate(Negotiate& ng);
+    Negotiate(const Negotiate& ng);
+
+    Negotiate& operator=(const Negotiate& ng);
 
     bool validate();
 
@@ -128,16 +142,16 @@ class OrdersList {
 
     ~OrdersList();
 
-    OrdersList(OrdersList& ol);
+    OrdersList(const OrdersList& ol);
 
-    void addOrder(Order order);
+    OrdersList& operator=(const OrdersList& ol);
 
-    void move(int Move, int Location);
+    //void addOrder(Order order); put addOrder method?
 
-    void remove(int Remove);
+	void move(int Move, int Location);
+
+	void remove(int Remove);
 
     friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
-	
-    std::vector<Order*> OrderList;
 
 };
