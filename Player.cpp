@@ -21,17 +21,17 @@ std::vector<Territory>* Player::toAttack(){
     return nullptr;
 }
 
-/*    
+   
 void Player::issueOrder(){
     Order * ord = new Order();
     add_to_ListOfOrder(ord);
 
 }
 
-void Player::add_to_ListOfOrder(Order ord){
+void Player::add_to_ListOfOrder(Order * ord){
 
 
-}*/
+}
 
 Player::Player(Player& p){                      //copy constructor seems shallow
     this->_collection = p._collection;
@@ -50,9 +50,6 @@ Player::~Player(){                              //Destructor
     delete _collection;
     delete _hand;
     delete _listOfOrders;
-    this -> _collection = nullptr;
-    this -> _hand = nullptr;
-    this -> _listOfOrders = nullptr;
     delete this;
 }
 
@@ -82,9 +79,6 @@ std::vector<OrdersList> Player::get_listOfOrders(){
 }
 
 
-std::vector<Territory>* _collection;
-std::vector<Territory>* _hand;
-std::vector<OrdersList>* _listOfOrders;
 
 
 //player owns collection of territories
