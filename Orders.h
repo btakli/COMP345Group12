@@ -19,6 +19,7 @@ public:
 
     virtual void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Order order);//stream insertion operator
 
 };
@@ -38,6 +39,7 @@ public:
 
     void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Deploy deploy);
 
 };
@@ -57,6 +59,7 @@ public:
 
     void execute();
 
+  private:  
     friend std::ostream& operator<<(std::ostream& description, Advance advance);
 };
 
@@ -75,6 +78,7 @@ public:
 
     void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Bomb bomb);
 
 };
@@ -94,6 +98,7 @@ public:
 
     void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Blockade blockade);
 
 };
@@ -113,6 +118,7 @@ public:
 
     void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Airlift airlift);
 
 };
@@ -132,12 +138,14 @@ public:
 
     void execute();
 
+private:
     friend std::ostream& operator<<(std::ostream& description, Negotiate negotiate);
 
 };
 
 class OrdersList {
 
+public:
     OrdersList();
 
     ~OrdersList();
@@ -146,11 +154,16 @@ class OrdersList {
 
     OrdersList& operator=(const OrdersList& ol);
 
+    std::vector<Order*> getOrdersList();
+
     //void addOrder(Order order); put addOrder method?
 
-	void move(int Move, int Location);
+    void move(int Move, int Location);
 
-	void remove(int Remove);
+    void remove(int Remove);
+
+private:
+    std::vector<Order*>* ol;
 
     friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
 
