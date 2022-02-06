@@ -1,19 +1,23 @@
 #pragma once
 #include <iostream>
+#include <string>
 #include <vector>
 
 using namespace std;
 
+//Base class for all orders
 class Order {
 
 public:
-    Order();
+    Order();//default constructor
 
-    ~Order();
+    virtual ~Order();//destructor
 
-    Order(const Order& o);
+    Order(const Order& o);//copy constructor
 
-    Order& operator=(const Order& o);
+    virtual Order& operator=(const Order& o);//assignment operator
+
+    virtual Order* clone() const;//clone function
 
     virtual bool validate();
 
@@ -29,11 +33,13 @@ class Deploy : public Order {
 public:
     Deploy();
 
-    ~Deploy();
+    virtual ~Deploy();
 
     Deploy(const Deploy& dep);
 
-    Deploy& operator=(const Deploy& dep);
+    virtual Deploy& operator=(const Deploy& dep);
+
+    virtual Deploy* clone() const;
 
     bool validate();
 
@@ -49,11 +55,13 @@ class Advance : public Order{
 public:
     Advance();
 
-    ~Advance();
+    virtual ~Advance();
 
     Advance(const Advance& adv);
 
-    Advance& operator=(const Advance& adv);
+    virtual Advance& operator=(const Advance& adv);
+
+    virtual Advance* clone() const;
 
     bool validate();
 
@@ -68,11 +76,13 @@ class Bomb : public Order{
 public:
     Bomb();
 
-    ~Bomb();
+    virtual ~Bomb();
 
     Bomb(const Bomb& bmb);
 
-    Bomb& operator=(const Bomb& bmb);
+    virtual Bomb& operator=(const Bomb& bmb);
+
+    virtual Bomb* clone() const;
 
     bool validate();
 
@@ -88,11 +98,13 @@ class Blockade : public Order{
 public:
     Blockade();
 
-    ~Blockade();
+    virtual ~Blockade();
 
     Blockade(const Blockade& blck);
 
-    Blockade& operator=(const Blockade& blck);
+    virtual Blockade& operator=(const Blockade& blck);
+
+    virtual Blockade* clone() const;
 
     bool validate();
 
@@ -108,11 +120,13 @@ class Airlift : public Order{
 public:
     Airlift();
 
-    ~Airlift();
+    virtual ~Airlift();
 
     Airlift(const Airlift& al);
 
-    Airlift& operator=(const Airlift& al);
+    virtual Airlift& operator=(const Airlift& al);
+
+    virtual Airlift* clone() const;
 
     bool validate();
 
@@ -128,11 +142,13 @@ class Negotiate : public Order{
 public:
     Negotiate();
 
-    ~Negotiate();
+    virtual ~Negotiate();
 
     Negotiate(const Negotiate& ng);
 
-    Negotiate& operator=(const Negotiate& ng);
+    virtual Negotiate& operator=(const Negotiate& ng);
+
+    virtual Negotiate* clone() const;
 
     bool validate();
 
@@ -156,14 +172,14 @@ public:
 
     std::vector<Order*> getOrdersList();
 
-    //void addOrder(Order order); put addOrder method?
+    void addOrder(Order order); 
 
     void move(int Move, int Location);
 
     void remove(int Remove);
 
 private:
-    std::vector<Order*>* ol;
+     std::vector<Order*>* ol;
 
     friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
 
