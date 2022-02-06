@@ -74,7 +74,7 @@
 //		}
 //
 //		if (run && !error) {
-//			Map::get_instance()->display();
+//			std::cout << *Map::get_instance();
 //			Map::get_instance()->validate();
 //		}
 //		Map::get_instance()->unload();
