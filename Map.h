@@ -110,7 +110,7 @@ public:
 	void claim(Player& player);
 
 	// Check who owns the country. returns player or null
-	Player* check_claim();
+	Player* check_claim() const;
 
 
 	// Check is visited

@@ -502,6 +502,7 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 
 Country::Country(const Country& to_copy) : Territory(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
 
+	_player_ptr = to_copy.check_claim();
 	_visited_ptr = new bool(to_copy.get_visited());
 	_neighbor_countries_ptr = &copy(to_copy.get_neighbors());
 	_stationed_army_ptr = new int(to_copy.get_stationed_army());
@@ -509,6 +510,8 @@ Country::Country(const Country& to_copy) : Territory(*new int(to_copy.get_index(
 }
 
 Country::Country(int& index, std::string& country_name) : Territory(index, country_name) {
+
+	_player_ptr = nullptr;
 	_visited_ptr = new bool(false);
 	_neighbor_countries_ptr = new std::list<Country*>();
 	_stationed_army_ptr = new int(0);
@@ -561,13 +564,15 @@ Country& Country::operator=(const Country& country) {
 	_visited_ptr = new bool(country.get_visited());
 	_neighbor_countries_ptr = &copy(country.get_neighbors());
 	_stationed_army_ptr = new int(country.get_stationed_army());
+
+	return *this;
 }
 
 void Country::claim(Player& player) {
 	_player_ptr = &player;
 }
 
-Player* Country::check_claim() {
+Player* Country::check_claim() const {
 	return _player_ptr;
 }
 
