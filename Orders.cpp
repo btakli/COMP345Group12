@@ -1,4 +1,3 @@
-#pragma once
 #include "Orders.h"
 #include <vector>
 #include <iostream>
@@ -169,4 +168,15 @@ Negotiate& Negotiate::operator=(const Negotiate& ng){ //Assignment Operator
 
 Negotiate::Negotiate(const Negotiate& ng){ //Copy constructor
 
+}
+
+void OrdersList::addOrder(Order* order) {
+    _orderlist->push_back(order);
+	
+}
+
+void OrdersList::move(int Move, int Location) {
+}
+
+void OrdersList::remove(int Remove) {
 }
