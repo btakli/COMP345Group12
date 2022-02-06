@@ -35,7 +35,7 @@ Card::Card(string type)
 }
 
 
-Card::Card(Card& otherCard)
+Card::Card(const Card& otherCard)
 {
 	this->_type = new string(*(otherCard._type));
 }
@@ -51,22 +51,29 @@ Card& Card::operator=(const Card& rightSide)
 	return *this;
 }
 
+Card* Card::clone() const 
+{
+	return new Card(*this);
+}
+
 string Card::getType() const
 {
 	return *(_type);
 }
 
-//Order Card::play()
-//{
-//	return Order();
-//}
+Order* Card::play()
+{
+	return new Order();
+}
+
+
 
 BombCard::BombCard() : Card("bomb")
 {
 
 }
 
-BombCard::BombCard(BombCard& otherCard) : Card(otherCard)
+BombCard::BombCard(const BombCard& otherCard) : Card(otherCard)
 {
 }
 
@@ -82,16 +89,21 @@ BombCard& BombCard::operator=(const BombCard& rightSide)
 	return *this;
 }
 
-//Bomb BombCard::play()
-//{
-//	return Bomb();
-//}
+Bomb* BombCard::play()
+{
+	return new Bomb();
+}
+
+BombCard* BombCard::clone() const
+{
+	return new BombCard(*this);
+}
 
 BlockadeCard::BlockadeCard() : Card("blockade")
 {
 }
 
-BlockadeCard::BlockadeCard(BlockadeCard& otherCard) : Card(otherCard)
+BlockadeCard::BlockadeCard(const BlockadeCard& otherCard) : Card(otherCard)
 {
 }
 
@@ -106,16 +118,21 @@ BlockadeCard& BlockadeCard::operator=(const BlockadeCard& rightSide)
 	return *this;
 }
 
-//Blockade BlockadeCard::play()
-//{
-//	return Blockade();
-//}
+Blockade* BlockadeCard::play()
+{
+	return new Blockade();
+}
+
+BlockadeCard* BlockadeCard::clone() const
+{
+	return new BlockadeCard(*this);
+}
 
 AirliftCard::AirliftCard() : Card("airlift")
 {
 }
 
-AirliftCard::AirliftCard(AirliftCard& otherCard) : Card(otherCard)
+AirliftCard::AirliftCard(const AirliftCard& otherCard) : Card(otherCard)
 {
 }
 
@@ -130,16 +147,21 @@ AirliftCard& AirliftCard::operator=(const AirliftCard& rightSide)
 	return *this;
 }
 
-//Airlift AirliftCard::play()
-//{
-//	return Airlift();
-//}
+Airlift* AirliftCard::play()
+{
+	return new Airlift();
+}
+
+AirliftCard* AirliftCard::clone() const
+{
+	return new AirliftCard(*this);
+}
 
 DiplomacyCard::DiplomacyCard() : Card("diplomacy")
 {
 }
 
-DiplomacyCard::DiplomacyCard(DiplomacyCard& otherCard) : Card(otherCard)
+DiplomacyCard::DiplomacyCard(const DiplomacyCard& otherCard) : Card(otherCard)
 {
 }
 
@@ -154,10 +176,15 @@ DiplomacyCard& DiplomacyCard::operator=(const DiplomacyCard& rightSide)
 	return *this;
 }
 
-//Negotiate DiplomacyCard::play()
-//{
-//	return Negotiate();
-//}
+Negotiate* DiplomacyCard::play()
+{
+	return new Negotiate();
+}
+
+DiplomacyCard* DiplomacyCard::clone() const
+{
+	return new DiplomacyCard(*this);
+}
 
 Deck::Deck()
 {
@@ -169,12 +196,13 @@ Deck::Deck(vector<Card*> listOfCards)
 	_cards = new vector<Card*>();
 	for (int i = 0; i < listOfCards.size(); i++) //Making a deep copy of the list
 	{
-		Card cardToCopy = *(listOfCards[i]); //dereferencing it
-		_cards->push_back(new Card(cardToCopy));
+		Card* cardToCopy = listOfCards[i];
+		//Call the clone() method of the card in order to get the constructor of the right member in the polymorphic hierarchy
+		_cards->push_back(cardToCopy->clone());
 	}
 }
 
-Deck::Deck(Deck& otherDeck) : Deck(*otherDeck._cards) //Since the only thing we need to copy is _cards, get the other deck's cards!
+Deck::Deck(const Deck& otherDeck) : Deck(*otherDeck._cards) //Since the only thing we need to copy is _cards, get the other deck's cards!
 {
 }
 
@@ -198,7 +226,8 @@ Deck& Deck::operator=(const Deck& rightSide)
 	{
 		
 		Card cardToCopy = *(otherVector[i]);
-		_cards->push_back(new Card(cardToCopy));
+		//Call clone in order to get the right constructor called in the polymorphic hierarchy
+		_cards->push_back(cardToCopy.clone());
 	}
 	return *this;
 }
@@ -239,13 +268,14 @@ Hand::Hand(): _cards(new vector<Card*>())
 {
 }
 
-Hand::Hand(Hand& otherHand)
+Hand::Hand(const Hand& otherHand)
 {
 	_cards = new vector<Card*>();
 	for (int i = 0; i < otherHand._cards->size(); i++) //Making a deep copy of the list
 	{
-		Card cardToCopy = *(otherHand._cards->at(i)); //dereferencing it
-		_cards->push_back(new Card(cardToCopy));
+		Card* cardToCopy = otherHand._cards->at(i); //dereferencing it
+		//Using clone in order to get the right polymorphic copy constructor called
+		_cards->push_back(cardToCopy->clone());
 	}
 }
 
@@ -269,8 +299,9 @@ Hand& Hand::operator=(const Hand& rightSide)
 	for (int i = 0; i < otherVector.size(); i++) //Making a deep copy of the list
 	{
 
-		Card cardToCopy = *(otherVector[i]);
-		_cards->push_back(new Card(cardToCopy));
+		Card* cardToCopy = otherVector[i];
+		//Calling clone in order to get the right polymorphic copy constructor called
+		_cards->push_back(cardToCopy->clone());
 	}
 	return *this;
 }
@@ -300,5 +331,13 @@ Card* Hand::returnCardToDeck(int index)
 	Card* card = _cards->at(index);
 	_cards->erase(_cards->begin() + index); //remove card from the vector
 	return card;
+}
+
+Order* Hand::playAndReturnToDeck(int index, Deck* deck)
+{
+	Card* card = getCard(index); //Get the card
+	Order* order = card->play(); //Set the order as the one returned by the play method.
+	deck->returnToDeck(returnCardToDeck(index)); //Return the card to the deck and remove it from your hand.
+	return order; 
 }
 

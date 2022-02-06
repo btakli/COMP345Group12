@@ -13,7 +13,7 @@ int main()
     Card* c2 = new BlockadeCard();
     Card* c3 = new AirliftCard();
     Card* c4 = new DiplomacyCard();
-    Card* c5 = new Card(*c4); //Testing copy constuctor
+    Card* c5 = c4->clone(); //Testing copy constuctor through the clone method
 
     std::vector<Card*> cards = std::vector<Card*>(); //Adding cards to a vector to pass in to Deck.
     cards.push_back(c1);
@@ -45,15 +45,18 @@ int main()
     while (!deck->isEmpty()) {
         hand->addCard(deck->draw());
     }
-
+    
     //Print out new status of deck and hand
     cout << *deck << endl;
 
     cout << *hand << endl;
 
-    //Put the card back on the deck
-
-    deck->returnToDeck(hand->returnCardToDeck(0));
+    //Play the card and put it back on the deck
+    while (hand->size() > 0) {
+        Order* order = hand->playAndReturnToDeck(0, deck);
+        order->execute(); //TODO Temporary, I made a mod to the Orders class that execute just prints out the order name to test my polymorphism
+        delete(order);
+    }
 
     cout << *deck << endl;
     cout << *hand << endl;
@@ -66,13 +69,12 @@ int main()
     delete(deck);
     delete(hand);
 
-   /* c1 = NULL;
+    c1 = NULL;
     c2 = NULL;
     c3 = NULL;
     c4 = NULL;
     c5 = NULL;
-    c6 = NULL;
     deck = NULL;
-    hand = NULL;*/
+    hand = NULL;
     return 0;
 }
