@@ -3,12 +3,11 @@
 #include "Player.h"
 
 
+int main() {
+    Player  *p = new Player();
+    delete(p);
 
+    cout << *p << endl;
 
-int main()
-{
-    Player *p();
-    
-
-    cout << "test" << endl;
+    return 0;
 }

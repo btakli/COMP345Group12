@@ -3,97 +3,115 @@
 
 #include "Player.h"
 
-
 Player::Player() {
-
+    this->_name = new string();
+    this->_collection = new vector<Territory*> {};
+    this->_hand  = new Hand();
+    this->_listOfOrders = new OrdersList();
 }
 
-Player::Player(std::vector<Territory>* collection, std::vector<Country> * hand, std::vector<OrdersList>* listOfOrders)   //Replace Country with Cards
+
+
+Player::Player(string name, vector<Territory*>* collection, Hand* hand, OrdersList * listOfOrders) {
+    this->_name = new string(name);
+    this->_collection = new vector<Territory*>;
+    for (auto territory : *collection) {
+        this->_collection->push_back(territory);              //Move territory into _collection
+        territory->claim(*this);                //Claims the territory
+    }
+
+    this->_hand = new Hand(*hand);
+    this->_listOfOrders = new OrdersList(*listOfOrders);
+}
+
+Player::~Player() {
+     _name->clear();
+    for (auto territory : *_collection) {
+        delete territory;
+    }
+     delete(_hand);
+     delete(_listOfOrders);
+}
+
+
+vector<Territory *> Player::toDefend() {
+    return {};
+}
+
+vector<Territory *> Player::toAttack() {
+    return {};
+}
+
+void Player::issueOrder() {
+    auto *ord = new Order();
+    this->_listOfOrders->addOrder(ord);
+}
+
+
+Card::Card(const Card& otherCard)
 {
-
+    this->_type = new string(*(otherCard._type));
+}
+Player::Player( Player &p){
+    this->_name = new string(*(p._name));
+    for (auto territory : *p._collection) {
+        this->_collection->push_back(territory);
+        territory->claim(*this);
+    }
+    this->_hand = new Hand(*p._hand);
+    this->_listOfOrders = p._listOfOrders;
 }
 
-std::vector<Territory>* Player::toDefend(){
-    return nullptr;
-}
-    
-std::vector<Territory>* Player::toAttack(){
-    return nullptr;
-}
-
-/*    
-void Player::issueOrder(){
-    Order * ord = new Order();
-    add_to_ListOfOrder(ord);
-
-}
-
-void Player::add_to_ListOfOrder(Order ord){
-
-
-}*/
-
-Player::Player(Player& p){                      //copy constructor seems shallow
-    this->_collection = p._collection;
-    this -> _hand = p._hand;
-    this -> _listOfOrders = p._listOfOrders;
-}
-
-Player& Player:: operator =(const Player &p){    //Assignment operator
-    this->_collection = p._collection;
-    this -> _hand = p._hand;
-    this -> _listOfOrders = p._listOfOrders;
+Player& Player::operator=(const Player &p) {
+    this->_name = new string(*p._name);
+    this->_collection = new vector<Territory*>;
+    for (auto territory : *p._collection) {
+        this->_collection->push_back(territory);
+        territory->claim(*this);
+    }
+    this->_hand = new Hand(*p._hand);
+    this->_listOfOrders = p._listOfOrders;
     return *this;
-
-}
-Player::~Player(){                              //Destructor
-    delete _collection;
-    delete _hand;
-    delete _listOfOrders;
-    this -> _collection = nullptr;
-    this -> _hand = nullptr;
-    this -> _listOfOrders = nullptr;
-    delete this;
 }
 
-void Player::set_collection(std::vector<Territory>* col){
-    this -> _collection = col;
+string* Player::get_name(){
+    return this->_name;
 }
 
-std::vector<Territory> Player::get_collection(){
-    return *_collection;
+void Player::set_name(string *name){
+    this->_name = std::move(name); //used autofill
+}
+
+void Player::set_collection(vector<Territory *> *collection) {
 
 }
 
-void Player::set_hand(std::vector<Territory>*){
+vector<Territory *> *Player::get_collection() {
+    return this->_collection;
+}
+
+void Player::add_to_collection(Territory *addTerr) {
+    this->_collection->push_back(addTerr);
+}
+void Player::remove_from_collection(Territory *delTerr) {
 
 }
 
-std::vector<Territory> Player::get_hand(){
-    return *_hand;
-}   
+Hand *Player::get_hand() {
+    return nullptr;
+}
 
-void Player::set_listOfOrders(std::vector<OrdersList>*){
+OrdersList *Player::get_listOfOrders() {
+    return nullptr;
+}
+
+void Player::add_to_ListOfOrder(Order *addOrd) {
 
 }
 
-std::vector<OrdersList> Player::get_listOfOrders(){
-    return *_listOfOrders;
+ostream &operator<<(ostream &out, const Player &player) {
+    out << "Player: " + *player._name;
+    return out;
 }
 
 
-std::vector<Territory>* _collection;
-std::vector<Territory>* _hand;
-std::vector<OrdersList>* _listOfOrders;
-
-
-//player owns collection of territories
-//player owns a hand of Cards
-//player has their own list of orders to be createdd andexcecuted in the current term
-
-//player methods: for now, have them return arbitrary lists
-    //toDefend() -- return a list of territories to be defended
-    //toAttack() -- return a list of territories to attack
-    //issueOrder() -- creates an Order object and puts it in the players list of orders
-
-//All data members of user-defined class type must be of pointer type. 
