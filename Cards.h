@@ -31,6 +31,7 @@ private:
 //stream insertion operator overload for Card
 std::ostream& operator<<(std::ostream& strm, const Card& card);
 
+//The Bomb type of card
 class BombCard : public Card {
 public:
 	//Default constructor
@@ -47,6 +48,7 @@ public:
 	virtual BombCard* clone() const;
 };
 
+//The Blockade type of card
 class BlockadeCard : public Card {
 public:
 	//Default Constructor
@@ -63,6 +65,7 @@ public:
 	virtual BlockadeCard* clone() const;
 };
 
+//The Airlift type of card
 class AirliftCard : public Card {
 public:
 	//Default Constructor
@@ -79,6 +82,7 @@ public:
 	virtual AirliftCard* clone() const;
 };
 
+//The Diplomacy type of card
 class DiplomacyCard : public Card {
 public:
 	//Default constructor
@@ -95,6 +99,7 @@ public:
 	virtual DiplomacyCard *clone() const;
 };
 
+//The Deck class, allows user to randomly draw a card and add cards back to it
 class Deck {
 public:
 	//Default constructor
@@ -126,7 +131,7 @@ private:
 
 };
 
-
+//The Hand class, used by the Player to store cards. Contains methods for adding cards to it and the play and return card to deck method.
 class Hand {
 public:
 	//Default constructor
