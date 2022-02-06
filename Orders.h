@@ -172,14 +172,14 @@ public:
 
     std::vector<Order*> getOrdersList();
 
-    void addOrder(Order order); 
+    void addOrder(Order* order); 
 
     void move(int Move, int Location);
 
     void remove(int Remove);
 
 private:
-     std::vector<Order*>* ol;
+    std::vector<Order*>* _orderlist;
 
     friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
 
