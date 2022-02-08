@@ -3,7 +3,9 @@
 #include <string>
 #include<vector>
 #include "Orders.h"
-
+//Forward declarations
+class Hand;
+class Deck;
 //Base class for all cards
 class Card {
 public:
@@ -23,6 +25,9 @@ public:
 	std::string getType() const;
 	//Play the card and return an order.
 	virtual Order* play(); 
+	//play method, returns the appropriate order type, removes the card from the passed in hand and inserts it into the deck.
+	virtual Order* play(Hand* hand, Deck* deck);
+
 
 private:
 	//The card type
@@ -151,9 +156,12 @@ public:
 	//Get a card at a specific index in the hand
 	Card* getCard(int index); 
 	//Return the card pointer and remove it from _cards based on passed in index
-	Card* returnCardToDeck(int index);
+	void returnCardToDeck(int index, Deck* deck);
 	//Play a card and return it to the passed in deck. Returns an Order.
 	Order* playAndReturnToDeck(int index, Deck* deck);
+	//Find if a specific card exists in the Hand. Checks if that EXACT object is in the Hand and returns the index. Returns -1 if not.
+	int indexOfCard(Card* card);
+
 private:
 	std::vector<Card*>* _cards;
 	//stream insertion operator overload for Hand

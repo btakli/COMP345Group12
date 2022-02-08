@@ -66,6 +66,18 @@ Order* Card::play()
 	return new Order();
 }
 
+Order* Card::play(Hand* hand, Deck* deck)
+{
+	int index = hand->indexOfCard(this); //Get index of this specific Card in the Hand. -1 if it's not there.
+	if (index != -1) //If it's in the hand
+	{
+		hand->returnCardToDeck(index, deck); //Return the card to the deck
+		return play(); //Return the appropriate order
+	}
+	return nullptr; //return a null pointer if it is not in the hand.
+}
+
+
 
 
 BombCard::BombCard() : Card("bomb")
@@ -326,18 +338,28 @@ Card* Hand::getCard(int index)
 	return _cards->at(index);
 }
 
-Card* Hand::returnCardToDeck(int index)
+void Hand::returnCardToDeck(int index, Deck* deck)
 {
 	Card* card = _cards->at(index);
 	_cards->erase(_cards->begin() + index); //remove card from the vector
-	return card;
+	deck->returnToDeck(card);
 }
 
 Order* Hand::playAndReturnToDeck(int index, Deck* deck)
 {
 	Card* card = getCard(index); //Get the card
 	Order* order = card->play(); //Set the order as the one returned by the play method.
-	deck->returnToDeck(returnCardToDeck(index)); //Return the card to the deck and remove it from your hand.
+	returnCardToDeck(index, deck); //Return the card to the deck and remove it from your hand.
 	return order; 
+}
+
+int Hand::indexOfCard(Card* card)
+{
+	for (int i = 0; i < _cards->size(); i++)
+	{
+		if (card == _cards->at(i)) //They point to the same thing
+			return i; //Return the index
+	}
+	return -1; //Return -1 if not found
 }
 
