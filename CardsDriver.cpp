@@ -58,7 +58,7 @@ int main()
 		//Call play method from the card, taking that card from the hand it came from and placing it in the deck. Returning an order of the right type.
 		Order* order = temp->play(hand, deck);
 		if (order != NULL) {
-			order->execute();
+			order->execute(); //TODO THIS IS TEMPORARY, WILL CHANGE CALL ONCE ORDER CLASS IS FINISHED! 
 			delete(order);
 		}
 	}
