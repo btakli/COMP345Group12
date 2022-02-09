@@ -25,7 +25,10 @@ public:
 	std::string getType() const;
 	//Play the card and return an order.
 	virtual Order* play(); 
-	//play method, returns the appropriate order type, removes the card from the passed in hand and inserts it into the deck.
+	///<summary>play method, returns the appropriate order type, removes the card from the passed in hand and inserts it into the deck.</summary>
+	///<param name='Hand* hand'>Hand to remove card from</param>
+	///<param name='Deck* deck'>Deck to add card to</param>
+	///<returns>A pointer to a new Order of relevant type for that card</returns> 
 	virtual Order* play(Hand* hand, Deck* deck);
 
 
@@ -157,7 +160,10 @@ public:
 	Card* getCard(int index); 
 	//Return the card pointer and remove it from _cards based on passed in index
 	void returnCardToDeck(int index, Deck* deck);
-	//Play a card and return it to the passed in deck. Returns an Order.
+	///<summary>Play a card and return it to the passed in deck. Returns an Order</summary>
+	///<param name='int index'>Index of card to play and remove</param>
+	///<param name='Deck* deck'>Deck to add card to</param>
+	///<returns>A pointer to a new Order of relevant type for that card</returns> 
 	Order* playAndReturnToDeck(int index, Deck* deck);
 	//Find if a specific card exists in the Hand. Checks if that EXACT object is in the Hand and returns the index. Returns -1 if not.
 	int indexOfCard(Card* card);
