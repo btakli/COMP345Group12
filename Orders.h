@@ -174,9 +174,9 @@ public:
 
     void addOrder(Order* order); 
 
-    void move(int Move, int Location);
+    void move(int From, int To);
 
-    void remove(int Remove);
+    void remove(int Index);
 
 private:
     std::vector<Order*>* _orderlist;
