@@ -175,8 +175,10 @@ void OrdersList::addOrder(Order* order) {
 	
 }
 
-void OrdersList::move(int Move, int Location) {
+void OrdersList::move(int From, int To) {
+
 }
 
-void OrdersList::remove(int Remove) {
+void OrdersList::remove(int Index) {
 }
+
