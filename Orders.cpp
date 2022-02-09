@@ -1,4 +1,3 @@
-#pragma once
 #include "Orders.h"
 #include <vector>
 #include <iostream>
@@ -6,7 +5,7 @@ using namespace std;
 
 /**
  * OrdersList implementation
- * 
+ *
  */
 
 OrdersList::OrdersList() { //Constructor
@@ -33,7 +32,7 @@ void OrdersList::remove(int Remove) {
 
 /**
  * Order implementation
- * 
+ *
  */
 
 Order::Order() { //Constructor
@@ -53,7 +52,7 @@ Order::Order(const Order& o){ //Copy constructor
 
 /**
  * Deploy implementation
- * 
+ *
  */
 
 Deploy::Deploy() { //Constructor
@@ -73,7 +72,7 @@ Deploy::Deploy(const Deploy& dep){ //Copy constructor
 
 /**
  * Advance implementation
- * 
+ *
  */
 
 Advance::Advance() { //Constructor
@@ -93,7 +92,7 @@ Advance::Advance(const Advance& adv){ //Copy constructor
 
 /**
  * Bomb implementation
- * 
+ *
  */
 
 Bomb::Bomb() { //Constructor
@@ -113,7 +112,7 @@ Bomb::Bomb(const Bomb& bmb){ //Copy constructor
 
 /**
  * Blockade implementation
- * 
+ *
  */
 
 Blockade::Blockade() { //Constructor
@@ -133,7 +132,7 @@ Blockade::Blockade(const Blockade& blck){ //Copy constructor
 
 /**
  * Airlift implementation
- * 
+ *
  */
 
 Airlift::Airlift() { //Constructor
@@ -153,7 +152,7 @@ Airlift::Airlift(const Airlift& al){ //Copy constructor
 
 /**
  * Negotiate implementation
- * 
+ *
  */
 
 Negotiate::Negotiate() { //Constructor
@@ -169,4 +168,16 @@ Negotiate& Negotiate::operator=(const Negotiate& ng){ //Assignment Operator
 
 Negotiate::Negotiate(const Negotiate& ng){ //Copy constructor
 
+}
+
+void OrdersList::addOrder(Order* order) {
+    _orderlist->push_back(order);
+
+}
+
+void OrdersList::move(int From, int To) {
+
+}
+
+void OrdersList::remove(int Index) {
 }

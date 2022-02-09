@@ -1,5 +1,5 @@
 #include <vector>
-#include <iostream> 
+#include <iostream>
 
 #include "Player.h"
 
@@ -17,7 +17,7 @@ Player::Player(string name, vector<Territory*>* collection, Hand* hand, OrdersLi
     this->_collection = new vector<Territory*>;
     for (auto territory : *collection) {
         this->_collection->push_back(territory);              //Move territory into _collection
-        territory->claim(*this);                //Claims the territory
+        //territory->claim(*this);                //Claims the territory
     }
 
     this->_hand = new Hand(*hand);
@@ -56,7 +56,7 @@ Player::Player( Player &p){
     this->_name = new string(*(p._name));
     for (auto territory : *p._collection) {
         this->_collection->push_back(territory);
-        territory->claim(*this);
+        //territory->claim(*this);
     }
     this->_hand = new Hand(*p._hand);
     this->_listOfOrders = p._listOfOrders;
@@ -67,7 +67,7 @@ Player& Player::operator=(const Player &p) {
     this->_collection = new vector<Territory*>;
     for (auto territory : *p._collection) {
         this->_collection->push_back(territory);
-        territory->claim(*this);
+        //territory->claim(*this);
     }
     this->_hand = new Hand(*p._hand);
     this->_listOfOrders = p._listOfOrders;
