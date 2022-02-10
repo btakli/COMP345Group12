@@ -42,9 +42,9 @@ public:
 	Territory(int& index, std::string& territory_name);
 	~Territory();
 
-	std::string to_string() const; // Display obj as string
+	std::string to_string() const; // Return obj as string
 
-
+	
 
 	std::string& get_name() const;
 	int& get_index() const;
@@ -93,7 +93,7 @@ public:
 class Country : public Territory
 {
 private:
-	Country() = delete; //Prevents wrong call
+	Country() = delete; //Prevents accidental use
 
 	std::list<Country*>* _neighbor_countries_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
