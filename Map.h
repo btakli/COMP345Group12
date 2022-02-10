@@ -10,9 +10,9 @@
 
 #include "Player.h"
 
+class LandMass;
 class Territory;
 class Continent;
-class Country;
 class Map;
 class MapLoader;
 class Player;
@@ -23,7 +23,7 @@ std::list<T*>& copy(std::list<T*> to_copy);
 template <typename T>
 std::vector<T*>& copy(std::vector<T*> to_copy);
 
-class Territory
+class LandMass
 {
 
 	int* _index_ptr;
@@ -34,13 +34,13 @@ private:
 	void set_name(std::string& new_name);
 
 public:
-	Territory() = delete; // Prevent accidental use
+	LandMass() = delete; // Prevent accidental use
 
 	//Copy constructor - !!!Don't use unless really necessary - cause dupe index
-	Territory(const Territory& to_copy);
+	LandMass(const LandMass& to_copy);
 
-	Territory(int& index, std::string& territory_name);
-	~Territory();
+	LandMass(int& index, std::string& landMass_name);
+	~LandMass();
 
 	std::string to_string() const; // Return obj as string
 
@@ -49,53 +49,53 @@ public:
 	std::string& get_name() const;
 	int& get_index() const;
 
-	Territory& operator=(const Territory& territory);
+	LandMass& operator=(const LandMass& territory);
 
-	friend std::ostream& operator << (std::ostream& stream, const Territory& territory);
+	friend std::ostream& operator << (std::ostream& stream, const LandMass& land_mass);
 
-	friend class Country;
 	friend class Continent;
+	friend class Territory;
 };
 
 
-class Continent : public Territory
+class Territory : public LandMass
 {
-	static int _continent_index;
+	static int _territories_index;
 
 	std::string* _color_ptr;
 	int* _army_value_ptr;
-	std::list<Country*>* _countries_ptr;
+	std::list<Continent*>* _continents_ptr;
 
 private:
-	Continent() = delete; // Prevent accidental use 
+	Territory() = delete; // Prevent accidental use 
 
 public:
 	//Copy constructor. !!!Don't use unless really necessary - cause dupe index
-	Continent(const Continent& to_copy);
+	Territory(const Territory& to_copy);
 
-	Continent(std::string& continent_name, int& army_value, std::string& color);
-	~Continent();
+	Territory(std::string& territory_name, int& army_value, std::string& color);
+	~Territory();
 
 	int get_army_value() const;
 	std::string get_color() const;
 	std::string to_string() const;
-	std::list<Country*>& get_countries() const;
+	std::list<Continent*>& get_continents() const;
 
-	void add_country(Country& new_country);
+	void add_continent(Continent& new_continent);
 
-	Continent& operator=(const Continent& continent);
+	Territory& operator=(const Territory& territory);
 
-	friend std::ostream& operator<<(std::ostream& stream, const Continent& continent);
+	friend std::ostream& operator<<(std::ostream& stream, const Territory& territory);
 };
 
 
 
-class Country : public Territory
+class Continent : public LandMass
 {
 private:
-	Country() = delete; //Prevents accidental use
+	Continent() = delete; //Prevents accidental use
 
-	std::list<Country*>* _neighbor_countries_ptr;
+	std::list<Continent*>* _neighbor_continents_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
 	Player* _player_ptr;
@@ -103,19 +103,19 @@ private:
 public:
 
 	//Copy constructor - !!!Don't use unless really necessary - cause dupe index
-	Country(const Country& to_copy);
+	Continent(const Continent& to_copy);
 
 
-	Country(int& index, std::string& country_name);
-	~Country();
+	Continent(int& index, std::string& continent_name);
+	~Continent();
 
-	std::list<Country*>& get_neighbors() const; // Returns a reference to the list of neighbors
-	void set_neighbor(Country& bordered_country); // Add a new neighbor 
+	std::list<Continent*>& get_neighbors() const; // Returns a reference to the list of neighbors
+	void set_neighbor(Continent& bordered_continent); // Add a new neighbor 
 
-	// Claim a country
+	// Claim a continent
 	void claim(Player& player);
 
-	// Check who owns the country. returns player or null
+	// Check who owns the continent. returns player or null
 	Player* check_claim() const;
 
 
@@ -126,9 +126,9 @@ public:
 	void set_stationed_army(int& army);
 	std::string to_string() const;
 
-	Country& operator=(const Country& country);
+	Continent& operator=(const Continent& continent);
 
-	friend std::ostream& operator<<(std::ostream& stream, const Country& country);
+	friend std::ostream& operator<<(std::ostream& stream, const Continent& continent);
 };
 
 
@@ -150,8 +150,8 @@ private:
 	//Helper to sort out which obj needs to be created.
 	void sort_map_file_data(FileBlock& fileBlock, std::string& line);
 
+	void make_territory(std::vector<std::string>& splited_line);
 	void make_continent(std::vector<std::string>& splited_line);
-	void make_countries(std::vector<std::string>& splited_line);
 	void assign_borders(std::vector<std::string>& splited_line);
 
 	//Check is string is a number
@@ -177,13 +177,13 @@ public:
 class Map
 {
 	static Map* _instance_ptr;
-	std::list<Continent*>* _continents_ptr;
-	std::vector<Country*>* _countries_ptr;
+	std::list<Territory*>* _territories_ptr;
+	std::vector<Continent*>* _continents_ptr;
 
 private:
 	Map();
 
-	bool help_validate(std::queue<Country*>& visited_countries, int& size, int& count);
+	bool help_validate(std::queue<Continent*>& to_be_visited_continents, int& size, int& count);
 
 public:
 	~Map();
@@ -194,12 +194,12 @@ public:
 	bool validate();
 
 	void display() const; // Displays the Map obj
-	void set_continent(Continent& new_continent); // Add a new continent
-	void set_country(int& continent_index, Country& new_country); // Add a new country
-	void set_border(std::vector<std::string> splited_borders); // Add a new neighbor to a country
-	Country* get_country(int index); // Get a country by index
-	std::vector<Country*>& get_countries() const; // Get all countries
-	std::list<Continent*>& get_continents() const; // Get all continents
+	void set_territory(Territory& new_territory); // Add a new continent
+	void set_continent(int& continent_index, Continent& new_continent); // Add a new continent
+	void set_border(std::vector<std::string> splited_borders); // Add a new neighbor to a continent
+	Continent* get_continent(int index); // Get a continent by index
+	std::vector<Continent*>& get_continents() const; // Get all continents
+	std::list<Territory*>& get_territories() const; // Get all territories
 
 	//Copy constructor. !!!Don't use unless really necessary
 	Map(const Map& to_copy);

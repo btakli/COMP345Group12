@@ -3,8 +3,8 @@
 Map* Map::_instance_ptr = nullptr;
 
 Map::Map() {
-	_continents_ptr = new std::list<Continent*>();
-	_countries_ptr = new std::vector<Country*>();
+	_territories_ptr = new std::list<Territory*>();
+	_continents_ptr = new std::vector<Continent*>();
 }
 
 Map::Map(const Map& to_copy) {
@@ -18,24 +18,24 @@ Map* Map::get_instance() {
 	return _instance_ptr;
 }
 
-void Map::set_continent(Continent& new_continent) {
+void Map::set_territory(Territory& new_territory) {
 
-	_continents_ptr->push_back(&new_continent);
+	_territories_ptr->push_back(&new_territory);
 }
 
-void Map::set_country(int& continent_index, Country& new_country) {
+void Map::set_continent(int& territory_index, Continent& new_continent) {
 
 	try {
 		bool found = false;
 
-		for (Continent* continent : get_continents()) {
-			if (continent_index == continent->get_index()) {
+		for (Territory* territory : get_territories()) {
+			if (territory_index == territory->get_index()) {
 				found = true;
-				get_countries().push_back(&new_country);
-				continent->add_country(new_country);
+				get_continents().push_back(&new_continent);
+				territory->add_continent(new_continent);
 			}
 		}
-		if (!found) throw std::runtime_error(" Fail to find continent: " + continent_index);
+		if (!found) throw std::runtime_error(" Fail to find territory: " + territory_index);
 	}
 	catch (std::runtime_error e) {
 		throw e;
@@ -45,17 +45,17 @@ void Map::set_country(int& continent_index, Country& new_country) {
 void Map::set_border(std::vector<std::string> splited_borders) {
 
 	try {
-		int curr_country_index = stoi(splited_borders[0]) - 1;
+		int curr_continent_index = stoi(splited_borders[0]) - 1;
 
-		for (size_t i = 1; i < splited_borders.size(); i++) { // 0 is the current selected country the remainig are its neighbours
+		for (size_t i = 1; i < splited_borders.size(); i++) { // 0 is the current selected continent the remainig are its neighbours
 
-			Country* country = get_country(stoi(splited_borders[i]));
+			Continent* continent = get_continent(stoi(splited_borders[i]));
 
-			if (country) {
-				get_countries()[curr_country_index]->set_neighbor(*country);
+			if (continent) {
+				get_continents()[curr_continent_index]->set_neighbor(*continent);
 			}
 			else {
-				throw new std::runtime_error("Country not found for " + (curr_country_index + 1));
+				throw new std::runtime_error("Continent not found for " + (curr_continent_index + 1));
 			}
 		}
 	}
@@ -66,19 +66,19 @@ void Map::set_border(std::vector<std::string> splited_borders) {
 
 bool Map::validate() {
 
-	std::queue<Country*> queue;
+	std::queue<Continent*> queue;
 
-	queue.push(get_countries()[0]);
+	queue.push(get_continents()[0]);
 
-	get_countries()[0]->set_visited(*new bool(true));
+	get_continents()[0]->set_visited(*new bool(true));
 
-	int size = (int)(get_countries().size());
+	int size = (int)(get_continents().size());
 	int count = 0;
 
 	return help_validate(queue, size, count);
 }
 
-bool Map::help_validate(std::queue<Country*>& to_be_visited, int& size, int& count) {
+bool Map::help_validate(std::queue<Continent*>& to_be_visited, int& size, int& count) {
 
 	if (to_be_visited.size() <= 0) {
 		std::cout << "\n-- MAP VALIDATION PASS: " << count << std::endl;
@@ -88,17 +88,17 @@ bool Map::help_validate(std::queue<Country*>& to_be_visited, int& size, int& cou
 	}
 	else {
 
-		Country* current = to_be_visited.front();
+		Continent* current = to_be_visited.front();
 		to_be_visited.pop();
 
-		std::list<Country*>& neighbors = current->get_neighbors();
+		std::list<Continent*>& neighbors = current->get_neighbors();
 
 		if (neighbors.size() <= 0) { // Dead end
 			std::cout << "-- MAP FAIL VALIDATION: DEAD END --" << std::endl;
 			return false;
 		}
 		else {
-			for (Country* neighbor : neighbors) {
+			for (Continent* neighbor : neighbors) {
 
 				if (!neighbor->get_visited()) {
 					neighbor->set_visited(*new bool(true));
@@ -114,45 +114,45 @@ bool Map::help_validate(std::queue<Country*>& to_be_visited, int& size, int& cou
 
 void Map::display() const {
 
-	if (_continents_ptr->size() == 0 && _countries_ptr->size() == 0) return;
+	if (_territories_ptr->size() == 0 && _continents_ptr->size() == 0) return;
 
 	std::cout << "-- DISPLAY --\n" << std::endl;
 
-	for (Continent* continent : *_continents_ptr) {
-		std::cout << continent->to_string() << std::endl;
+	for (Territory* territory : *_territories_ptr) {
+		std::cout << territory->to_string() << std::endl;
 	}
 
 	std::cout << "-- DISPLAY END --\n" << std::endl;
 
 }
 
-Country* Map::get_country(int index) {
-	for (Country* c : get_countries()) {
+Continent* Map::get_continent(int index) {
+	for (Continent* c : get_continents()) {
 		if (c->get_index() == index) return c;
 	}
 
 	return nullptr;
 }
 
-std::list<Continent*>& Map::get_continents() const {
-	return *_continents_ptr;
+std::list<Territory*>& Map::get_territories() const {
+	return *_territories_ptr;
 }
 
-std::vector<Country*>& Map::get_countries() const {
-	return *_countries_ptr;
+std::vector<Continent*>& Map::get_continents() const {
+	return *_continents_ptr;
 }
 
 void Map::unload() {
 
-	if (get_continents().size() <= 0 && get_countries().size() <= 0) return;
+	if (get_territories().size() <= 0 && get_continents().size() <= 0) return;
 
 	std::cout << "\n-- UNLOADING --\n" << std::endl;
 
+	for (Territory* c : get_territories()) delete c;
 	for (Continent* c : get_continents()) delete c;
-	for (Country* c : get_countries()) delete c;
 
+	_territories_ptr->clear();
 	_continents_ptr->clear();
-	_countries_ptr->clear();
 
 	std::cout << "\n-- UNLOADING END --\n" << std::endl;
 }
@@ -173,8 +173,8 @@ std::ostream& operator<<(std::ostream& stream, const Map& map) {
 
 	stream << "-- DISPLAY --\n\n";
 
-	for (Continent* continent : map.get_continents()) {
-		stream << continent->to_string() << std::endl;
+	for (Territory* territory : map.get_territories()) {
+		stream << territory->to_string() << std::endl;
 	}
 
 	stream << "-- DISPLAY END --\n\n";
@@ -188,9 +188,9 @@ std::ostream& operator<<(std::ostream& stream, const Map& map) {
 
 /******** MAP LOADER *******/
 
-#define CONTINENTS "[continents]"
-#define COUNTRIES "[countries]"
-#define BORDERS "[borders]"
+#define CONTINENTS "[continents]" // == Territory
+#define COUNTRIES "[countries]" // == Continent
+#define BORDERS "[borders]" // == Border
 
 
 MapLoader* MapLoader::_instance_ptr = nullptr;
@@ -260,7 +260,7 @@ void MapLoader::sort_map_file_data(FileBlock& fileBlock, std::string& line) {
 		switch (fileBlock) {
 
 		case FileBlock::Continents:
-			make_continent(split(line));
+			make_territory(split(line));
 			break;
 
 		case FileBlock::Borders:
@@ -268,7 +268,7 @@ void MapLoader::sort_map_file_data(FileBlock& fileBlock, std::string& line) {
 			break;
 
 		case FileBlock::Countries:
-			make_countries(split(line));
+			make_continent(split(line));
 			break;
 
 		default:
@@ -304,19 +304,19 @@ std::vector<std::string>& MapLoader::split(std::string& line) const {
 	return *tokens;
 }
 
-void MapLoader::make_continent(std::vector<std::string>& line_tokens) {
+void MapLoader::make_territory(std::vector<std::string>& line_tokens) {
 
 	try {
 
-		std::string* continent_name_ptr = new std::string(line_tokens[0]);
+		std::string* territory_name_ptr = new std::string(line_tokens[0]);
 		std::string* color_ptr = new std::string(line_tokens[2]);
 
 		if (!is_number(line_tokens[1])) throw std::runtime_error("Army value is not of type int: " + line_tokens[1]);
 
 		int* army_value_ptr = new int(stoi(line_tokens[1]));
 
-		Continent* new_continent = new Continent(*continent_name_ptr, *army_value_ptr, *color_ptr);
-		Map::get_instance()->set_continent(*new_continent);
+		Territory* new_territory = new Territory(*territory_name_ptr, *army_value_ptr, *color_ptr);
+		Map::get_instance()->set_territory(*new_territory);
 	}
 	catch (std::runtime_error e) {
 		delete& line_tokens;
@@ -326,19 +326,19 @@ void MapLoader::make_continent(std::vector<std::string>& line_tokens) {
 	delete& line_tokens;
 }
 
-void MapLoader::make_countries(std::vector<std::string>& line_tokens) {
+void MapLoader::make_continent(std::vector<std::string>& line_tokens) {
 
 	try {
-		std::string* country_name = new std::string(line_tokens[1]);
+		std::string* continent_name = new std::string(line_tokens[1]);
 
-		if (!is_number(line_tokens[0])) throw std::runtime_error("Country value is not of type int: " + line_tokens[0]);
-		if (!is_number(line_tokens[2])) throw std::runtime_error("Continent value is not of type int: " + line_tokens[2]);
+		if (!is_number(line_tokens[0])) throw std::runtime_error("Continent value is not of type int: " + line_tokens[0]);
+		if (!is_number(line_tokens[2])) throw std::runtime_error("Territory value is not of type int: " + line_tokens[2]);
 
-		int* country_index_ptr = new int(stoi(line_tokens[0]));
-		int* continent_index_ptr = new int(stoi(line_tokens[2]));
+		int* continent_index_ptr = new int(stoi(line_tokens[0]));
+		int* territory_index_ptr = new int(stoi(line_tokens[2]));
 
-		Country* new_country = new Country(*country_index_ptr, *country_name);
-		Map::get_instance()->set_country(*continent_index_ptr, *new_country);
+		Continent* new_continent = new Continent(*continent_index_ptr, *continent_name);
+		Map::get_instance()->set_continent(*territory_index_ptr, *new_continent);
 	}
 	catch (std::runtime_error e) {
 		delete& line_tokens;
@@ -418,53 +418,53 @@ std::ostream& operator<<(std::ostream& stream, const MapLoader& loader) {
 
 
 
-/********** CONTINENT **********/
+/********** TERRITORY **********/  // aka a continent(file)
 
-int Continent::_continent_index = 0;
+int Territory::_territories_index = 0;
 
-Continent::Continent(const Continent& to_copy) : Territory(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
+Territory::Territory(const Territory& to_copy) : LandMass(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
 	_army_value_ptr = new int(to_copy.get_army_value());
 	_color_ptr = new std::string(to_copy.get_color());
-	_countries_ptr = &copy(to_copy.get_countries());
+	_continents_ptr = &copy(to_copy.get_continents());
 }
 
 
-Continent::Continent(std::string& continent_name, int& army_value, std::string& color) : Territory(*(new int(++_continent_index)), continent_name) {
+Territory::Territory(std::string& territory_name, int& army_value, std::string& color) : LandMass(*(new int(++_territories_index)), territory_name) {
 
 	_army_value_ptr = &army_value;
 	_color_ptr = &color;
-	_countries_ptr = new std::list<Country*>();
+	_continents_ptr = new std::list<Continent*>();
 }
 
-int Continent::get_army_value() const {
+int Territory::get_army_value() const {
 	return *_army_value_ptr;
 }
 
-std::string Continent::to_string() const {
+std::string Territory::to_string() const {
 
 	std::string tmp = "";
 
-	for (Country* c : get_countries()) tmp += "   " + c->to_string() + "\n";
+	for (Continent* c : get_continents()) tmp += "   " + c->to_string() + "\n";
 
-	return Territory::to_string() + " | Army: " + std::to_string(get_army_value()) + " | " + get_color() + "\n"
+	return LandMass::to_string() + " | Army: " + std::to_string(get_army_value()) + " | " + get_color() + "\n"
 		+ tmp;
 }
 
-void Continent::add_country(Country& new_country) {
-	get_countries().push_back(&new_country);
+void Territory::add_continent(Continent& new_continent) {
+	get_continents().push_back(&new_continent);
 }
 
-Continent& Continent::operator=(const Continent& continent)
+Territory& Territory::operator=(const Territory& continent)
 {
 	delete _color_ptr;
 	delete _army_value_ptr;
-	delete _countries_ptr;
+	delete _continents_ptr;
 	delete& get_name();
 	delete& get_index();
 
 	_army_value_ptr = new int(continent.get_army_value());
 	_color_ptr = new std::string(continent.get_color());
-	_countries_ptr = &copy(continent.get_countries());
+	_continents_ptr = &copy(continent.get_continents());
 
 	set_index(*new int(continent.get_index()));
 	set_name(*new std::string(continent.get_name()));
@@ -473,158 +473,158 @@ Continent& Continent::operator=(const Continent& continent)
 }
 
 
-std::list<Country*>& Continent::get_countries() const {
-	return *_countries_ptr;
+std::list<Continent*>& Territory::get_continents() const {
+	return *_continents_ptr;
 }
 
-std::string Continent::get_color() const {
+std::string Territory::get_color() const {
 	return *_color_ptr;
 }
 
-Continent::~Continent() {
-	std::cout << "Unloaded:\t" << typeid(Continent).name() << "\t\t" << Territory::get_name() << std::endl;
+Territory::~Territory() {
+	std::cout << "Unloaded:\t" << typeid(Territory).name() << "\t\t" << LandMass::get_name() << std::endl;
 
-	_continent_index = 0;
+	_territories_index = 0;
 
 	delete _color_ptr;
 	delete _army_value_ptr;
-	delete _countries_ptr;
+	delete _continents_ptr;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
+std::ostream& operator<<(std::ostream& stream, const Territory& continent) {
 
 	return stream << continent.to_string();
 }
 
 
-/*********** COUNTRY **********/
+/*********** CONTINENT **********/     // aka a country(file)
 
-Country::Country(const Country& to_copy) : Territory(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
+Continent::Continent(const Continent& to_copy) : LandMass(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
 
 	_player_ptr = to_copy.check_claim();
 	_visited_ptr = new bool(to_copy.get_visited());
-	_neighbor_countries_ptr = &copy(to_copy.get_neighbors());
+	_neighbor_continents_ptr = &copy(to_copy.get_neighbors());
 	_stationed_army_ptr = new int(to_copy.get_stationed_army());
 
 }
 
-Country::Country(int& index, std::string& country_name) : Territory(index, country_name) {
+Continent::Continent(int& index, std::string& continent_name) : LandMass(index, continent_name) {
 
 	_player_ptr = nullptr;
 	_visited_ptr = new bool(false);
-	_neighbor_countries_ptr = new std::list<Country*>();
+	_neighbor_continents_ptr = new std::list<Continent*>();
 	_stationed_army_ptr = new int(0);
 }
 
-std::list<Country*>& Country::get_neighbors() const {
-	return *_neighbor_countries_ptr;
+std::list<Continent*>& Continent::get_neighbors() const {
+	return *_neighbor_continents_ptr;
 }
 
-void Country::set_neighbor(Country& bordered_country) {
-	_neighbor_countries_ptr->push_back(&bordered_country);
+void Continent::set_neighbor(Continent& bordered_continent) {
+	_neighbor_continents_ptr->push_back(&bordered_continent);
 }
 
-std::string Country::to_string() const {
+std::string Continent::to_string() const {
 	std::string tmp = "";
 
-	for (Country* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name() + "\n";
+	for (Continent* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name() + "\n";
 
-	return Territory::to_string() + "\n" + tmp;
+	return LandMass::to_string() + "\n" + tmp;
 }
 
-bool& Country::get_visited() const {
+bool& Continent::get_visited() const {
 	return *_visited_ptr;
 }
 
-void Country::set_visited(bool& visited) {
+void Continent::set_visited(bool& visited) {
 
 	delete _visited_ptr;
 	_visited_ptr = &visited;
 }
 
-int& Country::get_stationed_army() const {
+int& Continent::get_stationed_army() const {
 	return *_stationed_army_ptr;
 }
 
-void Country::set_stationed_army(int& army) {
+void Continent::set_stationed_army(int& army) {
 	_stationed_army_ptr = &army;
 }
 
-Country& Country::operator=(const Country& country) {
+Continent& Continent::operator=(const Continent& continent) {
 
 	delete& get_name();
 	delete& get_index();
-	delete _neighbor_countries_ptr;
+	delete _neighbor_continents_ptr;
 	delete _visited_ptr;
 	delete _stationed_army_ptr;
 
-	set_name(*new std::string(country.get_name()));
-	set_index(*new int(country.get_index()));
-	_visited_ptr = new bool(country.get_visited());
-	_neighbor_countries_ptr = &copy(country.get_neighbors());
-	_stationed_army_ptr = new int(country.get_stationed_army());
+	set_name(*new std::string(continent.get_name()));
+	set_index(*new int(continent.get_index()));
+	_visited_ptr = new bool(continent.get_visited());
+	_neighbor_continents_ptr = &copy(continent.get_neighbors());
+	_stationed_army_ptr = new int(continent.get_stationed_army());
 
 	return *this;
 }
 
-void Country::claim(Player& player) {
+void Continent::claim(Player& player) {
 	_player_ptr = &player;
 }
 
-Player* Country::check_claim() const {
+Player* Continent::check_claim() const {
 	return _player_ptr;
 }
 
-Country::~Country() {
+Continent::~Continent() {
 
-	std::cout << "Unloaded:\t" << typeid(Country).name() << "\t\t" << Territory::get_name() << std::endl;
+	std::cout << "Unloaded:\t" << typeid(Continent).name() << "\t\t" << LandMass::get_name() << std::endl;
 
-	delete _neighbor_countries_ptr;
+	delete _neighbor_continents_ptr;
 	delete _visited_ptr;
 	delete _stationed_army_ptr;
 }
 
-std::ostream& operator<<(std::ostream& stream, const Country& country) {
+std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 	
-	return stream << country.to_string();
+	return stream << continent.to_string();
 }
 
 
 
 /*********** TERRITORY ********/
 
-Territory::Territory(const Territory& to_copy) {
+LandMass::LandMass(const LandMass& to_copy) {
 	_index_ptr = new int(to_copy.get_index());
 	_name_ptr = new std::string(to_copy.get_name());
 }
 
-Territory::Territory(int& index, std::string& territory_name) {
+LandMass::LandMass(int& index, std::string& territory_name) {
 	_index_ptr = &index;
 	_name_ptr = &territory_name;
 }
 
-void Territory::set_index(int& new_index) {
+void LandMass::set_index(int& new_index) {
 	_index_ptr = &new_index;
 }
 
-void Territory::set_name(std::string& new_name) {
+void LandMass::set_name(std::string& new_name) {
 	_name_ptr = &new_name;
 }
 
 
-std::string& Territory::get_name() const {
+std::string& LandMass::get_name() const {
 	return *_name_ptr;
 }
 
-int& Territory::get_index() const {
+int& LandMass::get_index() const {
 	return *_index_ptr;
 }
 
-std::string Territory::to_string() const {
+std::string LandMass::to_string() const {
 	return "[" + std::to_string(get_index()) + "] " + get_name();
 }
 
-Territory& Territory::operator=(const Territory& territory) {
+LandMass& LandMass::operator=(const LandMass& territory) {
 	delete _index_ptr;
 	delete _name_ptr;
 
@@ -634,15 +634,15 @@ Territory& Territory::operator=(const Territory& territory) {
 	return *this;
 }
 
-Territory::~Territory() {
-	std::cout << "Unloaded:\t" << typeid(Territory).name() << "\t\t" << Territory::get_name() << std::endl;
+LandMass::~LandMass() {
+	std::cout << "Unloaded:\t" << typeid(LandMass).name() << "\t\t" << LandMass::get_name() << std::endl;
 
 	delete _index_ptr;
 	delete _name_ptr;
 }
 
 
-std::ostream& operator << (std::ostream& stream, const Territory& territory) {
+std::ostream& operator << (std::ostream& stream, const LandMass& territory) {
 	
 	return stream << territory.to_string();
 }
