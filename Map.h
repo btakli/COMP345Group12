@@ -17,6 +17,12 @@ class Map;
 class MapLoader;
 class Player;
 
+template <typename T>
+std::list<T*>& copy(std::list<T*> to_copy);
+
+template <typename T>
+std::vector<T*>& copy(std::vector<T*> to_copy);
+
 class Territory
 {
 
@@ -45,7 +51,7 @@ public:
 
 	Territory& operator=(const Territory& territory);
 
-	friend std::ostream& operator << (std::ostream& stream, Territory& territory);
+	friend std::ostream& operator << (std::ostream& stream, const Territory& territory);
 
 	friend class Country;
 	friend class Continent;
@@ -118,11 +124,11 @@ public:
 	void set_visited(bool& visited);
 	int& get_stationed_army() const;
 	void set_stationed_army(int& army);
-	std::string to_string();
+	std::string to_string() const;
 
 	Country& operator=(const Country& country);
 
-	friend std::ostream& operator<<(std::ostream& stream, Country& country);
+	friend std::ostream& operator<<(std::ostream& stream, const Country& country);
 };
 
 
@@ -131,16 +137,6 @@ class MapLoader
 	enum class FileBlock { None, Files, Continents, Borders, Countries };
 
 	static MapLoader* _instance_ptr;
-
-public:
-
-	//Copy constructor. !!!Don't use unless really necessary
-	MapLoader(const MapLoader& to_copy);
-
-	~MapLoader();
-
-	void load_map(std::string map_file_name);
-	static MapLoader* get_instance();
 
 private:
 	MapLoader();
@@ -161,23 +157,32 @@ private:
 	//Check is string is a number
 	bool is_number(std::string& str);
 
-	MapLoader& operator=(const MapLoader& country);
 
-	friend std::ostream& operator<<(std::ostream stream, MapLoader& loader);
+public:
+
+	//Copy constructor. !!!Don't use unless really necessary
+	MapLoader(const MapLoader& to_copy);
+
+	~MapLoader();
+
+	void load_map(std::string map_file_name);
+	static MapLoader* get_instance();
+
+	MapLoader& operator=(const MapLoader& loader);
+
+	friend std::ostream& operator<<(std::ostream& stream, const MapLoader& loader);
 };
 
 
 class Map
 {
-	static Map* _instance;
+	static Map* _instance_ptr;
 	std::list<Continent*>* _continents_ptr;
 	std::vector<Country*>* _countries_ptr;
 
 private:
 	Map();
 
-	//Copy constructor. !!!Don't use unless really necessary
-	Map(const Map& to_copy);
 	bool help_validate(std::queue<Country*>& visited_countries, int& size, int& count);
 
 public:
@@ -196,11 +201,14 @@ public:
 	std::vector<Country*>& get_countries() const; // Get all countries
 	std::list<Continent*>& get_continents() const; // Get all continents
 
+	//Copy constructor. !!!Don't use unless really necessary
+	Map(const Map& to_copy);
+
 	void unload(); // Clears all data on instance
 
-	Map& operator=(const Map& country);
+	Map& operator=(const Map& map);
 
-	friend std::ostream& operator<<(std::ostream& stream, Map& map); // Stream insertion 
+	friend std::ostream& operator<<(std::ostream& stream, const Map& map); // Stream insertion 
 };
 
 

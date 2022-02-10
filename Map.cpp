@@ -1,6 +1,6 @@
 #include "Map.h"
 
-Map* Map::_instance = nullptr;
+Map* Map::_instance_ptr = nullptr;
 
 Map::Map() {
 	_continents_ptr = new std::list<Continent*>();
@@ -8,14 +8,14 @@ Map::Map() {
 }
 
 Map::Map(const Map& to_copy) {
-	_instance = to_copy.get_instance();
+	_instance_ptr = to_copy.get_instance();
 }
 
 Map* Map::get_instance() {
-	if (_instance == nullptr) {
-		_instance = new Map();
+	if (_instance_ptr == nullptr) {
+		_instance_ptr = new Map();
 	}
-	return _instance;
+	return _instance_ptr;
 }
 
 void Map::set_continent(Continent& new_continent) {
@@ -158,18 +158,18 @@ void Map::unload() {
 }
 
 Map& Map::operator=(const Map& map) {
-	_instance = map.get_instance();
+	_instance_ptr = map.get_instance();
 	return *this;
 }
 
 Map::~Map() {
 	unload();
 
-	delete _instance;
+	delete _instance_ptr;
 }
 
 
-std::ostream& operator<<(std::ostream& stream, Map& map) {
+std::ostream& operator<<(std::ostream& stream, const Map& map) {
 
 	stream << "-- DISPLAY --\n\n";
 
@@ -210,6 +210,7 @@ void MapLoader::load_map(std::string map_file_name) {
 
 	if (!verify(map_file_name)) return; // Map fails basic verifications
 
+	Map::get_instance()->unload(); // Force unload old map
 
 	try {
 		std::ifstream reader(map_file_name);
@@ -409,7 +410,7 @@ MapLoader::~MapLoader() {
 }
 
 
-std::ostream& operator<<(std::ostream stream, MapLoader& loader) {
+std::ostream& operator<<(std::ostream& stream, const MapLoader& loader) {
 	stream << "Map loader stream. Nothing else to display.\n";
 	return stream;
 }
@@ -492,9 +493,7 @@ Continent::~Continent() {
 
 std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 
-	stream << continent.to_string();
-
-	return stream;
+	return stream << continent.to_string();
 }
 
 
@@ -525,7 +524,7 @@ void Country::set_neighbor(Country& bordered_country) {
 	_neighbor_countries_ptr->push_back(&bordered_country);
 }
 
-std::string Country::to_string() {
+std::string Country::to_string() const {
 	std::string tmp = "";
 
 	for (Country* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name() + "\n";
@@ -585,9 +584,9 @@ Country::~Country() {
 	delete _stationed_army_ptr;
 }
 
-std::ostream& operator<<(std::ostream& stream, Country& country) {
-	stream << country.to_string();
-	return stream;
+std::ostream& operator<<(std::ostream& stream, const Country& country) {
+	
+	return stream << country.to_string();
 }
 
 
@@ -643,9 +642,9 @@ Territory::~Territory() {
 }
 
 
-std::ostream& operator << (std::ostream& stream, Territory& territory) {
-	stream << territory.to_string();
-	return stream;
+std::ostream& operator << (std::ostream& stream, const Territory& territory) {
+	
+	return stream << territory.to_string();
 }
 
 
