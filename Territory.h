@@ -1,28 +1,24 @@
-#pragma once
+//
+// Stub created for A1 Player. NOT REAL CLASS
+//
+
+#ifndef BACKUP2022_02_09_TERRITORY_H
+#define BACKUP2022_02_09_TERRITORY_H
+
 
 #include <string>
-#include <iostream> // To be removed
-
-class Territory
-{
-
-private:
-	int _index;
-	std::string _name;
-	//Player* ?
+using std::string;
 
 
+class Territory {
 public:
-	Territory() = delete;
-	Territory(int index, std::string territory_name);
-	~Territory();
+    Territory();
 
-	std::string to_string();
+    explicit Territory(string name);
 
-	std::string get_name();
-	int get_index();
-
-	friend class Continent;
-	friend class Country;
+    string  _name;
+    friend std::ostream &operator<<(std::ostream &out, const Territory &territory);
 };
 
+
+#endif //BACKUP2022_02_09_TERRITORY_H
