@@ -24,6 +24,7 @@ string Order::getType() const
 }
 
 Order::~Order(){ //Desctructor
+    delete(_type);
 }
 
 Order& Order::operator=(const Order& o){ //Assignment Operator
@@ -91,7 +92,7 @@ bool Deploy::validate(){
 
 void Deploy::execute(){
   if(validate())
-      cout << "Deploy" << endl;
+      cout << "Deploy: place some armies on one of the current player’s territories." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -129,7 +130,7 @@ bool Advance::validate(){
 
 void Advance::execute(){
   if(validate())
-      cout << "Advance" << endl;
+      cout << "Advance: move some armies from one of the current player’s territories (source) to an adjacent territory (target)." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -167,7 +168,7 @@ bool Bomb::validate(){
 
 void Bomb::execute(){
   if(validate())
-      cout << "Bomb" << endl;
+      cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player’s territories." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -205,7 +206,7 @@ bool Blockade::validate(){
 
 void Blockade::execute(){
   if(validate())
-      cout << "Blockade" << endl;
+      cout << "Blockade: triple the number of armies on one of the current player’s territories and make it a neutral territory." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -243,7 +244,7 @@ bool Airlift::validate(){
 
 void Airlift::execute(){
   if(validate())
-      cout << "Airlift" << endl;
+      cout << "Airlift: advance some armies from one of the current player’s territories to any another territory." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -281,7 +282,7 @@ bool Negotiate::validate(){
 
 void Negotiate::execute(){
   if(validate())
-      cout << "Negotiate" << endl;
+      cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -308,18 +309,26 @@ OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
 
 }
 
+int OrdersList::size()
+{
+	return _orderlist->size();
+}
+
+Order* OrdersList::getOrders(int index)
+{
+	return _orderlist->at(index);
+}
+
 void OrdersList::addOrder(Order* order) {
-    _orderlist->push_back(order);
-	
+   this->_orderlist->push_back(order);
 }
 
 void OrdersList::move(int from, int to) {
     swap(this->_orderlist[from],this->_orderlist[to]);
 }
 
-void OrdersList::remove(int Index) {
-   
-
+void OrdersList::remove(int index) {
+    this->_orderlist->erase(this->_orderlist->begin() + index);
 }
 
 
