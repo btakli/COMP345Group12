@@ -298,6 +298,11 @@ OrdersList::OrdersList() { //Constructor
 }
 
 OrdersList::~OrdersList() { //Desctructor
+	for (Order* order : *_orderlist) {
+		delete order;
+		order = nullptr;
+	}
+	this->_orderlist->clear();
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
