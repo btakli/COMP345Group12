@@ -27,11 +27,10 @@ std::vector<T*>& copy(std::vector<T*> to_copy);
 
 class LandMass
 {
-
 	int* _index_ptr;
 	std::string* _name_ptr;
 
-private:
+protected:
 	// Set a new index
 	void set_index(int& new_index);
 	
@@ -66,9 +65,6 @@ public:
 
 	// Stream insertion.
 	friend std::ostream& operator << (std::ostream& stream, const LandMass& land_mass);
-
-	friend class Continent;
-	friend class Territory;
 };
 
 
@@ -79,7 +75,8 @@ class Territory : public LandMass
 	std::string* _color_ptr;
 	int* _army_value_ptr;
 	std::list<Continent*>* _continents_ptr;
-	Player* _player_ptr;
+
+	Player* _claimant_ptr;
 
 private:
 	// Constructor deleted. Prevent accidental use
@@ -91,6 +88,8 @@ public:
 
 	// Custom constructor
 	Territory(std::string& territory_name, int& army_value, std::string& color);
+	
+	// Destructor
 	~Territory();
 
 	// Get army value. return an int
@@ -109,7 +108,7 @@ public:
 	void claim(Player& player);
 
 	// Check who owns the continent. returns player or null
-	Player* check_claim() const;
+	Player* get_claimant() const;
 
 	// Add a continent
 	void add_continent(Continent& new_continent);
@@ -129,7 +128,8 @@ class Continent : public LandMass
 	std::list<Continent*>* _neighbor_continents_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
-	Player* _player_ptr;
+
+	Player* _claimant_ptr;
 
 private:
 	//Constructor deleted. Prevent accidental use
@@ -162,7 +162,7 @@ public:
 	void claim(Player& player);
 
 	// Check who owns the continent. returns player or null
-	Player* check_claim() const;
+	Player* get_claimant() const;
 
 	// Return number of station army as int.
 	int& get_stationed_army() const;

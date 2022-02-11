@@ -1,5 +1,10 @@
 #include "Map.h"
 
+
+
+/******** MAP **********/
+
+
 Map* Map::_instance_ptr = nullptr;
 
 Map::Map() {
@@ -426,11 +431,13 @@ Territory::Territory(const Territory& to_copy) : LandMass(*new int(to_copy.get_i
 	_army_value_ptr = new int(to_copy.get_army_value());
 	_color_ptr = new std::string(to_copy.get_color());
 	_continents_ptr = &copy(to_copy.get_continents());
+	_claimant_ptr = to_copy.get_claimant();
 }
 
 
 Territory::Territory(std::string& territory_name, int& army_value, std::string& color) : LandMass(*(new int(++_territories_index)), territory_name) {
 
+	_claimant_ptr = nullptr;
 	_army_value_ptr = &army_value;
 	_color_ptr = &color;
 	_continents_ptr = new std::list<Continent*>();
@@ -451,11 +458,11 @@ std::string Territory::to_string() const {
 }
 
 void Territory::claim(Player& player) {
-	_player_ptr = &player;
+	_claimant_ptr = &player;
 }
 
-Player* Territory::check_claim() const {
-	return _player_ptr;
+Player* Territory::get_claimant() const {
+	return _claimant_ptr;
 }
 
 void Territory::add_continent(Continent& new_continent) {
@@ -509,7 +516,7 @@ std::ostream& operator<<(std::ostream& stream, const Territory& continent) {
 
 Continent::Continent(const Continent& to_copy) : LandMass(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
 
-	_player_ptr = to_copy.check_claim();
+	_claimant_ptr = to_copy.get_claimant();
 	_visited_ptr = new bool(to_copy.get_visited());
 	_neighbor_continents_ptr = &copy(to_copy.get_neighbors());
 	_stationed_army_ptr = new int(to_copy.get_stationed_army());
@@ -518,7 +525,7 @@ Continent::Continent(const Continent& to_copy) : LandMass(*new int(to_copy.get_i
 
 Continent::Continent(int& index, std::string& continent_name) : LandMass(index, continent_name) {
 
-	_player_ptr = nullptr;
+	_claimant_ptr = nullptr;
 	_visited_ptr = new bool(false);
 	_neighbor_continents_ptr = new std::list<Continent*>();
 	_stationed_army_ptr = new int(0);
@@ -576,11 +583,11 @@ Continent& Continent::operator=(const Continent& continent) {
 }
 
 void Continent::claim(Player& player) {
-	_player_ptr = &player;
+	_claimant_ptr = &player;
 }
 
-Player* Continent::check_claim() const {
-	return _player_ptr;
+Player* Continent::get_claimant() const {
+	return _claimant_ptr;
 }
 
 Continent::~Continent() {
@@ -599,7 +606,7 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 
 
 
-/*********** TERRITORY ********/
+/*********** LANDMASS ********/
 
 LandMass::LandMass(const LandMass& to_copy) {
 	_index_ptr = new int(to_copy.get_index());
