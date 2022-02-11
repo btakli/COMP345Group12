@@ -28,7 +28,7 @@ public:
     virtual void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Order order);//stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Order& order);//stream insertion operator
 
     std::string* _type;
 };
@@ -51,7 +51,7 @@ public:
     void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Deploy deploy);
+    friend std::ostream& operator<<(std::ostream& description, const Deploy& deploy);
 
 };
 
@@ -73,7 +73,7 @@ public:
     void execute();
 
   private:  
-    friend std::ostream& operator<<(std::ostream& description, Advance advance);
+    friend std::ostream& operator<<(std::ostream& description, const Advance& advance);
 };
 
 class Bomb : public Order{
@@ -94,7 +94,7 @@ public:
     void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Bomb bomb);
+    friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);
 
 };
 
@@ -116,7 +116,7 @@ public:
     void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Blockade blockade);
+    friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);
 
 };
 
@@ -138,7 +138,7 @@ public:
     void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Airlift airlift);
+    friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);
 
 };
 
@@ -160,7 +160,7 @@ public:
     void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, Negotiate negotiate);
+    friend std::ostream& operator<<(std::ostream& description, const Negotiate& negotiate);
 
 };
 
@@ -179,13 +179,13 @@ public:
 
     void addOrder(Order* order); 
 
-	void move(int From, int To);
+    void move(int from, int to);
 
-	void remove(int Index);
+    void remove(int index);
 
 private:
     std::vector<Order*>* _orderlist;
 
-    friend std::ostream& operator<<(std::ostream& description, OrdersList orderslist);
+    friend std::ostream& operator<<(std::ostream& description, const OrdersList& orderslist);
 
 };
