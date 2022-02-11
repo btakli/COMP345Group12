@@ -1,5 +1,5 @@
 #include "Cards.h"
-
+#include "Player.h"
 #include <iostream>
 #include <string>
 
@@ -9,6 +9,7 @@ using std::string;
 
 int main()
 {
+
 	Card* c1 = new BombCard();
 	Card* c2 = new BlockadeCard();
 	Card* c3 = new AirliftCard();
@@ -23,7 +24,9 @@ int main()
 	cards.push_back(c5);
 
 	Deck* deck = new Deck(cards);
-	Hand* hand = new Hand(); //Creating a new empty hand
+	string name = "TestPlayer";
+	Player* player = new Player(name, vector<Territory*>(), new Hand(), new OrdersList());
+	Hand* hand = player->getHand(); //Creating a new empty hand
 
 	//Print out all cards: Print statement shows correct card type
 	cout << *c1 << endl;
@@ -58,10 +61,15 @@ int main()
 		//Call play method from the card, taking that card from the hand it came from and placing it in the deck. Returning an order of the right type.
 		Order* order = temp->play(hand, deck);
 		if (order != NULL) {
-			order->execute(); //TODO THIS IS TEMPORARY, WILL CHANGE CALL ONCE ORDER CLASS IS FINISHED! 
-			delete(order);
+			player->issueOrder(order); //Add order to the orderslist
 		}
 	}
+
+	cout << "Executing all orders:" << endl;
+	OrdersList* ordersList = player->getOrdersList();
+	for (int i = 0; i < ordersList->size(); i++)
+		ordersList->getOrder(i)->execute(); //Prints out the order
+
 
 	cout << *deck << endl;
 	cout << *hand << endl;
@@ -71,8 +79,9 @@ int main()
 	delete(c3);
 	delete(c4);
 	delete(c5);
+	delete(player); //Should internally call the destructor of the hand and orderslist
 	delete(deck);
-	delete(hand);
+
 
 	c1 = NULL;
 	c2 = NULL;
@@ -81,5 +90,7 @@ int main()
 	c5 = NULL;
 	deck = NULL;
 	hand = NULL;
+	player = NULL;
+	ordersList = NULL;
 	return 0;
 }
