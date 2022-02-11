@@ -21,22 +21,24 @@ int main() {
 	while (run) {
 		bool error = false;
 		try {
-			int map;
+			int option;
 			do {
 				std::cout << "Please choose from 0 to " << UPPERLIMIT << "." << std::endl;
 
-				std::cin >> map;
+				std::cin >> option;
 
 				if (std::cin.fail()) {
 					std::cin.clear();
 					std::cin.ignore(1000, '\n');
-					map = -1;
+					option = -1;
 				}
-			} while (map > UPPERLIMIT || map < 0);
+			} while (option > UPPERLIMIT || option < 0);
 
+			system("cls");
 
+			std::cout << "-- OPTION " << option << " --\n\n" << std::endl;
 
-			switch (map)
+			switch (option)
 			{
 			case 1:
 				MapLoader::get_instance()->load_map(BERLIN);
@@ -85,6 +87,7 @@ int main() {
 			Map::get_instance()->validate();
 		}
 		Map::get_instance()->unload();
+		
 	}
 
 	return 0;

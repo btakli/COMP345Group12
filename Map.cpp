@@ -450,6 +450,14 @@ std::string Territory::to_string() const {
 		+ tmp;
 }
 
+void Territory::claim(Player& player) {
+	_player_ptr = &player;
+}
+
+Player* Territory::check_claim() const {
+	return _player_ptr;
+}
+
 void Territory::add_continent(Continent& new_continent) {
 	get_continents().push_back(&new_continent);
 }
