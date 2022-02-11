@@ -177,6 +177,10 @@ public:
 
     std::vector<Order*> getOrdersList();
 
+    int size();
+
+    Order* getOrders(int index);
+
     void addOrder(Order* order); 
 
     void move(int from, int to);
