@@ -10,9 +10,13 @@
 #define INVALID1 "invalid1"
 #define INVALID2 "invalid2"
 
-#define UPPERLIMIT 8
+#define UPPERLIMIT 9
 
-void test_others();
+//Test stream insertion, copy constructor
+void test_assignment();
+
+//Test stream insertion, assignment operator
+void test_copy();
 
 int main() {
 
@@ -69,7 +73,11 @@ int main() {
 				break;
 
 			case 8:
-				test_others();
+				test_assignment();
+				break;
+
+			case 9:
+				test_copy();
 				break;
 
 			case 0:
@@ -93,10 +101,8 @@ int main() {
 	return 0;
 }
 
-//Test stream insertion, copy constructor, assignment operator
-void test_others() { 
-
-	std::cout << "\n\n ------- TEST OTHERS -------\n" << std::endl;
+//Test stream insertion, copy constructor
+void test_copy() {
 
 	//Copy
 	MapLoader* loader_copy(MapLoader::get_instance());
@@ -114,17 +120,15 @@ void test_others() {
 	std::cout << "Continent:\t" << continent_copy << std::endl;
 	std::cout << "Landmass:\t" << landMass_copy << std::endl;
 	std::cout << "Territory:\t" << territory_copy << std::endl;
+}
 
-
-
-
-
-
+//Test stream insertion, assignment operator
+void test_assignment() { 
 
 
 	//Assignement
 	MapLoader* loader_assign = MapLoader::get_instance();
-	loader_assign->load_map(COW);
+	loader_assign->load_map(CANADA);
 
 	Map* map_assign = Map::get_instance();
 
@@ -134,7 +138,7 @@ void test_others() {
 
 
 	// Stream insertion of assignment
-	std::cout << "-- COPY --" << std::endl;
+	std::cout << "-- ASSIGNMENT --" << std::endl;
 	std::cout << "MapLoader:\t" << *loader_assign->get_instance() << std::endl;
 	std::cout << "Map:\t" << *map_assign->get_instance() << std::endl;
 	std::cout << "Continent:\t" << continent_assign << std::endl;

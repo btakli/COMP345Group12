@@ -29,6 +29,7 @@ class LandMass
 {
 	int* _index_ptr;
 	std::string* _name_ptr;
+	Player* _claimant_ptr;
 
 protected:
 	// Set a new index
@@ -51,6 +52,12 @@ public:
 	// Destructor
 	~LandMass();
 
+	// Claim a land mass
+	void claim(Player& player);
+
+	// Check who owns the land mass. returns player or null
+	Player* get_claimant() const;
+
 	// Return obj as string
 	std::string to_string() const; 
 	
@@ -70,13 +77,13 @@ public:
 
 class Territory : public LandMass
 {
-	static int _territories_index;
+	static int s_territories_index;
 
 	std::string* _color_ptr;
 	int* _army_value_ptr;
 	std::list<Continent*>* _continents_ptr;
 
-	Player* _claimant_ptr;
+
 
 private:
 	// Constructor deleted. Prevent accidental use
@@ -104,12 +111,6 @@ public:
 	// Get continent. return an address to list of continent pointers
 	std::list<Continent*>& get_continents() const;
 
-	// Claim a continent
-	void claim(Player& player);
-
-	// Check who owns the continent. returns player or null
-	Player* get_claimant() const;
-
 	// Add a continent
 	void add_continent(Continent& new_continent);
 
@@ -124,12 +125,9 @@ public:
 
 class Continent : public LandMass
 {
-
 	std::list<Continent*>* _neighbor_continents_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
-
-	Player* _claimant_ptr;
 
 private:
 	//Constructor deleted. Prevent accidental use
@@ -157,12 +155,6 @@ public:
 
 	// Add a new neighbor 
 	void set_neighbor(Continent& bordered_continent); 
-
-	// Claim a continent
-	void claim(Player& player);
-
-	// Check who owns the continent. returns player or null
-	Player* get_claimant() const;
 
 	// Return number of station army as int.
 	int& get_stationed_army() const;

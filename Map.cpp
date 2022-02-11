@@ -425,19 +425,18 @@ std::ostream& operator<<(std::ostream& stream, const MapLoader& loader) {
 
 /********** TERRITORY **********/  // aka a continent(file)
 
-int Territory::_territories_index = 0;
+int Territory::s_territories_index = 0;
 
-Territory::Territory(const Territory& to_copy) : LandMass(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
+Territory::Territory(const Territory& to_copy) : LandMass(to_copy) {
+
 	_army_value_ptr = new int(to_copy.get_army_value());
 	_color_ptr = new std::string(to_copy.get_color());
 	_continents_ptr = &copy(to_copy.get_continents());
-	_claimant_ptr = to_copy.get_claimant();
 }
 
 
-Territory::Territory(std::string& territory_name, int& army_value, std::string& color) : LandMass(*(new int(++_territories_index)), territory_name) {
+Territory::Territory(std::string& territory_name, int& army_value, std::string& color) : LandMass(*(new int(++s_territories_index)), territory_name) {
 
-	_claimant_ptr = nullptr;
 	_army_value_ptr = &army_value;
 	_color_ptr = &color;
 	_continents_ptr = new std::list<Continent*>();
@@ -457,19 +456,11 @@ std::string Territory::to_string() const {
 		+ tmp;
 }
 
-void Territory::claim(Player& player) {
-	_claimant_ptr = &player;
+void Territory::add_continent(Continent& new_territory) {
+	get_continents().push_back(&new_territory);
 }
 
-Player* Territory::get_claimant() const {
-	return _claimant_ptr;
-}
-
-void Territory::add_continent(Continent& new_continent) {
-	get_continents().push_back(&new_continent);
-}
-
-Territory& Territory::operator=(const Territory& continent)
+Territory& Territory::operator=(const Territory& territory)
 {
 	delete _color_ptr;
 	delete _army_value_ptr;
@@ -477,12 +468,12 @@ Territory& Territory::operator=(const Territory& continent)
 	delete& get_name();
 	delete& get_index();
 
-	_army_value_ptr = new int(continent.get_army_value());
-	_color_ptr = new std::string(continent.get_color());
-	_continents_ptr = &copy(continent.get_continents());
+	_army_value_ptr = new int(territory.get_army_value());
+	_color_ptr = new std::string(territory.get_color());
+	_continents_ptr = &copy(territory.get_continents());
 
-	set_index(*new int(continent.get_index()));
-	set_name(*new std::string(continent.get_name()));
+	set_index(*new int(territory.get_index()));
+	set_name(*new std::string(territory.get_name()));
 
 	return *this;
 }
@@ -499,7 +490,7 @@ std::string Territory::get_color() const {
 Territory::~Territory() {
 	std::cout << "Unloaded:\t" << typeid(Territory).name() << "\t\t" << LandMass::get_name() << std::endl;
 
-	_territories_index = 0;
+	s_territories_index = 0;
 
 	delete _color_ptr;
 	delete _army_value_ptr;
@@ -514,18 +505,15 @@ std::ostream& operator<<(std::ostream& stream, const Territory& continent) {
 
 /*********** CONTINENT **********/     // aka a country(file)
 
-Continent::Continent(const Continent& to_copy) : LandMass(*new int(to_copy.get_index()), *new std::string(to_copy.get_name())) {
+Continent::Continent(const Continent& to_copy) : LandMass(to_copy) {
 
-	_claimant_ptr = to_copy.get_claimant();
 	_visited_ptr = new bool(to_copy.get_visited());
 	_neighbor_continents_ptr = &copy(to_copy.get_neighbors());
 	_stationed_army_ptr = new int(to_copy.get_stationed_army());
-
 }
 
 Continent::Continent(int& index, std::string& continent_name) : LandMass(index, continent_name) {
 
-	_claimant_ptr = nullptr;
 	_visited_ptr = new bool(false);
 	_neighbor_continents_ptr = new std::list<Continent*>();
 	_stationed_army_ptr = new int(0);
@@ -582,13 +570,7 @@ Continent& Continent::operator=(const Continent& continent) {
 	return *this;
 }
 
-void Continent::claim(Player& player) {
-	_claimant_ptr = &player;
-}
 
-Player* Continent::get_claimant() const {
-	return _claimant_ptr;
-}
 
 Continent::~Continent() {
 
@@ -609,13 +591,25 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 /*********** LANDMASS ********/
 
 LandMass::LandMass(const LandMass& to_copy) {
+
+	_claimant_ptr = to_copy.get_claimant();
 	_index_ptr = new int(to_copy.get_index());
 	_name_ptr = new std::string(to_copy.get_name());
 }
 
-LandMass::LandMass(int& index, std::string& territory_name) {
+LandMass::LandMass(int& index, std::string& landMass_name) {
+
+	_claimant_ptr = nullptr;
 	_index_ptr = &index;
-	_name_ptr = &territory_name;
+	_name_ptr = &landMass_name;
+}
+
+void LandMass::claim(Player& player) {
+	_claimant_ptr = &player;
+}
+
+Player* LandMass::get_claimant() const {
+	return _claimant_ptr;
 }
 
 void LandMass::set_index(int& new_index) {
@@ -636,15 +630,16 @@ int& LandMass::get_index() const {
 }
 
 std::string LandMass::to_string() const {
-	return "[" + std::to_string(get_index()) + "] " + get_name();
+	return "[" + std::to_string(get_index()) + "] " + get_name() + " << " + ((_claimant_ptr == nullptr)? "NOT" : "") + " CLAIMED >> ";
 }
 
-LandMass& LandMass::operator=(const LandMass& territory) {
+LandMass& LandMass::operator=(const LandMass& landMass) {
 	delete _index_ptr;
 	delete _name_ptr;
 
-	set_index(*new int(territory.get_index()));
-	set_name(*new std::string(territory.get_name()));
+	set_index(*new int(landMass.get_index()));
+	set_name(*new std::string(landMass.get_name()));
+	_claimant_ptr = landMass.get_claimant();
 
 	return *this;
 }
@@ -657,9 +652,9 @@ LandMass::~LandMass() {
 }
 
 
-std::ostream& operator << (std::ostream& stream, const LandMass& territory) {
+std::ostream& operator << (std::ostream& stream, const LandMass& landMass) {
 	
-	return stream << territory.to_string();
+	return stream << landMass.to_string();
 }
 
 
