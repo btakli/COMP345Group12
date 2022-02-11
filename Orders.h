@@ -15,6 +15,10 @@ public:
 
     Order(const Order& o);//copy constructor
 
+    Order(std::string type);
+
+    std::string getType() const;
+
     virtual Order& operator=(const Order& o);//assignment operator
 
     virtual Order* clone() const;//clone function
@@ -26,6 +30,7 @@ public:
 private:
     friend std::ostream& operator<<(std::ostream& description, Order order);//stream insertion operator
 
+    std::string* _type;
 };
 
 class Deploy : public Order {
@@ -174,9 +179,9 @@ public:
 
     void addOrder(Order* order); 
 
-    void move(int From, int To);
+	void move(int From, int To);
 
-    void remove(int Index);
+	void remove(int Index);
 
 private:
     std::vector<Order*>* _orderlist;
