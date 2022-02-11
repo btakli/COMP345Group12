@@ -18,11 +18,17 @@ Order::Order(string type)
 	this->_type = new string(type);
 }
 
+string Order::getType() const
+{
+	return *(_type);
+}
+
 Order::~Order(){ //Desctructor
 }
 
 Order& Order::operator=(const Order& o){ //Assignment Operator
-
+    this->_type = new string(*(o._type));
+	return *this;
 }
 
 Order::Order(const Order& o){ //Copy constructor
@@ -47,9 +53,9 @@ void Order::execute(){
 
 }
 
-std::ostream& operator<<(std::ostream& strm, const Order& o)
+std::ostream& operator<<(std::ostream& description, const Order& o)
 {
-	return strm << "Order of Type: " << o.getType();
+	return description << "Order of Type: " << o.getType();
 }
 
 /**
@@ -66,7 +72,8 @@ Deploy::~Deploy(){ //Desctructor
 }
 
 Deploy& Deploy::operator=(const Deploy& dep){ //Assignment Operator
-
+    Order::operator=(dep);
+    return *this;
 }
 
 Deploy::Deploy(const Deploy& dep){ //Copy constructor
@@ -103,7 +110,8 @@ Advance::~Advance(){ //Desctructor
 }
 
 Advance& Advance::operator=(const Advance& adv){ //Assignment Operator
-
+    Order::operator=(adv);
+    return *this;
 }
 
 Advance::Advance(const Advance& adv){ //Copy constructor
@@ -140,7 +148,8 @@ Bomb::~Bomb(){ //Desctructor
 }
 
 Bomb& Bomb::operator=(const Bomb& bmb){ //Assignment Operator
-
+    Order::operator=(bmb);
+    return *this;
 }
 
 Bomb::Bomb(const Bomb& bmb){ //Copy constructor
@@ -177,7 +186,8 @@ Blockade::~Blockade(){ //Desctructor
 }
 
 Blockade& Blockade::operator=(const Blockade& blck){ //Assignment Operator
-
+    Order::operator=(blck);
+    return *this;
 }
 
 Blockade::Blockade(const Blockade& blck){ //Copy constructor
@@ -214,7 +224,8 @@ Airlift::~Airlift(){ //Desctructor
 }
 
 Airlift& Airlift::operator=(const Airlift& al){ //Assignment Operator
-
+    Order::operator=(al);
+    return *this;
 }
 
 Airlift::Airlift(const Airlift& al){ //Copy constructor
@@ -251,7 +262,8 @@ Negotiate::~Negotiate(){ //Desctructor
 }
 
 Negotiate& Negotiate::operator=(const Negotiate& ng){ //Assignment Operator
-
+    Order::operator=(ng);
+    return *this;
 }
 
 Negotiate::Negotiate(const Negotiate& ng){ //Copy constructor
@@ -288,7 +300,8 @@ OrdersList::~OrdersList() { //Desctructor
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
-
+    OrdersList::operator=(ol);
+    return *this;
 }
 
 OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
@@ -300,8 +313,8 @@ void OrdersList::addOrder(Order* order) {
 	
 }
 
-void OrdersList::move(int From, int To) {
-    
+void OrdersList::move(int from, int to) {
+    swap(this->_orderlist[from],this->_orderlist[to]);
 }
 
 void OrdersList::remove(int Index) {
