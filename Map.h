@@ -27,11 +27,13 @@ std::vector<T*>& copy(std::vector<T*> to_copy);
 
 class LandMass
 {
-
 	int* _index_ptr;
 	std::string* _name_ptr;
+	Player* _claimant_ptr;
 
-private:
+protected:
+
+
 	// Set a new index
 	void set_index(int& new_index);
 	
@@ -40,8 +42,8 @@ private:
 
 public:
 
-	// Constructor deleted. Prevent accidental use
-	LandMass() = delete; 
+	// Constructor
+	LandMass(); 
 
 	// Copy constructor - !!!Don't use unless really necessary - cause dupe index
 	LandMass(const LandMass& to_copy);
@@ -51,6 +53,12 @@ public:
 	
 	// Destructor
 	~LandMass();
+
+	// Claim a land mass
+	void claim(Player& player);
+
+	// Check who owns the land mass. returns player or null
+	Player* get_claimant() const;
 
 	// Return obj as string
 	std::string to_string() const; 
@@ -66,31 +74,32 @@ public:
 
 	// Stream insertion.
 	friend std::ostream& operator << (std::ostream& stream, const LandMass& land_mass);
-
-	friend class Continent;
-	friend class Territory;
 };
 
 
 class Territory : public LandMass
 {
-	static int _territories_index;
+	static int s_territories_index;
 
 	std::string* _color_ptr;
 	int* _army_value_ptr;
 	std::list<Continent*>* _continents_ptr;
-	Player* _player_ptr;
+
+
 
 private:
 	// Constructor deleted. Prevent accidental use
 	Territory() = delete;
 
 public:
+
 	// Copy constructor. !!!Don't use unless really necessary - cause dupe index
 	Territory(const Territory& to_copy);
 
 	// Custom constructor
 	Territory(std::string& territory_name, int& army_value, std::string& color);
+	
+	// Destructor
 	~Territory();
 
 	// Get army value. return an int
@@ -104,12 +113,6 @@ public:
 
 	// Get continent. return an address to list of continent pointers
 	std::list<Continent*>& get_continents() const;
-
-	// Claim a continent
-	void claim(Player& player);
-
-	// Check who owns the continent. returns player or null
-	Player* check_claim() const;
 
 	// Add a continent
 	void add_continent(Continent& new_continent);
@@ -125,15 +128,11 @@ public:
 
 class Continent : public LandMass
 {
-
 	std::list<Continent*>* _neighbor_continents_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
-	Player* _player_ptr;
 
 private:
-	//Constructor deleted. Prevent accidental use
-	Continent() = delete; 
 
 	// Check is visited
 	bool& get_visited() const;
@@ -142,6 +141,9 @@ private:
 	void set_visited(bool& visited);
 
 public:
+
+	// Constructor
+	Continent(); 
 
 	// Copy constructor - !!!Don't use unless really necessary - cause dupe index
 	Continent(const Continent& to_copy);
@@ -157,12 +159,6 @@ public:
 
 	// Add a new neighbor 
 	void set_neighbor(Continent& bordered_continent); 
-
-	// Claim a continent
-	void claim(Player& player);
-
-	// Check who owns the continent. returns player or null
-	Player* check_claim() const;
 
 	// Return number of station army as int.
 	int& get_stationed_army() const;
@@ -249,7 +245,7 @@ private:
 	Map();
 
 	// Helper function for validate()
-	bool help_validate(std::queue<Continent*>& to_be_visited_continents, int& size, int& count);
+	bool help_validate(std::queue<Continent*>& to_be_visited_continents,  Continent& prev,  int& size, int& count);
 
 	// Add a new continent
 	void set_territory(Territory& new_territory);
