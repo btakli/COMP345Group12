@@ -9,8 +9,9 @@
 #define FORTERESS "fortress"
 #define INVALID1 "invalid1"
 #define INVALID2 "invalid2"
+#define INVALID3 "invalid3"
 
-#define UPPERLIMIT 9
+#define UPPERLIMIT 10
 
 //Test stream insertion, copy constructor
 void test_assignment();
@@ -78,6 +79,10 @@ int main() {
 
 			case 9:
 				test_copy();
+				break;
+
+			case 10:
+				MapLoader::get_instance()->load_map(INVALID3);
 				break;
 
 			case 0:

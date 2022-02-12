@@ -80,13 +80,37 @@ bool Map::validate() {
 	int size = (int)(get_continents().size());
 	int count = 0;
 
-	return help_validate(queue, size, count);
+	Continent out_destination;
+
+	// Travel from A to B
+	bool reach_destination = help_validate(queue, out_destination, size, count);
+
+	std::cout << "FINAL DESTINATION: " << out_destination.get_index() << std::endl;
+	
+	if (!reach_destination) return false;
+
+	// Reset 
+	for (Continent* c : *_continents_ptr) c->set_visited(*new bool(false)); 
+	while (!queue.empty()) queue.pop(); // Guarantees empty queue
+	queue.push(get_continent(out_destination.get_index()));
+	get_continents()[out_destination.get_index() - 1]->set_visited(*new bool(true));
+	count = 0;
+	// -----
+
+	// Travel from B to A
+	reach_destination = help_validate(queue, out_destination, size, count);
+
+	std::cout << "FINAL DESTINATION: " << out_destination.get_index() << std::endl;
+
+	// If travel A to B and B to A valid; therefore, map valid.
+	return reach_destination;
 }
 
-bool Map::help_validate(std::queue<Continent*>& to_be_visited, int& size, int& count) {
+// Using bfs
+bool Map::help_validate(std::queue<Continent*>& to_be_visited, Continent& prev, int& size, int& count) {
 
 	if (to_be_visited.size() <= 0) {
-		std::cout << "\n-- MAP VALIDATION PASS: " << count << std::endl;
+		std::cout << "\n-- MAP VALIDATION:\nSize: " << size << " | Traveled: " << count << " >> " << ((size == count) ? "PASS" : "FAIL") << "\n" << std::endl;
 
 		if (size == count) return true;
 		return false;
@@ -103,6 +127,7 @@ bool Map::help_validate(std::queue<Continent*>& to_be_visited, int& size, int& c
 			return false;
 		}
 		else {
+
 			for (Continent* neighbor : neighbors) {
 
 				if (!neighbor->get_visited()) {
@@ -112,9 +137,11 @@ bool Map::help_validate(std::queue<Continent*>& to_be_visited, int& size, int& c
 				}
 			}
 		}
-	}
 
-	return help_validate(to_be_visited, size, ++count);
+		prev = *current;
+
+		return help_validate(to_be_visited,  prev, size, ++count);
+	}
 }
 
 void Map::display() const {
@@ -162,8 +189,10 @@ void Map::unload() {
 	std::cout << "\n-- UNLOADING END --\n" << std::endl;
 }
 
-Map& Map::operator=(const Map& map) {
-	_instance_ptr = map.get_instance();
+Map& Map::operator=(const Map& other) {
+	if (this != &other) {
+		_instance_ptr = other.get_instance();
+	}
 	return *this;
 }
 
@@ -404,9 +433,11 @@ bool MapLoader::is_number(std::string& str) {
 	return true;
 }
 
-MapLoader& MapLoader::operator=(const MapLoader& loader) {
-	_instance_ptr = loader.get_instance();
-	return *_instance_ptr;
+MapLoader& MapLoader::operator=(const MapLoader& other) {
+	if (this != &other) {
+		_instance_ptr = other.get_instance();
+	}
+	return *this;
 }
 
 
@@ -460,20 +491,23 @@ void Territory::add_continent(Continent& new_territory) {
 	get_continents().push_back(&new_territory);
 }
 
-Territory& Territory::operator=(const Territory& territory)
+Territory& Territory::operator=(const Territory& other)
 {
-	delete _color_ptr;
-	delete _army_value_ptr;
-	delete _continents_ptr;
-	delete& get_name();
-	delete& get_index();
+	if (this != &other) {
+		delete _color_ptr;
+		delete _army_value_ptr;
+		delete _continents_ptr;
+		delete& get_name();
+		delete& get_index();
 
-	_army_value_ptr = new int(territory.get_army_value());
-	_color_ptr = new std::string(territory.get_color());
-	_continents_ptr = &copy(territory.get_continents());
+		_army_value_ptr = new int(other.get_army_value());
+		_color_ptr = new std::string(other.get_color());
+		_continents_ptr = &copy(other.get_continents());
 
-	set_index(*new int(territory.get_index()));
-	set_name(*new std::string(territory.get_name()));
+		set_index(*new int(other.get_index()));
+		set_name(*new std::string(other.get_name()));
+		claim(*other.get_claimant());
+	}
 
 	return *this;
 }
@@ -504,6 +538,12 @@ std::ostream& operator<<(std::ostream& stream, const Territory& continent) {
 
 
 /*********** CONTINENT **********/     // aka a country(file)
+
+Continent::Continent() : LandMass() {
+	_visited_ptr = nullptr;
+	_neighbor_continents_ptr = nullptr;
+	_stationed_army_ptr = nullptr;
+}
 
 Continent::Continent(const Continent& to_copy) : LandMass(to_copy) {
 
@@ -553,19 +593,22 @@ void Continent::set_stationed_army(int& army) {
 	_stationed_army_ptr = &army;
 }
 
-Continent& Continent::operator=(const Continent& continent) {
+Continent& Continent::operator=(const Continent& other) {
 
-	delete& get_name();
-	delete& get_index();
-	delete _neighbor_continents_ptr;
-	delete _visited_ptr;
-	delete _stationed_army_ptr;
+	if (this != &other) {
+		delete& get_name();
+		delete& get_index();
+		delete _neighbor_continents_ptr;
+		delete _visited_ptr;
+		delete _stationed_army_ptr;
 
-	set_name(*new std::string(continent.get_name()));
-	set_index(*new int(continent.get_index()));
-	_visited_ptr = new bool(continent.get_visited());
-	_neighbor_continents_ptr = &copy(continent.get_neighbors());
-	_stationed_army_ptr = new int(continent.get_stationed_army());
+		set_name(*new std::string(other.get_name()));
+		set_index(*new int(other.get_index()));
+		_visited_ptr = new bool(other.get_visited());
+		_neighbor_continents_ptr = &copy(other.get_neighbors());
+		_stationed_army_ptr = new int(other.get_stationed_army());
+		claim(*other.get_claimant());
+	}
 
 	return *this;
 }
@@ -589,6 +632,12 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 
 
 /*********** LANDMASS ********/
+
+LandMass::LandMass() {
+	_claimant_ptr = nullptr;
+	_index_ptr = nullptr;
+	_name_ptr = nullptr;
+}
 
 LandMass::LandMass(const LandMass& to_copy) {
 
@@ -633,13 +682,17 @@ std::string LandMass::to_string() const {
 	return "[" + std::to_string(get_index()) + "] " + get_name() + " << " + ((_claimant_ptr == nullptr)? "NOT" : "") + " CLAIMED >> ";
 }
 
-LandMass& LandMass::operator=(const LandMass& landMass) {
-	delete _index_ptr;
-	delete _name_ptr;
+LandMass& LandMass::operator=(const LandMass& other) {
 
-	set_index(*new int(landMass.get_index()));
-	set_name(*new std::string(landMass.get_name()));
-	_claimant_ptr = landMass.get_claimant();
+	if (this != &other) {
+		delete _index_ptr;
+		delete _name_ptr;
+
+		set_index(*new int(other.get_index()));
+		set_name(*new std::string(other.get_name()));
+		_claimant_ptr = other.get_claimant();
+	}
+
 
 	return *this;
 }

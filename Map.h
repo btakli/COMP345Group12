@@ -32,6 +32,8 @@ class LandMass
 	Player* _claimant_ptr;
 
 protected:
+
+
 	// Set a new index
 	void set_index(int& new_index);
 	
@@ -40,8 +42,8 @@ protected:
 
 public:
 
-	// Constructor deleted. Prevent accidental use
-	LandMass() = delete; 
+	// Constructor
+	LandMass(); 
 
 	// Copy constructor - !!!Don't use unless really necessary - cause dupe index
 	LandMass(const LandMass& to_copy);
@@ -90,6 +92,7 @@ private:
 	Territory() = delete;
 
 public:
+
 	// Copy constructor. !!!Don't use unless really necessary - cause dupe index
 	Territory(const Territory& to_copy);
 
@@ -130,8 +133,6 @@ class Continent : public LandMass
 	int* _stationed_army_ptr;
 
 private:
-	//Constructor deleted. Prevent accidental use
-	Continent() = delete; 
 
 	// Check is visited
 	bool& get_visited() const;
@@ -140,6 +141,9 @@ private:
 	void set_visited(bool& visited);
 
 public:
+
+	// Constructor
+	Continent(); 
 
 	// Copy constructor - !!!Don't use unless really necessary - cause dupe index
 	Continent(const Continent& to_copy);
@@ -241,7 +245,7 @@ private:
 	Map();
 
 	// Helper function for validate()
-	bool help_validate(std::queue<Continent*>& to_be_visited_continents, int& size, int& count);
+	bool help_validate(std::queue<Continent*>& to_be_visited_continents,  Continent& prev,  int& size, int& count);
 
 	// Add a new continent
 	void set_territory(Territory& new_territory);
