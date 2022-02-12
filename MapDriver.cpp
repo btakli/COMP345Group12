@@ -25,8 +25,8 @@ int main() {
 
 	while (run) {
 		bool error = false;
+		int option;
 		try {
-			int option;
 			do {
 				std::cout << "Please choose from 0 to " << UPPERLIMIT << "." << std::endl;
 
@@ -96,8 +96,11 @@ int main() {
 		}
 
 		if (run && !error) {
-			std::cout << *Map::get_instance();
-			Map::get_instance()->validate();
+
+			if (option != 8 && option != 9) {
+				std::cout << *Map::get_instance();
+				Map::get_instance()->validate();
+			}
 		}
 		Map::get_instance()->unload();
 		
