@@ -117,17 +117,17 @@ void test_copy() {
 	loader_copy->load_map(CANADA);
 
 	Map* map_instance_copy(Map::get_instance());
-	Continent continent_copy(*map_instance_copy->get_continent(1));
-	LandMass landMass_copy(*map_instance_copy->get_continent(1));
-	Territory territory_copy(*map_instance_copy->get_territories().front());
+	Territory territory_copy(*map_instance_copy->get_territory(1));
+	LandMass landMass_copy(*map_instance_copy->get_territory(1));
+	Continent continent_copy(*map_instance_copy->get_continents().front());
 
 	// Stream insertion of copy
 	std::cout << "-- COPY --" << std::endl;
 	std::cout << "MapLoader:\t" << *loader_copy->get_instance() << std::endl;
 	std::cout << "Map:\t" << *map_instance_copy->get_instance() << std::endl;
-	std::cout << "Continent:\t" << continent_copy << std::endl;
-	std::cout << "Landmass:\t" << landMass_copy << std::endl;
 	std::cout << "Territory:\t" << territory_copy << std::endl;
+	std::cout << "Landmass:\t" << landMass_copy << std::endl;
+	std::cout << "Continent:\t" << continent_copy << std::endl;
 }
 
 //Test stream insertion, assignment operator
@@ -140,16 +140,16 @@ void test_assignment() {
 
 	Map* map_assign = Map::get_instance();
 
-	Continent continent_assign = (*map_assign->get_continent(1));
-	LandMass landMass_assign = (*map_assign->get_continent(1));
-	Territory territory_assign = (*map_assign->get_territories().front());
+	Territory territory_assign = (*map_assign->get_territory(1));
+	LandMass landMass_assign = (*map_assign->get_territory(1));
+	Continent continent_assign = (*map_assign->get_continents().front());
 
 
 	// Stream insertion of assignment
 	std::cout << "-- ASSIGNMENT --" << std::endl;
 	std::cout << "MapLoader:\t" << *loader_assign->get_instance() << std::endl;
 	std::cout << "Map:\t" << *map_assign->get_instance() << std::endl;
-	std::cout << "Continent:\t" << continent_assign << std::endl;
-	std::cout << "Landmass:\t" << landMass_assign << std::endl;
 	std::cout << "Territory:\t" << territory_assign << std::endl;
+	std::cout << "Landmass:\t" << landMass_assign << std::endl;
+	std::cout << "Continent:\t" << continent_assign << std::endl;
 }
