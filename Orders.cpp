@@ -48,7 +48,7 @@ bool Order::validate(){
 
 void Order::execute(){
   if(validate())
-      cout << "" << endl;
+      cout << "Order" << endl;
    else
       cout << "INVALID ORDER" << endl;
 
@@ -294,15 +294,15 @@ void Negotiate::execute(){
  */
 
 OrdersList::OrdersList() { //Constructor
-
+    _orderlist = new vector <Order*>();
 }
 
-OrdersList::~OrdersList() { //Desctructor
-	for (Order* order : *_orderlist) {
-		delete order;
-		order = nullptr;
+OrdersList::~OrdersList() { //Desctructor 
+    for (int i=0; i < _orderlist->size(); i++) {
+		delete(_orderlist->at(i));
 	}
-	this->_orderlist->clear();
+	_orderlist->clear();
+    delete(_orderlist);
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
@@ -314,27 +314,27 @@ OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
 
 }
 
-int OrdersList::size()
-{
+int OrdersList::size(){
 	return _orderlist->size();
 }
 
-Order* OrdersList::getOrders(int index)
+Order* OrdersList::getOrder(int index)
 {
 	return _orderlist->at(index);
 }
 
-void OrdersList::addOrder(Order* order) {
+
+void OrdersList::addOrder(Order* order) { 
    this->_orderlist->push_back(order);
 }
 
-void OrdersList::move(int from, int to) {
-    swap(this->_orderlist[from],this->_orderlist[to]);
+void OrdersList::move(int from, int to) { 
+     swap(_orderlist->at(from),_orderlist->at(to));
 }
 
-void OrdersList::remove(int index) {
+
+void OrdersList::remove(int index) { 
     this->_orderlist->erase(this->_orderlist->begin() + index);
 }
-
 
 
