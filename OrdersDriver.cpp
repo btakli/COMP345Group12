@@ -59,7 +59,7 @@ int main() {
 
    // removing an order from the list
    cout <<"\n"<< endl;
-    cout << "List before removing order number 3 in the list:" <<endl;
+    cout << "List before removing order at index 3 in the list:" <<endl;
 	for (int i=0; i < orderslist->size(); i++) {
         cout <<*orderslist->getOrder(i)<< endl;
     }
@@ -75,10 +75,10 @@ int main() {
     delete orderslist;
     o1 = NULL;
     o2 = NULL;
-	o3 = NULL;
-	o4 = NULL;
-	o5 = NULL;
-	o6 = NULL;
+    o3 = NULL;
+    o4 = NULL;
+    o5 = NULL;
+    o6 = NULL;
     o7 = NULL;
     orderslist = NULL;
     return 0;
