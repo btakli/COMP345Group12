@@ -74,13 +74,13 @@ int main()
 	cout << *deck << endl;
 	cout << *hand << endl;
 
-	delete(c1);
-	delete(c2);
-	delete(c3);
-	delete(c4);
-	delete(c5);
-	delete(player); //Should internally call the destructor of the hand and orderslist
-	delete(deck);
+	delete c1;
+	delete c2;
+	delete c3;
+	delete c4;
+	delete c5;
+	delete player; //Should internally call the destructor of the hand and orderslist
+	delete deck;
 
 
 	c1 = NULL;

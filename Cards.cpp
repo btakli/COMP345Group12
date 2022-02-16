@@ -222,16 +222,16 @@ Deck::~Deck()
 {
 	//Delete all current cards and clear the vector.
 	for (int i = 0; i < _cards->size(); i++)
-		delete(_cards->at(i));
+		delete _cards->at(i);
 	_cards->clear();
-	delete(_cards);
+	delete _cards;
 }
 
 Deck& Deck::operator=(const Deck& rightSide)
 {
 	//Delete all current cards and clear the vector.
 	for (int i = 0; i < _cards->size(); i++)
-		delete(_cards->at(i));
+		delete _cards->at(i);
 	_cards->clear();
 	vector<Card*> otherVector = *(rightSide._cards);
 	for (int i = 0; i < otherVector.size(); i++) //Making a deep copy of the list
@@ -295,16 +295,16 @@ Hand::~Hand()
 {
 	//Delete all current cards and clear the vector.
 	for (int i = 0; i < _cards->size(); i++)
-		delete(_cards->at(i));
+		delete _cards->at(i);
 	_cards->clear();
-	delete(_cards);
+	delete _cards;
 }
 
 Hand& Hand::operator=(const Hand& rightSide)
 {
 	//Delete all current cards and clear the vector.
 	for (int i = 0; i < _cards->size(); i++)
-		delete(_cards->at(i));
+		delete _cards->at(i);
 	_cards->clear();
 
 	vector<Card*> otherVector = *(rightSide._cards);
