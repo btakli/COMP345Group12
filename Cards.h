@@ -30,14 +30,15 @@ public:
 	///<param name='Deck* deck'>Deck to add card to</param>
 	///<returns>A pointer to a new Order of relevant type for that card</returns> 
 	virtual Order* play(Hand* hand, Deck* deck);
-
+	//stream insertion operator overload for Card
+	friend std::ostream& operator<<(std::ostream& strm, const Card& card);
 
 private:
 	//The card type
 	std::string* _type;
+	
 };
-//stream insertion operator overload for Card
-std::ostream& operator<<(std::ostream& strm, const Card& card);
+
 
 //The Bomb type of card
 class BombCard : public Card {
