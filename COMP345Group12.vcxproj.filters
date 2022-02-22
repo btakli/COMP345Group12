@@ -40,6 +40,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Territory.cpp">
+    <ClCompile Include="MapDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -57,6 +58,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MapLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Orders.h">
