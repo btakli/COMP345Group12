@@ -40,6 +40,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Territory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="MapDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
