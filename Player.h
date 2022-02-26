@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "Map.h"
-#include "Deck.h"
 #include "Cards.h"
 #include "Orders.h"
 using std::string;
@@ -15,6 +14,7 @@ using std::vector;
 #include "Map.h"
 #include "Orders.h"
 */
+class Territory;
 
 //Forward declaration
 class Player;
@@ -26,9 +26,9 @@ public:
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //prints and returns a list of territories to defend
-    vector<Territory*> toDefend();
+    vector<Territory*>* toDefend();
     //prints and returns a list of territories to attack
-    vector<Territory*> toAttack();
+    vector<Territory*>* toAttack();
     //Creates new order and adds it to _listOfOrders
     void issueOrder();
     //Copy constructor

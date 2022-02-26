@@ -32,32 +32,16 @@ Player::~Player() {
      delete(_listOfOrders);
 }
 
-vector<Territory *> Player::toDefend() {
-
-    Territory *tDefend1 = new Territory("td1");
-    Territory *tDefend2 = new Territory("td2");
+vector<Territory *>* Player::toDefend() {
 
 
-    vector<Territory *> toDefend = {tDefend1, tDefend2};
-    cout << "Defending: \n" ;
-    for (auto territory : toDefend) {
-        cout  << "\t" << *territory << "\n";
-    }
-    return toDefend;
+    return nullptr;
 }
 
-vector<Territory *> Player::toAttack() {
-
-    Territory *tAttack1 = new Territory("ta1");
-    Territory *tAttack2 = new Territory("ta2");
+vector<Territory *>* Player::toAttack() {
 
 
-    vector<Territory *> toAttack = {tAttack1, tAttack2};
-    cout << "Attacking: \n" ;
-    for (auto territory : toAttack) {
-        cout  << "\t" << *territory << "\n";
-    }
-    return toAttack;
+    return nullptr;
 }
 
 void Player::issueOrder() { //no specifications to what it takes in or creates
@@ -90,7 +74,7 @@ ostream &operator<<(std::ostream &out, const Player &player) {
     out << "Player: " + *player._name + " \n";
     out << "Collection: \n" ;
     for(const auto& territory : *player._collection)
-        out << "\t Territory: " + territory->_name + "\n ";
+        out << "\t Territory: " + territory->get_name() + "\n ";
     out << *player._hand;
     out << *player._listOfOrders;
     return out;
