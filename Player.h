@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <iostream>
-#include "OrdersList.h"
-#include "Territory.h"
-#include "Hand.h"
-#include "Order.h"
+#include "Map.h"
+#include "Deck.h"
+#include "Cards.h"
+#include "Orders.h"
 using std::string;
 using std::vector;
 

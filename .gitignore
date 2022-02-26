@@ -5,6 +5,8 @@
 
 ##Clion ignore:
 CMakeLists.txt
+cmake-build-debug/
+.idea/
 
 # User-specific files
 *.rsuser
