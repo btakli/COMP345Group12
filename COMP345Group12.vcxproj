@@ -141,28 +141,19 @@
   <ItemGroup>
     <ClCompile Include="CardsDriver.cpp" />
     <ClCompile Include="Cards.cpp" />
-    <ClCompile Include="Continent.cpp" />
-    <ClCompile Include="Country.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameEngineDriver.cpp" />
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="Orders.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Territory.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="MapDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cards.h" />
-    <ClInclude Include="Continent.h" />
-    <ClInclude Include="Country.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Orders.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Territory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
