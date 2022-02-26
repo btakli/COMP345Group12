@@ -2,32 +2,97 @@
 #include <iostream> 
 
 #include "Player.h"
-
+using std::string;
+using std::vector;
+using std::cout;
 
 Player::Player() {
-    this->name = "";
-    this->collection = vector<Territory *> {};
-    this->hand = vector<Territory*> {};
-//    this->listOfOrders = new OrdersList();
+    this->_name = new string("player");
+    this->_collection = new vector<Territory*> {};
+    this->_hand  = new Hand();
+    this->_listOfOrders = new OrdersList();
 }
 
-Player::Player(string name, vector<Territory *> collection, vector<Territory *> hand, OrdersList *listOfOrders) {
-    this->name = name;
-    this->collection = collection;
-    this->hand = hand;
-//    this->listOfOrders = listOfOrders;
+Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
+    this->_name = new string(name);
+    this->_collection = new vector<Territory*>;
+    for (auto territory : collection) {
+        this->_collection->push_back(territory);
+    }
+    this->_hand = new Hand(*hand);                          //copy methods need to be implemented in Hand and OrdersList
+    this->_listOfOrders = new OrdersList(*listOfOrders);
 }
 
 Player::~Player() {
-    for (auto territory : collection) {
-        delete territory;
+    delete(_name);
+    for (auto territory : *_collection) {
+        delete(territory);
     }
-    collection.clear();
-    for (auto card: hand) {
-        delete(card);
+     delete(_hand);                          //destructor methods need to be implemented in Hand and OrdersList
+     delete(_listOfOrders);
+}
+
+vector<Territory *> Player::toDefend() {
+
+    Territory *tDefend1 = new Territory("td1");
+    Territory *tDefend2 = new Territory("td2");
+
+
+    vector<Territory *> toDefend = {tDefend1, tDefend2};
+    cout << "Defending: \n" ;
+    for (auto territory : toDefend) {
+        cout  << "\t" << *territory << "\n";
     }
-    hand.clear();
+    return toDefend;
+}
+
+vector<Territory *> Player::toAttack() {
+
+    Territory *tAttack1 = new Territory("ta1");
+    Territory *tAttack2 = new Territory("ta2");
+
+
+    vector<Territory *> toAttack = {tAttack1, tAttack2};
+    cout << "Attacking: \n" ;
+    for (auto territory : toAttack) {
+        cout  << "\t" << *territory << "\n";
+    }
+    return toAttack;
+}
+
+void Player::issueOrder() { //no specifications to what it takes in or creates
+    Order *ord = new Order("issueOrderExample");
+   this->_listOfOrders->addOrder(ord);
 }
 
 
+Player::Player( const Player &p){
+    this->_name = new string(*(p._name));
+    for (auto territory : *p._collection) {
+        this->_collection->push_back(territory); //Shallow copy because the territory should not be recreated
+    }
+    this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
+    this->_listOfOrders = new OrdersList(*p._listOfOrders);
+}
 
+Player& Player::operator=(const Player &p) {
+    this->_name = new string(*p._name);
+    this->_collection = new std::vector<Territory*>;
+    for (auto territory : *p._collection) {
+        this->_collection->push_back(territory); //Shallow copy because the territory should not be recreated
+    }
+    this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
+    this->_listOfOrders = new OrdersList(*p._listOfOrders);
+    return *this;
+}
+
+ostream &operator<<(std::ostream &out, const Player &player) {
+    out << "Player: " + *player._name + " \n";
+    out << "Collection: \n" ;
+    for(const auto& territory : *player._collection)
+        out << "\t Territory: " + territory->_name + "\n ";
+    out << *player._hand;
+    out << *player._listOfOrders;
+    return out;
+
+}
