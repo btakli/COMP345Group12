@@ -306,11 +306,23 @@ OrdersList::~OrdersList() { //Desctructor
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
-    OrdersList::operator=(ol);
+    //Wipe out all old orders
+    for (int i = 0; i < _orderlist->size(); i++) {
+        delete(_orderlist->at(i));
+    }
+    _orderlist->clear();
+    //Clone orders from ol
+    for (int i = 0; i < ol._orderlist->size(); i++) {
+        this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
+    }
     return *this;
 }
 
 OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
+    this->_orderlist = new vector<Order*>();
+    for (int i = 0; i < ol._orderlist->size(); i++) {
+        this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
+    }
 
 }
 
