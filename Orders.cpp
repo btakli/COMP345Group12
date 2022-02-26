@@ -259,7 +259,7 @@ Negotiate::Negotiate() : Order("negotiate"){ //Constructor
 
 }
 
-Negotiate::~Negotiate(){ //Desctructor
+Negotiate::~Negotiate(){ //Destructor
 }
 
 Negotiate& Negotiate::operator=(const Negotiate& ng){ //Assignment Operator
