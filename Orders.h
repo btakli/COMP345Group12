@@ -9,185 +9,200 @@ using namespace std;
 class Order {
 
 public:
-    Order();//default constructor
-
-    virtual ~Order();//destructor
-
-    Order(const Order& o);//copy constructor
-
-    Order(std::string type);//constructor taking in a string setting the type of the order
-
-    std::string getType() const;//get the order type as a string
-
-    virtual Order& operator=(const Order& o);//assignment operator
-
-    virtual Order* clone() const;//clone function
-
-    virtual bool validate();//validate method to make sure an order is of a valid type
-
-    virtual void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Order();
+    //destructor
+    virtual ~Order();
+    //copy constructor
+    Order(const Order& o);
+    //constructor taking in a string setting the type of the order
+    Order(std::string type);
+    //get the order type as a string
+    std::string getType() const;
+    //assignment operator
+    virtual Order& operator=(const Order& o);
+    //clone function
+    virtual Order* clone() const;
+    //validate method to make sure an order is of a valid type
+    virtual bool validate();
+    //execute method to execute the action of the order and display its description
+    virtual void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Order& order);//stream insertion operator
-
-    std::string* _type;//order type
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Order& order);
+    //order type
+    std::string* _type;
 };
 
 class Deploy : public Order {
 
 public:
-    Deploy();//default constructor
-
-    virtual ~Deploy();//destructor
-
-    Deploy(const Deploy& dep);//copy constructor
-
-    virtual Deploy& operator=(const Deploy& dep);//assignment operator
-
-    virtual Deploy* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Deploy();
+    //destructor
+    virtual ~Deploy();
+    //copy constructor
+    Deploy(const Deploy& dep);
+    //assignment operator
+    virtual Deploy& operator=(const Deploy& dep);
+    //clone function
+    virtual Deploy* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Deploy& deploy);//stream insertion operator
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Deploy& deploy);
 
 };
 
 class Advance : public Order{
 	
 public:
-    Advance();//default constructor
+    //default constructor
+    Advance();
+    //destructor
+    virtual ~Advance();
+    //copy constructor
+    Advance(const Advance& adv);
+    //assignment operator
+    virtual Advance& operator=(const Advance& adv);
+    //clone function
+    virtual Advance* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
-    virtual ~Advance();//destructor
-
-    Advance(const Advance& adv);//copy constructor
-
-    virtual Advance& operator=(const Advance& adv);//assignment operator
-
-    virtual Advance* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
-
-  private:  
-    friend std::ostream& operator<<(std::ostream& description, const Advance& advance);//stream insertion operator
+  private:
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Advance& advance);
 };
 
 class Bomb : public Order{
 	
 public:
-    Bomb();//default constructor
-
-    virtual ~Bomb();//destructor
-
-    Bomb(const Bomb& bmb);//copy constructor
-
-    virtual Bomb& operator=(const Bomb& bmb);//assignment operator
-
-    virtual Bomb* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Bomb();
+    //destructor
+    virtual ~Bomb();
+    //copy constructor
+    Bomb(const Bomb& bmb);
+    //assignment operator
+    virtual Bomb& operator=(const Bomb& bmb);
+    //clone function
+    virtual Bomb* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);//stream insertion operator
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);
 
 };
 
 class Blockade : public Order{
 	
 public:
-    Blockade();//default constructor
-
-    virtual ~Blockade();//destructor
-
-    Blockade(const Blockade& blck);//copy constructor
-
-    virtual Blockade& operator=(const Blockade& blck);//assignment operator
-
-    virtual Blockade* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Blockade();
+    //destructor
+    virtual ~Blockade();
+    //copy constructor
+    Blockade(const Blockade& blck);
+    //assignment operator
+    virtual Blockade& operator=(const Blockade& blck);
+    //clone function
+    virtual Blockade* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);//stream insertion operator
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);
 
 };
 
 class Airlift : public Order{
 	
 public:
-    Airlift();//default constructor
-
-    virtual ~Airlift();//destructor
-
-    Airlift(const Airlift& al);//copy constructor
-
-    virtual Airlift& operator=(const Airlift& al);//assignment operator
-
-    virtual Airlift* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Airlift();
+    //destructor
+    virtual ~Airlift();
+    //copy constructor
+    Airlift(const Airlift& al);
+    //assignment operator
+    virtual Airlift& operator=(const Airlift& al);
+    //clone function
+    virtual Airlift* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);//stream insertion operator
-
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);
 };
 
 class Negotiate : public Order{
 	
 public:
-    Negotiate();//default constructor
-
-    virtual ~Negotiate();//destructor
-
-    Negotiate(const Negotiate& ng);//copy constructor
-
-    virtual Negotiate& operator=(const Negotiate& ng);//assignment operator
-
-    virtual Negotiate* clone() const;//clone function
-
-    bool validate();//validate method to make sure an order is of a valid type
-
-    void execute();//execute method to execute the action of the order and display its description
+    //default constructor
+    Negotiate();
+    //destructor
+    virtual ~Negotiate();
+    //copy constructor
+    Negotiate(const Negotiate& ng);
+    //assignment operator
+    virtual Negotiate& operator=(const Negotiate& ng);
+    //clone function
+    virtual Negotiate* clone() const;
+    //validate method to make sure an order is of a valid type
+    bool validate();
+    //execute method to execute the action of the order and display its description
+    void execute();
 
 private:
-    friend std::ostream& operator<<(std::ostream& description, const Negotiate& negotiate);//stream insertion operator
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const Negotiate& negotiate);
 
 };
 
 class OrdersList {
 
 public:
-    OrdersList();//default constructor
-
-    ~OrdersList();//destructor
-
-    OrdersList(const OrdersList& ol);//copy constructor
-
-    OrdersList& operator=(const OrdersList& ol);//assignment operator
-
-    int size();//return the size of the orderslist
-
-	Order* getOrder(int index);//get an order at a specific index
-
-    void addOrder(Order* order);//addOrder method to add all kind of orders in the orderslist
-
-	void move(int from, int to);//move method to move orders inside the list, takes two ints as input and swaps the orders at these indices
-
-	void remove(int index);//remove method to delete a specific order from the list using its index inside the orderslist
+    //default constructor
+    OrdersList();
+    //destructor
+    ~OrdersList();
+    //copy constructor
+    OrdersList(const OrdersList& ol);
+    //assignment operator
+    OrdersList& operator=(const OrdersList& ol);
+    //return the size of the orderslist
+    int size();
+    //get an order at a specific index
+	Order* getOrder(int index);
+    //addOrder method to add all kind of orders in the orderslist
+    void addOrder(Order* order);
+    //move method to move orders inside the list, takes two ints as input and swaps the orders at these indices
+	void move(int from, int to);
+    //remove method to delete a specific order from the list using its index inside the orderslist
+	void remove(int index);
 
 private:
+    //The vector of Order pointers
     std::vector<Order*>* _orderlist;
-     
-    friend std::ostream& operator<<(std::ostream& description, const OrdersList& orderslist);//stream insertion operator
+    //stream insertion operator
+    friend std::ostream& operator<<(std::ostream& description, const OrdersList& orderslist);
 
 };
