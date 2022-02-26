@@ -33,7 +33,7 @@ Order& Order::operator=(const Order& o){ //Assignment Operator
 }
 
 Order::Order(const Order& o){ //Copy constructor
-
+    this->_type = new string(*(o._type));
 }
 
 Order* Order::clone() const 
