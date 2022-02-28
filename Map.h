@@ -275,6 +275,9 @@ public:
 	// Get a territory by index. Return pointer ref to that territory or null
 	Territory* get_territory(int index); 
 
+	// Get a continent by index. Return pointer ref to that continent or null
+	Continent* get_continent(int index);
+
 	// Get all Territories. Return ref to vector of territories*
 	std::vector<Territory*>& get_territories() const; 
 

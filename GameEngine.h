@@ -302,7 +302,14 @@ class End: public GameState{
 the current state of the game, and transit between states when 
 received a command from the console.*/
 class GameEngine{
-    public:
+
+    std::vector<Player*>* _players_ptr;
+
+public:
+    
+    // Returns a pointer to the current players in game
+    std::vector<Player*>& get_players();
+
     GameEngine();
     ~GameEngine();
     GameState* getCurrentState() const; //returns pointer of current state

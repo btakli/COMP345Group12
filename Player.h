@@ -18,6 +18,10 @@ class Player {
 public:
     //Basic constructor
     Player();
+
+    //Constructor with player name
+    Player(string name);
+
     //Constructor for practical use later
     Player(string name, vector<Territory*> collection);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer

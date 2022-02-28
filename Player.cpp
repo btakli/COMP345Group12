@@ -12,6 +12,13 @@ Player::Player() {
     this->_listOfOrders = new OrdersList();
 }
 
+Player::Player(string name) {
+    this->_name = new string(name);
+    this->_collection = new vector<Territory*>;
+    this->_hand = new Hand();                          //copy methods need to be implemented in Hand and OrdersList
+    this->_listOfOrders = new OrdersList();
+}
+
 Player::Player(string name, vector<Territory*> collection) {
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;

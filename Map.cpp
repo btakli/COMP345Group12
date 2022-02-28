@@ -28,6 +28,15 @@ void Map::set_continent(Continent& new_continent) {
 	_continents_ptr->push_back(&new_continent);
 }
 
+Continent* Map::get_continent(int index) {
+	for (Continent* continent : get_continents()) {
+		if (continent->get_index() == index) return continent;
+	}
+
+	return nullptr;
+}
+
+
 void Map::set_territory(int& continent_index, Territory& new_territory) {
 
 	try {
@@ -448,7 +457,7 @@ std::ostream& operator<<(std::ostream& stream, const MapLoader& loader) {
 
 
 
-/********** TERRITORY **********/  // aka a continent(file)
+/********** Continent **********/  // aka a continent(file)
 
 int Continent::s_territories_index = 0;
 
@@ -530,7 +539,7 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 }
 
 
-/*********** CONTINENT **********/     // aka a country(file)
+/*********** Territory **********/     // aka a country(file)
 
 Territory::Territory() : LandMass() {
 	_visited_ptr = nullptr;

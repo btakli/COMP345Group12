@@ -8,8 +8,9 @@
 #define ASSIGN_COUNTRIES "assigncountries"
 
 //Prototypes
+void add_new_player(GameEngine&);
 void map_picker();
-
+void assign_territories(GameEngine&);
 //************GameState****************
 GameState::~GameState(){} //destructor
 
@@ -166,10 +167,13 @@ MapValidated::~MapValidated(){
 
 void MapValidated::transition(GameEngine* GameEngine, string input){
     if(input == *_command){
+        
+        add_new_player(*GameEngine);
+
         GameState* newState = new PlayersAdded();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
-        cout << "Adding Players..." << endl;
+
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }
@@ -210,12 +214,23 @@ PlayersAdded::~PlayersAdded(){
 
 void PlayersAdded::transition(GameEngine* GameEngine, string input){
     if(input == *_command1){
-        cout << "Adding Players..." << endl;
+        
+        add_new_player(*GameEngine);
+
+
     }else if(input == *_command2){
-        GameState* newState = new AssignedReinforcement();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
-        cout << "Assigning countries..." << endl;
+
+        if (GameEngine->get_players().size() < 2) {
+            std::cout << "ERROR: Need at least 2 players to play." << endl;
+        }
+        else {
+            GameState* newState = new AssignedReinforcement();
+            delete GameEngine->getCurrentState();
+            GameEngine->setState(newState);
+            
+            assign_territories(*GameEngine);
+
+        }
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }
@@ -475,6 +490,8 @@ void End::commandMessage(){
 *************************GameEngine Class:*****************************
 ***********************************************************************/
 GameEngine::GameEngine(){
+
+    _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
     std::cout << "**************************" << endl;
@@ -484,6 +501,13 @@ GameEngine::GameEngine(){
 
 GameEngine::~GameEngine(){
     delete _currentState;
+
+    for (Player* p : *_players_ptr) delete p;
+
+}
+
+std::vector<Player*>& GameEngine::get_players() {
+    return *_players_ptr;
 }
 
 GameState* GameEngine::getCurrentState() const{
@@ -604,4 +628,42 @@ void map_picker() {
         std::cout << "ERROR: " << e.what() << std::endl;
         Map::get_instance()->unload();
     }
+}
+
+// Add a new player
+void add_new_player(GameEngine& engine) {
+    if (engine.get_players().size() + 1 > 6) std::cout << "WARNING: Maximum of players reached: 6" << std::endl;
+    else {
+        std::string player_name;
+        std::cout << "New Player Name: ";
+        cin >> player_name;
+        engine.get_players().push_back(new Player(player_name));
+
+        std::cout << "Current player count: " << engine.get_players().size();
+    }
+}
+
+// Assign territory to players
+void assign_territories(GameEngine& engine) {
+
+    Map* map = Map::get_instance();
+    
+    int territories_count = map->get_territories().size();
+    int territories_per_player = territories_count / engine.get_players().size();
+    int num; // Territories index starts at 1
+    Territory* territory;
+
+    for (Player* player : engine.get_players()) {
+
+        for (int claimed_count = 0; claimed_count < territories_per_player; claimed_count++) {
+            do
+            {
+                num = rand() % map->get_territories().size() + 1;
+                territory = map->get_territory(num);
+            } while (territory->get_claimant() != nullptr); // RNG pick territory
+            territory->claim(*player);
+        }
+    }
+
+    cout << *Map::get_instance(); // DEBUG LINE
 }
