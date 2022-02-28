@@ -1,6 +1,14 @@
 #include "GameEngine.h"
 #include <iostream>
-using namespace std;
+
+#define LOADMAP "loadmap"
+#define VALIDATE_MAP "validatemap"
+#define ADD_PLAYER "addplayer"
+#define ISSUE_ORDER "issueorder"
+#define ASSIGN_COUNTRIES "assigncountries"
+
+//Prototypes
+void map_picker();
 
 //************GameState****************
 GameState::~GameState(){} //destructor
@@ -43,7 +51,7 @@ ostream& operator<<(ostream& os, const GameEngine& g){
 ********************Start/Initial State:*******************************
 ***********************************************************************/
 Start::Start(){
-     _command = new string("loadmap");
+     _command = new string(LOADMAP);
 }
 
 Start::~Start(){
@@ -52,10 +60,10 @@ Start::~Start(){
 
 void Start::transition(GameEngine* GameEngine, string input){  
     if(input == *_command){
+        map_picker();
         GameState* newState = new MapLoaded();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
-        cout << "Loading Map..." << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }  
@@ -87,8 +95,8 @@ void Start::commandMessage(){
 ********************MapLoaded State:***********************************
 ***********************************************************************/
 MapLoaded::MapLoaded(){
-    _command1 = new string("loadmap");
-    _command2 = new string("validatemap");
+    _command1 = new string(LOADMAP);
+    _command2 = new string(VALIDATE_MAP);
 }
 
 MapLoaded::~MapLoaded(){
@@ -97,17 +105,29 @@ MapLoaded::~MapLoaded(){
 }
 
 void MapLoaded::transition(GameEngine* GameEngine, string input){
-    if(input == *_command1){
-        cout << "Loading Map..." << endl;
-    }else if(input == *_command2){
-        GameState* newState = new MapValidated();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
-        cout << "Map Validated!!" << endl;
+    if(input == *_command1){ // Load a new map
+        
+        map_picker();
+
+    }else if(input == *_command2){ // Validate Map
+
+        if (Map::get_instance()->exist()) 
+        {
+            bool valid = Map::get_instance()->validate();
+
+            cout << "> Map is " << (valid ? "VALID" : "INVALID") << endl;
+
+            if (valid) {
+                GameState* newState = new MapValidated();
+                delete GameEngine->getCurrentState();
+                GameEngine->setState(newState);
+            }
+        }
+        else std::cout << "WARNING: No map loaded." << endl;
+            
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;;
     }
-    
 }
 
 MapLoaded::MapLoaded(const MapLoaded& other){
@@ -137,7 +157,7 @@ void MapLoaded::commandMessage(){
 ********************MapValidated State:********************************
 ***********************************************************************/
 MapValidated::MapValidated(){
-    _command = new string("addplayer");
+    _command = new string(ADD_PLAYER);
 }
 
 MapValidated::~MapValidated(){
@@ -179,8 +199,8 @@ void MapValidated::commandMessage(){
 ********************PlayersAdded State:********************************
 ***********************************************************************/
 PlayersAdded::PlayersAdded(){
-    _command1 = new string("addplayer");
-    _command2 = new string("assigncountries");
+    _command1 = new string(ADD_PLAYER);
+    _command2 = new string(ASSIGN_COUNTRIES);
 }
 
 PlayersAdded::~PlayersAdded(){
@@ -227,7 +247,7 @@ void PlayersAdded::commandMessage(){
 ****************AssignedReinforcement State:***************************
 ***********************************************************************/
 AssignedReinforcement::AssignedReinforcement(){
-    _command = new string("issueorder");
+    _command = new string(ISSUE_ORDER);
 }
 
 AssignedReinforcement::~AssignedReinforcement(){
@@ -269,7 +289,7 @@ void AssignedReinforcement::commandMessage(){
 ******************Issue Orders State:**********************************
 ***********************************************************************/
 IssueOrders::IssueOrders(){
-    _command1 = new string("issueorder");
+    _command1 = new string(ISSUE_ORDER);
     _command2 = new string("endissueorders");
 }
 
@@ -503,3 +523,85 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
     return *this;
 }
 
+
+
+
+// MapDriver
+void map_picker() {
+
+#define BERLIN "berlin"
+#define CANADA "canada"
+#define COW "cow"
+#define ESTONIA "estonia"
+#define FORTERESS "fortress"
+#define INVALID1 "invalid1"
+#define INVALID2 "invalid2"
+#define INVALID3 "invalid3"
+
+#define UPPERLIMIT 8
+
+    Map::get_instance()->unload();
+
+    int option;
+    try {
+        do {
+            std::cout << "Please enter a number between 1 to " << UPPERLIMIT << "."
+                "\n 1. " << BERLIN
+                "\n 2. " << CANADA
+                "\n 3. " << COW
+                "\n 4. " << ESTONIA
+                "\n 5. " << FORTERESS
+                "\n 6. " << INVALID1
+                "\n 7. " << INVALID2
+                "\n 8. " << INVALID3
+                "\n> ";
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > UPPERLIMIT || option < 1);
+
+        switch (option)
+        {
+        case 1:
+            MapLoader::get_instance()->load_map(BERLIN);
+            break;
+
+        case 2:
+            MapLoader::get_instance()->load_map(CANADA);
+            break;
+
+        case 3:
+            MapLoader::get_instance()->load_map(COW);
+            break;
+
+        case 4:
+            MapLoader::get_instance()->load_map(ESTONIA);
+            break;
+
+        case 5:
+            MapLoader::get_instance()->load_map(FORTERESS);
+            break;
+
+        case 6:
+            MapLoader::get_instance()->load_map(INVALID1);
+            break;
+
+        case 7:
+            MapLoader::get_instance()->load_map(INVALID2);
+            break;
+
+        case 8:
+            MapLoader::get_instance()->load_map(INVALID3);
+            break;
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        Map::get_instance()->unload();
+    }
+}

@@ -85,8 +85,6 @@ bool Map::validate() {
 	// Travel from A to B
 	bool reach_destination = help_validate(queue, out_destination, size, count);
 
-	std::cout << "FINAL DESTINATION: " << out_destination.get_index() << std::endl;
-	
 	if (!reach_destination) return false;
 
 	// Reset 
@@ -95,12 +93,10 @@ bool Map::validate() {
 	queue.push(get_territory(out_destination.get_index()));
 	get_territories()[out_destination.get_index() - 1]->set_visited(*new bool(true));
 	count = 0;
-	// -----
+	// Reset End -----
 
 	// Travel from B to A
 	reach_destination = help_validate(queue, out_destination, size, count);
-
-	std::cout << "FINAL DESTINATION: " << out_destination.get_index() << std::endl;
 
 	// If travel A to B and B to A valid; therefore, map valid.
 	return reach_destination;
@@ -109,9 +105,7 @@ bool Map::validate() {
 // Using bfs
 bool Map::help_validate(std::queue<Territory*>& to_be_visited, Territory& prev, int& size, int& count) {
 
-	if (to_be_visited.size() <= 0) {
-		std::cout << "\n-- MAP VALIDATION:\nSize: " << size << " | Traveled: " << count << " >> " << ((size == count) ? "PASS" : "FAIL") << "\n" << std::endl;
-
+	if (to_be_visited.size() <= 0) { // Check if all nodes have ben visited
 		if (size == count) return true;
 		return false;
 	}
@@ -123,7 +117,6 @@ bool Map::help_validate(std::queue<Territory*>& to_be_visited, Territory& prev, 
 		std::list<Territory*>& neighbors = current->get_neighbors();
 
 		if (neighbors.size() <= 0) { // Dead end
-			std::cout << "-- MAP FAIL VALIDATION: DEAD END --" << std::endl;
 			return false;
 		}
 		else {
@@ -174,19 +167,20 @@ std::vector<Territory*>& Map::get_territories() const {
 	return *_territories_ptr;
 }
 
+bool Map::exist() {
+	if (_continents_ptr->size() > 0 && _territories_ptr->size() > 0) return true;
+	return false;
+}
+
 void Map::unload() {
 
 	if (get_continents().size() <= 0 && get_territories().size() <= 0) return;
-
-	std::cout << "\n-- UNLOADING --\n" << std::endl;
 
 	for (Continent* c : get_continents()) delete c;
 	for (Territory* c : get_territories()) delete c;
 
 	_continents_ptr->clear();
 	_territories_ptr->clear();
-
-	std::cout << "\n-- UNLOADING END --\n" << std::endl;
 }
 
 Map& Map::operator=(const Map& other) {
@@ -522,7 +516,6 @@ std::string Continent::get_color() const {
 }
 
 Continent::~Continent() {
-	std::cout << "Unloaded:\t" << typeid(Continent).name() << "\t\t" << LandMass::get_name() << std::endl;
 
 	s_territories_index = 0;
 
@@ -617,8 +610,6 @@ Territory& Territory::operator=(const Territory& other) {
 
 Territory::~Territory() {
 
-	std::cout << "Unloaded:\t" << typeid(Territory).name() << "\t\t" << LandMass::get_name() << std::endl;
-
 	delete _neighbor_territories_ptr;
 	delete _visited_ptr;
 	delete _stationed_army_ptr;
@@ -698,7 +689,6 @@ LandMass& LandMass::operator=(const LandMass& other) {
 }
 
 LandMass::~LandMass() {
-	std::cout << "Unloaded:\t" << typeid(LandMass).name() << "\t\t" << LandMass::get_name() << std::endl;
 
 	delete _index_ptr;
 	delete _name_ptr;

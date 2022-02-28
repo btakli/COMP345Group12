@@ -3,7 +3,10 @@
 #define GAMEENGINE_H
 
 #include <string>
-using namespace std;
+#include "Map.h"
+
+using std::cout;
+using std::endl;
 
 //solve dependencies
 //Game is defined at the end

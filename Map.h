@@ -260,6 +260,9 @@ public:
 	// Destructor
 	~Map();
 
+	// Check if map exist
+	bool exist();
+
 	// Return map instance
 	static Map* get_instance();
 
