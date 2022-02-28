@@ -49,6 +49,13 @@ void Player::issueOrder() { //no specifications to what it takes in or creates
    this->_listOfOrders->addOrder(ord);
 }
 
+void Player::issueOrder(Order *pOrder) {
+    this->_listOfOrders->addOrder(pOrder);
+}
+
+Hand* Player::getHand() {
+    return this->_hand;
+}
 
 Player::Player( const Player &p){
     this->_name = new string(*(p._name));
