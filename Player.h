@@ -9,11 +9,6 @@
 using std::string;
 using std::vector;
 
-/*
-#include "Cards.h"
-#include "Map.h"
-#include "Orders.h"
-*/
 class Territory;
 
 //Forward declaration
@@ -23,6 +18,8 @@ class Player {
 public:
     //Basic constructor
     Player();
+    //Constructor for practical use later
+    Player(string name, vector<Territory*> collection);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //prints and returns a list of territories to defend
@@ -38,11 +35,13 @@ public:
     //destructor
     ~Player();
     //stream insertion operator overload for Player
-    friend ostream &operator<<(ostream &out, const Player &player);
+    friend std::ostream& operator<<(std::ostream& out, const Player& player);
     //takes a pointer to an Order and adds it to the players list of orders
     void issueOrder(Order *pOrder);
     //Returns players hand
     Hand* getHand();
+    //Returns player's OrdersList
+    OrdersList* getOrdersList();
 private:
     //player name
     string* _name;

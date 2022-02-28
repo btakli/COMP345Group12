@@ -349,4 +349,11 @@ void OrdersList::remove(int index) {
     this->_orderlist->erase(this->_orderlist->begin() + index);
 }
 
-
+std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist)
+{
+    strm << "OrdersList contents:" << endl;
+    for (int i = 0; i < orderslist._orderlist->size(); i++)
+        strm << orderslist._orderlist->at(i) << endl;
+   
+    return strm;
+}

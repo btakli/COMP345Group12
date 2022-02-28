@@ -1,6 +1,5 @@
 #include <vector>
 #include <iostream> 
-
 #include "Player.h"
 using std::string;
 using std::vector;
@@ -10,6 +9,16 @@ Player::Player() {
     this->_name = new string("player");
     this->_collection = new vector<Territory*> {};
     this->_hand  = new Hand();
+    this->_listOfOrders = new OrdersList();
+}
+
+Player::Player(string name, vector<Territory*> collection) {
+    this->_name = new string(name);
+    this->_collection = new vector<Territory*>;
+    for (auto territory : collection) {
+        this->_collection->push_back(territory);
+    }
+    this->_hand = new Hand();                          //copy methods need to be implemented in Hand and OrdersList
     this->_listOfOrders = new OrdersList();
 }
 
@@ -57,6 +66,11 @@ Hand* Player::getHand() {
     return this->_hand;
 }
 
+OrdersList* Player::getOrdersList()
+{
+    return this->_listOfOrders;
+}
+
 Player::Player( const Player &p){
     this->_name = new string(*(p._name));
     for (auto territory : *p._collection) {
@@ -66,7 +80,8 @@ Player::Player( const Player &p){
     this->_listOfOrders = new OrdersList(*p._listOfOrders);
 }
 
-Player& Player::operator=(const Player &p) {
+
+Player& Player::operator=(const Player& p) {
     this->_name = new string(*p._name);
     this->_collection = new std::vector<Territory*>;
     for (auto territory : *p._collection) {
@@ -77,10 +92,10 @@ Player& Player::operator=(const Player &p) {
     return *this;
 }
 
-ostream &operator<<(std::ostream &out, const Player &player) {
+std::ostream& operator<<(std::ostream& out, const Player& player) {
     out << "Player: " + *player._name + " \n";
-    out << "Collection: \n" ;
-    for(const auto& territory : *player._collection)
+    out << "Collection: \n";
+    for (const auto& territory : *player._collection)
         out << "\t Territory: " + territory->get_name() + "\n ";
     out << *player._hand;
     out << *player._listOfOrders;

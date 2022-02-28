@@ -1,10 +1,9 @@
 #include <iostream>
 #include <vector>
 #include "Player.h"
-#include "Order.h"
-#include "OrdersList.h"
-#include "Territory.h"
-#include "Hand.h"
+#include "Orders.h"
+#include "Map.h"
+#include "Cards.h"
 using std::string;
 using std::vector;
 using std::cout;
@@ -14,11 +13,11 @@ int main() {
 
     cout<< "Demonstration of Player class:" << endl;
 
-    Territory *territory1 = new Territory("t1");
-    Territory *territory2 = new Territory("t2");
+    Territory *territory1 = new Territory();
+    Territory *territory2 = new Territory();
 
     vector<Territory *> territories = {territory1, territory2};
-    Hand *hand = new Hand("hand");
+    Hand *hand = new Hand();
 
     OrdersList *listOfOrders= new OrdersList();
     string name = "PlayerName";
@@ -29,7 +28,6 @@ int main() {
     p->toAttack();
 
     delete(p);
-    cout<< "deleted\n"<< *p;
-    //cout<< *listOfOrders;
+    p = NULL;
     return 0;
 }

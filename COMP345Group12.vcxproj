@@ -139,15 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CardsDriver.cpp" />
     <ClCompile Include="Cards.cpp" />
     <ClCompile Include="GameEngine.cpp" />
-    <ClCompile Include="GameEngineDriver.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Orders.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="MapDriver.cpp" />
-    <ClCompile Include="PlayerDriver.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cards.h" />

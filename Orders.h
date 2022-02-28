@@ -203,6 +203,6 @@ private:
     //The vector of Order pointers
     std::vector<Order*>* _orderlist;
     //stream insertion operator
-    friend std::ostream& operator<<(std::ostream& description, const OrdersList& orderslist);
+    friend std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist);
 
 };
