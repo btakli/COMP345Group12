@@ -39,7 +39,10 @@ public:
     ~Player();
     //stream insertion operator overload for Player
     friend ostream &operator<<(ostream &out, const Player &player);
-
+    //takes a pointer to an Order and adds it to the players list of orders
+    void issueOrder(Order *pOrder);
+    //Returns players hand
+    Hand* getHand();
 private:
     //player name
     string* _name;
