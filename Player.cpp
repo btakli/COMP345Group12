@@ -35,10 +35,10 @@ Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersLis
 Player::~Player() {
     delete(_name);
     for (auto territory : *_collection) {
-        delete(territory);
+        delete territory;
     }
-     delete(_hand);                          //destructor methods need to be implemented in Hand and OrdersList
-     delete(_listOfOrders);
+     delete _hand;                          //destructor methods need to be implemented in Hand and OrdersList
+     delete _listOfOrders;
 }
 
 vector<Territory *>* Player::toDefend() {
