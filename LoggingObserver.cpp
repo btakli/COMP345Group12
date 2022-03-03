@@ -21,22 +21,18 @@ Observer::Observer()
 LogObserver::LogObserver()
 {
 	_filename = new string("gamelog.txt");
-	_stream = new ofstream(); //Output mode
+	_stream = new ofstream(); 
 	_stream->open(*_filename);
+	printGameStartTime();
 
-	//Get time
-	auto start = std::chrono::system_clock::now();
-	auto legacyStart = std::chrono::system_clock::to_time_t(start);
-	char tmBuff[30];
-	ctime_s(tmBuff, sizeof(tmBuff), &legacyStart); 
-
-	*_stream << "~~~~ Gamelog for game starting on: " << tmBuff << std::endl;
 }
 
 LogObserver::LogObserver(string filename)
 {
 	_filename = new string(filename);
-	_stream = new ofstream(filename, std::ofstream::out); //Output mode
+	_stream = new ofstream(); 
+	_stream->open(*_filename);
+	printGameStartTime();
 }
 
 LogObserver::LogObserver(const LogObserver& other)
@@ -62,6 +58,17 @@ LogObserver& LogObserver::operator=(const LogObserver& rhs)
 	this->_stream = new ofstream(*_filename, std::ofstream::out);
 	return *this;
 
+}
+
+void LogObserver::printGameStartTime()
+{
+	//Get time
+	auto start = std::chrono::system_clock::now();
+	auto legacyStart = std::chrono::system_clock::to_time_t(start);
+	char tmBuff[30];
+	ctime_s(tmBuff, sizeof(tmBuff), &legacyStart);
+
+	*_stream << "~~~~ Gamelog for game starting on: " << tmBuff << std::endl;
 }
 
 void LogObserver::update(ILoggable* obj) {

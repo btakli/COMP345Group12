@@ -53,6 +53,8 @@ private:
 	string* _filename;
 	//Output stream
 	ofstream* _stream;
+	//Print the start of the log message and timestamp of game start
+	void printGameStartTime();
 };
 
 //Subject class, inherited by all Subject classes who wish to notify observers (the LogObserver).

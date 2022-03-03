@@ -15,7 +15,7 @@ Player::Player() {
 Player::Player(string name) {
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;
-    this->_hand = new Hand();                          //copy methods need to be implemented in Hand and OrdersList
+    this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
 }
 
@@ -25,7 +25,7 @@ Player::Player(string name, vector<Territory*> collection) {
     for (auto territory : collection) {
         this->_collection->push_back(territory);
     }
-    this->_hand = new Hand();                          //copy methods need to be implemented in Hand and OrdersList
+    this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
 }
 
@@ -35,7 +35,7 @@ Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersLis
     for (auto territory : collection) {
         this->_collection->push_back(territory);
     }
-    this->_hand = new Hand(*hand);                          //copy methods need to be implemented in Hand and OrdersList
+    this->_hand = new Hand(*hand);                         
     this->_listOfOrders = new OrdersList(*listOfOrders);
 }
 
@@ -44,8 +44,9 @@ Player::~Player() {
     for (auto territory : *_collection) {
         delete territory;
     }
-     delete _hand;                          //destructor methods need to be implemented in Hand and OrdersList
-     delete _listOfOrders;
+    delete _collection;
+    delete _hand;                          
+    delete _listOfOrders;
 }
 
 vector<Territory *>* Player::toDefend() {
