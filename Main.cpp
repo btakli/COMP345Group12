@@ -1,3 +1,4 @@
+#include "LoggingObserver.h"
 #include "Cards.h"
 #include "Player.h"
 #include <iostream>
@@ -17,6 +18,9 @@ void mapDriver();
 
 int main()
 {
+	LogObserver lo;
+	cout << lo <<endl; //Print the status of the log observer
+
 	gameEngineDriver();
 	return 0;
 }
