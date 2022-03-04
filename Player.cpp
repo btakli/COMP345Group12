@@ -40,10 +40,7 @@ Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersLis
 }
 
 Player::~Player() {
-    delete(_name);
-    for (auto territory : *_collection) {
-        delete territory;
-    }
+    delete _name;
     delete _collection;
     delete _hand;                          
     delete _listOfOrders;
