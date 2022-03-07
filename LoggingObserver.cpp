@@ -18,12 +18,8 @@ Observer::Observer()
 {
 }
 
-LogObserver::LogObserver()
+LogObserver::LogObserver(): LogObserver("gamelog.txt")
 {
-	_filename = new string("gamelog.txt");
-	_stream = new ofstream(); 
-	_stream->open(*_filename);
-	printGameStartTime();
 
 }
 
