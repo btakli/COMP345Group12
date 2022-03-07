@@ -41,7 +41,7 @@ void cardsDriver() {
 
 	Deck* deck = new Deck(cards);
 	string name = "TestPlayer";
-	Player* player = new Player(name, vector<Territory*>(), new Hand(), new OrdersList());
+	Player* player = new Player(name, vector<Territory*>());
 	Hand* hand = player->getHand(); //Creating a new empty hand
 
 	//Print out all cards: Print statement shows correct card type
