@@ -16,6 +16,8 @@ public:
 protected:
 	//Constructor, protected.
 	ILoggable();
+	//Protected state string, update this string to reflect the current state so that stringToLog() can return it (along with some formatting).
+	string* _currentState;
 };
 
 class Observer {
