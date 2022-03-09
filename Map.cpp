@@ -259,15 +259,15 @@ void MapLoader::load_map(std::string map_file_name) {
 
 			while (std::getline(reader, line)) {
 
-				if (line._Equal(CONTINENTS)) {
+				if (line == CONTINENTS) {
 					read_block = FileBlock::Continents;
 					continue;
 				}
-				else if (line._Equal(COUNTRIES)) {
+				else if (line == COUNTRIES) {
 					read_block = FileBlock::Countries;
 					continue;
 				}
-				else if (line._Equal(BORDERS)) {
+				else if (line == BORDERS) {
 					read_block = FileBlock::Borders;
 					continue;
 				}
@@ -411,9 +411,9 @@ bool MapLoader::verify(std::string map_file_name) {
 		FileBlock read_block = FileBlock::None;
 
 		while (std::getline(reader, line)) {
-			if (line._Equal(CONTINENTS)
-				|| line._Equal(COUNTRIES)
-				|| line._Equal(BORDERS))
+			if (line == CONTINENTS
+				|| line == COUNTRIES
+				|| line == BORDERS)
 				file_format_tester++;
 		}
 
