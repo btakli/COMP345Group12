@@ -10,7 +10,7 @@ using namespace std;
  */
 
 Order::Order() : _type(new string("Default Order")){
-    
+    _currentState = new string("Order: Default Order"); //State doesn't change for an order.
 }
 
 Order::Order(string type)
@@ -23,7 +23,8 @@ string Order::getType() const
 	return *(_type);
 }
 
-Order::~Order(){ //Desctructor
+Order::~Order(){ //Destructor
+    detachAll(); //Detatch all observers
     delete(_type);
 }
 
@@ -47,11 +48,18 @@ bool Order::validate(){
 }
 
 void Order::execute(){
-  if(validate())
-      cout << "Order" << endl;
+    if (validate()) {
+        cout << "Order" << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
+  
 
+}
+
+string Order::stringToLog() {
+    return "Order Executed: " + *_currentState;
 }
 
 std::ostream& operator<<(std::ostream& description, const Order& o)
@@ -66,10 +74,10 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-
+    _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
 }
 
-Deploy::~Deploy(){ //Desctructor
+Deploy::~Deploy(){ //Destructor
 }
 
 Deploy& Deploy::operator=(const Deploy& dep){ //Assignment Operator
@@ -91,8 +99,10 @@ bool Deploy::validate(){
 }
 
 void Deploy::execute(){
-  if(validate())
-      cout << "Deploy: place some armies on one of the current player’s territories." << endl;
+    if (validate()) {
+        cout << "Deploy: place some armies on one of the current player's territories." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -104,10 +114,10 @@ void Deploy::execute(){
  */
 
 Advance::Advance() : Order("advance"){ //Constructor
-
+    _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
 }
 
-Advance::~Advance(){ //Desctructor
+Advance::~Advance(){ //Destructor
 }
 
 Advance& Advance::operator=(const Advance& adv){ //Assignment Operator
@@ -129,8 +139,10 @@ bool Advance::validate(){
 }
 
 void Advance::execute(){
-  if(validate())
-      cout << "Advance: move some armies from one of the current player’s territories (source) to an adjacent territory (target)." << endl;
+    if (validate()) {
+        cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -142,10 +154,10 @@ void Advance::execute(){
  */
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
-
+    _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
 }
 
-Bomb::~Bomb(){ //Desctructor
+Bomb::~Bomb(){ //Destructor
 }
 
 Bomb& Bomb::operator=(const Bomb& bmb){ //Assignment Operator
@@ -167,8 +179,10 @@ bool Bomb::validate(){
 }
 
 void Bomb::execute(){
-  if(validate())
-      cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player’s territories." << endl;
+    if (validate()) {
+        cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -180,10 +194,10 @@ void Bomb::execute(){
  */
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
-
+    _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
 }
 
-Blockade::~Blockade(){ //Desctructor
+Blockade::~Blockade(){ //Destructor
 }
 
 Blockade& Blockade::operator=(const Blockade& blck){ //Assignment Operator
@@ -205,8 +219,10 @@ bool Blockade::validate(){
 }
 
 void Blockade::execute(){
-  if(validate())
-      cout << "Blockade: triple the number of armies on one of the current player’s territories and make it a neutral territory." << endl;
+    if (validate()) {
+        cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -218,10 +234,10 @@ void Blockade::execute(){
  */
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
-
+    _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
 }
 
-Airlift::~Airlift(){ //Desctructor
+Airlift::~Airlift(){ //Destructor
 }
 
 Airlift& Airlift::operator=(const Airlift& al){ //Assignment Operator
@@ -243,8 +259,10 @@ bool Airlift::validate(){
 }
 
 void Airlift::execute(){
-  if(validate())
-      cout << "Airlift: advance some armies from one of the current player’s territories to any another territory." << endl;
+    if (validate()) {
+        cout << "Airlift: advance some armies from one of the current player's territories to any another territory." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -256,7 +274,7 @@ void Airlift::execute(){
  */
 
 Negotiate::Negotiate() : Order("negotiate"){ //Constructor
-
+    _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
 }
 
 Negotiate::~Negotiate(){ //Destructor
@@ -281,8 +299,10 @@ bool Negotiate::validate(){
 }
 
 void Negotiate::execute(){
-  if(validate())
-      cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
+    if (validate()) {
+        cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
+        notify(this); //Call notify to notify observers
+    }
    else
       cout << "INVALID ORDER" << endl;
 
@@ -297,7 +317,7 @@ OrdersList::OrdersList() { //Constructor
     _orderlist = new vector <Order*>();
 }
 
-OrdersList::~OrdersList() { //Desctructor 
+OrdersList::~OrdersList() { //Destructor 
     for (int i=0; i < _orderlist->size(); i++) {
 		delete(_orderlist->at(i));
 	}

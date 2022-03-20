@@ -1,2 +1,4 @@
-~~~~ Gamelog for game starting on: Thu Mar  3 01:05:28 2022
+~~~~ Gamelog for game starting on: Sun Mar 20 12:54:51 2022
 
+Order Executed: Deploy: place some armies on one of the current player's territories.
+Order Executed: Negotiate: prevent attacks between the current player and another player until the end of the turn.

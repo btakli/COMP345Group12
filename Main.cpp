@@ -18,10 +18,28 @@ void mapDriver();
 
 int main()
 {
-	LogObserver lo;
-	cout << lo <<endl; //Print the status of the log observer
+	LogObserver* lo = new LogObserver();
+	//EXAMPLE FOR HOW YOU'D USE LOGOBSERVER
+	/*Order order = Order();
+	Deploy deploy = Deploy();
+	Negotiate negotiate = Negotiate();
 
+	order.attach(lo);
+	deploy.attach(lo);
+	negotiate.attach(lo);*/
+
+
+	cout << *lo <<endl; //Print the status of the log observer
+	
+	//THESE ARE WRITTEN TO THE GAMELOG USING notify(this)
+	/*order.execute();
+	deploy.execute();
+	negotiate.execute();*/
+
+	
 	gameEngineDriver();
+
+	delete lo;
 	return 0;
 }
 

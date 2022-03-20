@@ -4,10 +4,12 @@
 
 ILoggable::~ILoggable()
 {
+	delete _currentState;
 }
 
 ILoggable::ILoggable()
 {
+
 }
 
 Observer::~Observer()
@@ -68,7 +70,7 @@ void LogObserver::printGameStartTime()
 }
 
 void LogObserver::update(ILoggable* obj) {
-	*_stream << obj->stringToLog(); //Write the log to the file.
+	*_stream << obj->stringToLog() << std::endl; //Write the log to the file.
 }
 
 std::ostream& operator<<(std::ostream& strm, const LogObserver& logObserver)
