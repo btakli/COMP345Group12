@@ -1,5 +1,7 @@
 # COMP 345: Advanced Program Design with C++ Group Project by Group 12
 Repository for the project for COMP 345
+
+[![MSBuild](https://github.com/btakli/COMP345Group12/actions/workflows/msbuild.yml/badge.svg)](https://github.com/btakli/COMP345Group12/actions/workflows/msbuild.yml)
 ## Problem statement
 The specific project for this semester consists in building a simple “Risk” computer game. The developed program 
 will have to be compatible with the rules and map files and the command-line play of the “Warzone” version of 
