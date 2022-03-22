@@ -1,9 +1,15 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <random>
 
+using std::vector;
+using std::shuffle;
+using std::begin;
+using std::end; 
 #define LOADMAP "loadmap"
 #define VALIDATE_MAP "validatemap"
 #define ADD_PLAYER "addplayer"
+#define GAME_START "gamestart"
 #define ISSUE_ORDER "issueorder"
 #define ASSIGN_COUNTRIES "assigncountries"
 
@@ -11,6 +17,8 @@
 void add_new_player(GameEngine&);
 void map_picker();
 void assign_territories(GameEngine&);
+void order_of_play(GameEngine&);
+void give_initial_armies(GameEngine&);
 //************GameState****************
 GameState::~GameState(){} //destructor
 
@@ -204,7 +212,7 @@ void MapValidated::commandMessage(){
 ***********************************************************************/
 PlayersAdded::PlayersAdded(){
     _command1 = new string(ADD_PLAYER);
-    _command2 = new string(ASSIGN_COUNTRIES);
+    _command2 = new string(GAME_START);
 }
 
 PlayersAdded::~PlayersAdded(){
@@ -229,6 +237,9 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             GameEngine->setState(newState);
             
             assign_territories(*GameEngine);
+            order_of_play(*GameEngine);
+            give_initial_armies(*GameEngine);
+
 
         }
     }else{
@@ -494,6 +505,7 @@ GameEngine::GameEngine(){
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
+    _armyPool = new std::vector<int*>();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -503,6 +515,7 @@ GameEngine::~GameEngine(){
     delete _currentState;
 
     for (Player* p : *_players_ptr) delete p;
+    for (int* i : *_armyPool) delete i;
 
 }
 
@@ -520,6 +533,12 @@ void GameEngine::setStatus(bool b){
 
 bool GameEngine::getStatus(){
     return _continue;
+}
+
+
+vector<int*>& GameEngine::get_ArmyPools()
+{
+    return *_armyPool;
 }
 
 //function setState receives a pointer to the current state
@@ -667,3 +686,39 @@ void assign_territories(GameEngine& engine) {
 
     cout << *Map::get_instance(); // DEBUG LINE
 }
+
+void order_of_play(GameEngine& engine) {
+
+    random_shuffle(begin(engine.get_players()), end(engine.get_players()));         //not true random
+    cout << "The order of play is the following: " << endl;     
+    int i = 0; 
+    for (Player* player : engine.get_players()) {
+        cout << "Player " << i++ << ": \t" << *player->getName() << endl;
+    }
+
+}
+
+void give_initial_armies(GameEngine& engine) {
+    int size = engine.get_players().size();
+    int i = 0;
+    for (i; i < size; i++) {
+        engine.get_ArmyPools().push_back(new int(50));
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: engine.get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
+    }
+}
+
+//void draw_initial_cards(GameEngine& engine) {
+//engine.setDeck();
+ //   for (Player* player : engine.get_players()) {
+ //        = _deck.draw();
+ //       player->getHand().push_back(* card)
+ //       player->getHand.draw();
+ //   }
+//}
+//loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart

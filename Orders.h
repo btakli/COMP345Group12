@@ -2,11 +2,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "LoggingObserver.h"
 
 using namespace std;
 
 //Base class for all orders
-class Order {
+class Order : public ILoggable, public Subject {
 
 public:
     //default constructor
@@ -27,6 +28,8 @@ public:
     virtual bool validate();
     //execute method to execute the action of the order and display its description
     virtual void execute();
+
+    std::string stringToLog();
 
 private:
     //stream insertion operator

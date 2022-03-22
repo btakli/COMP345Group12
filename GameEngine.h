@@ -1,9 +1,10 @@
 //To prevent mutiple inclusion:
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
-
+#include <vector>
 #include <string>
 #include "Map.h"
+using std::vector;
 
 using std::cout;
 using std::endl;
@@ -304,12 +305,13 @@ received a command from the console.*/
 class GameEngine{
 
     std::vector<Player*>* _players_ptr;
-
+    vector<int*>* _armyPool;
+    
 public:
     
     // Returns a pointer to the current players in game
     std::vector<Player*>& get_players();
-
+    
     GameEngine();
     ~GameEngine();
     GameState* getCurrentState() const; //returns pointer of current state
@@ -322,6 +324,8 @@ public:
     //getter is used to get the current status of the game
     bool getStatus();
 
+    vector<int*>& get_ArmyPools();
+
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);
@@ -332,6 +336,7 @@ public:
     private:
     GameState* _currentState; //current state
     bool _continue; 
+    
 };
 
 
