@@ -242,7 +242,6 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             assign_territories(*GameEngine);
             order_of_play(*GameEngine);
             give_initial_armies(*GameEngine);
-            create_deck(*GameEngine);
             draw_initial_cards(*GameEngine);
             
 
@@ -511,7 +510,7 @@ GameEngine::GameEngine(){
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
     _armyPool = new std::vector<int*>();
-    _deck = new Deck();
+    setDeck();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -522,7 +521,7 @@ GameEngine::~GameEngine(){
 
     for (Player* p : *_players_ptr) delete p;
     for (int* i : *_armyPool) delete i;
-
+    delete _deck;
 }
 
 std::vector<Player*>& GameEngine::get_players() {
@@ -572,6 +571,7 @@ GameEngine::GameEngine(const GameEngine& other){
     //called the virtual function clone to perform deep copy:
     this->_currentState = other._currentState->clone(); 
     this->setStatus(other._continue);
+
 }
 
 GameEngine& GameEngine::operator = (const GameEngine& e){
