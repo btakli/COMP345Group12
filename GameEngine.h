@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Map.h"
+
 using std::vector;
 
 using std::cout;
@@ -306,6 +307,7 @@ class GameEngine{
 
     std::vector<Player*>* _players_ptr;
     vector<int*>* _armyPool;
+    Deck * _deck;
     
 public:
     
@@ -323,9 +325,12 @@ public:
     void setStatus(bool b);
     //getter is used to get the current status of the game
     bool getStatus();
-
+    //retunrs the _armyPool
     vector<int*>& get_ArmyPools();
-
+    //returns the _deck
+    Deck* getDeck();
+    //Set deck
+    void setDeck();
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);

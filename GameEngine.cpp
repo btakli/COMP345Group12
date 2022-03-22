@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 
+
 using std::vector;
 using std::shuffle;
 using std::begin;
@@ -19,6 +20,8 @@ void map_picker();
 void assign_territories(GameEngine&);
 void order_of_play(GameEngine&);
 void give_initial_armies(GameEngine&);
+void create_deck(GameEngine&); 
+void draw_initial_cards(GameEngine&);
 //************GameState****************
 GameState::~GameState(){} //destructor
 
@@ -239,7 +242,9 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             assign_territories(*GameEngine);
             order_of_play(*GameEngine);
             give_initial_armies(*GameEngine);
-
+            create_deck(*GameEngine);
+            draw_initial_cards(*GameEngine);
+            
 
         }
     }else{
@@ -506,6 +511,7 @@ GameEngine::GameEngine(){
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
     _armyPool = new std::vector<int*>();
+    _deck = new Deck();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -536,6 +542,14 @@ bool GameEngine::getStatus(){
 }
 
 
+Deck * GameEngine::getDeck() {
+    return _deck;
+}
+void GameEngine::setDeck() {
+    vector<Card*> cards;
+    for (int i = 0; i < 20; i++) { cards.push_back(new Card()); }
+    this->_deck = new Deck(cards);
+}
 vector<int*>& GameEngine::get_ArmyPools()
 {
     return *_armyPool;
@@ -713,12 +727,15 @@ void give_initial_armies(GameEngine& engine) {
     }
 }
 
-//void draw_initial_cards(GameEngine& engine) {
-//engine.setDeck();
- //   for (Player* player : engine.get_players()) {
- //        = _deck.draw();
- //       player->getHand().push_back(* card)
- //       player->getHand.draw();
- //   }
-//}
+void create_deck(GameEngine& engine) {
+    engine.setDeck();
+}
+void draw_initial_cards(GameEngine& engine) {
+    
+    for (Player* player : engine.get_players()) {
+        player->getHand()->addCard(engine.getDeck()->draw());
+        player->getHand()->addCard(engine.getDeck()->draw());
+        cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
+    }
+}
 //loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
