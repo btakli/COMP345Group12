@@ -18,6 +18,7 @@ void add_new_player(GameEngine&);
 void map_picker();
 void assign_territories(GameEngine&);
 void order_of_play(GameEngine&);
+void give_initial_armies(GameEngine&);
 //************GameState****************
 GameState::~GameState(){} //destructor
 
@@ -237,6 +238,7 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             
             assign_territories(*GameEngine);
             order_of_play(*GameEngine);
+            give_initial_armies(*GameEngine);
 
 
         }
@@ -503,6 +505,7 @@ GameEngine::GameEngine(){
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
+    _armyPool = new std::vector<int*>();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -512,6 +515,7 @@ GameEngine::~GameEngine(){
     delete _currentState;
 
     for (Player* p : *_players_ptr) delete p;
+    for (int* i : *_armyPool) delete i;
 
 }
 
@@ -529,6 +533,12 @@ void GameEngine::setStatus(bool b){
 
 bool GameEngine::getStatus(){
     return _continue;
+}
+
+
+vector<int*>& GameEngine::get_ArmyPools()
+{
+    return *_armyPool;
 }
 
 //function setState receives a pointer to the current state
@@ -687,4 +697,28 @@ void order_of_play(GameEngine& engine) {
     }
 
 }
+
+void give_initial_armies(GameEngine& engine) {
+    int size = engine.get_players().size();
+    int i = 0;
+    for (i; i < size; i++) {
+        engine.get_ArmyPools().push_back(new int(50));
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: engine.get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
+    }
+}
+
+//void draw_initial_cards(GameEngine& engine) {
+//engine.setDeck();
+ //   for (Player* player : engine.get_players()) {
+ //        = _deck.draw();
+ //       player->getHand().push_back(* card)
+ //       player->getHand.draw();
+ //   }
+//}
 //loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
