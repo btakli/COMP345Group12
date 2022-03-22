@@ -680,7 +680,7 @@ void assign_territories(GameEngine& engine) {
                 num = rand() % map->get_territories().size() + 1;
                 territory = map->get_territory(num);
             } while (territory->get_claimant() != nullptr); // RNG pick territory
-            territory->claim(*player);
+            territory->claim(player, false);
         }
     }
 

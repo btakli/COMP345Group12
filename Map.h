@@ -52,10 +52,10 @@ public:
 	LandMass(int& index, std::string& landMass_name);
 	
 	// Destructor
-	~LandMass();
+	virtual ~LandMass();
 
 	// Claim a land mass
-	void claim(Player& player);
+	virtual void claim(Player* player);
 
 	// Check who owns the land mass. returns player or null
 	Player* get_claimant() const;
@@ -90,6 +90,9 @@ private:
 	// Constructor deleted. Prevent accidental use
 	Continent() = delete;
 
+	// Checks if a player claimed all territories
+	void verify_claims();
+
 public:
 
 	// Copy constructor. !!!Don't use unless really necessary - cause dupe index
@@ -99,7 +102,7 @@ public:
 	Continent(std::string& continent_name, int& bonus_army_value, std::string& color);
 	
 	// Destructor
-	~Continent();
+	virtual ~Continent();
 
 	// Get army value. return an int
 	int get_army_bonus_value() const;
@@ -119,6 +122,8 @@ public:
 	// Assignment operator. DO NOT USE
 	Continent& operator=(const Continent& continent);
 
+	friend class Territory;
+
 	// Stream insertion
 	friend std::ostream& operator<<(std::ostream& stream, const Continent& continent);
 };
@@ -127,6 +132,7 @@ public:
 
 class Territory : public LandMass
 {
+	Continent* _continent_ptr; //parent obj
 	std::list<Territory*>* _neighbor_territories_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
@@ -151,7 +157,7 @@ public:
 	Territory(int& index, std::string& territory_name);
 
 	// Destructor
-	~Territory();
+	virtual ~Territory();
 
 	// Returns a reference to the list of neighbors
 	std::list<Territory*>& get_neighbors() const; 
@@ -164,6 +170,15 @@ public:
 	
 	// Set new stationed army
 	void set_stationed_army(int& army);
+
+	// Virtual claim a territory; bool verify, checks if continent's territories belongs to 1 player
+	void claim(Player* player, bool verify);
+
+	// Set parent obj which is a continent
+	void set_parent(Continent& parent);
+
+	// Get parent obj which is a continent
+	Continent& get_parent() const;
 
 	// Obj to string
 	std::string to_string() const;
