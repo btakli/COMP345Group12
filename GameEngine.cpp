@@ -1,9 +1,15 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <random>
 
+using std::vector;
+using std::shuffle;
+using std::begin;
+using std::end; 
 #define LOADMAP "loadmap"
 #define VALIDATE_MAP "validatemap"
 #define ADD_PLAYER "addplayer"
+#define GAME_START "gamestart"
 #define ISSUE_ORDER "issueorder"
 #define ASSIGN_COUNTRIES "assigncountries"
 
@@ -11,6 +17,7 @@
 void add_new_player(GameEngine&);
 void map_picker();
 void assign_territories(GameEngine&);
+void order_of_play(GameEngine&);
 //************GameState****************
 GameState::~GameState(){} //destructor
 
@@ -204,7 +211,7 @@ void MapValidated::commandMessage(){
 ***********************************************************************/
 PlayersAdded::PlayersAdded(){
     _command1 = new string(ADD_PLAYER);
-    _command2 = new string(ASSIGN_COUNTRIES);
+    _command2 = new string(GAME_START);
 }
 
 PlayersAdded::~PlayersAdded(){
@@ -229,6 +236,8 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             GameEngine->setState(newState);
             
             assign_territories(*GameEngine);
+            order_of_play(*GameEngine);
+
 
         }
     }else{
@@ -667,3 +676,15 @@ void assign_territories(GameEngine& engine) {
 
     cout << *Map::get_instance(); // DEBUG LINE
 }
+
+void order_of_play(GameEngine& engine) {
+
+    random_shuffle(begin(engine.get_players()), end(engine.get_players()));         //not true random
+    cout << "The order of play is the following: " << endl;     
+    int i = 0; 
+    for (Player* player : engine.get_players()) {
+        cout << "Player " << i++ << ": \t" << *player->getName() << endl;
+    }
+
+}
+//loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart

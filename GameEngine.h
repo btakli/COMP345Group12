@@ -1,9 +1,10 @@
 //To prevent mutiple inclusion:
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
-
+#include <vector>
 #include <string>
 #include "Map.h"
+using std::vector;
 
 using std::cout;
 using std::endl;

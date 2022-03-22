@@ -46,6 +46,8 @@ public:
     Hand* getHand();
     //Returns player's OrdersList
     OrdersList* getOrdersList();
+    //Returns player's _name
+    string* getName();
 private:
     //player name
     string* _name;

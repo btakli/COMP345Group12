@@ -76,6 +76,11 @@ OrdersList* Player::getOrdersList()
     return this->_listOfOrders;
 }
 
+string* Player::getName()
+{
+    return this->_name;
+}
+
 Player::Player( const Player &p){
     this->_name = new string(*(p._name));
     for (auto territory : *p._collection) {
