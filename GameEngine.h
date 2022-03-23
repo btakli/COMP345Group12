@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Map.h"
+#include "LoggingObserver.h"
 
 using std::vector;
 
@@ -15,12 +16,12 @@ using std::endl;
 class GameEngine; 
 
 //An abstract class:
-class GameState
+class GameState : public ILoggable, public Subject
 {
     public:
     //pure virtual function
     //needs to be overridden
-    virtual void transition(GameEngine* GameEngine, string command) = 0; 
+    virtual void transition(GameEngine* GameEngine, string command); 
     virtual ~GameState(); //destructor
 
     //implemented when called to print current state
@@ -33,6 +34,7 @@ class GameState
     virtual GameState* clone() const = 0;
 
     virtual void commandMessage() = 0;
+    string stringToLog();
 };
 
 ostream& operator<<(ostream& os, const GameState& s);
@@ -187,7 +189,32 @@ class AssignedReinforcement : public GameState {
     string* _command;
 };
 
+/**********************************************************************
+******************Issue Orders State:**********************************
+***********************************************************************/
+class ReinforcementPhase : public GameState {
+public:
+       /*Takes two arguments, validate the input command and makes decision about
+    whether stay in current ststate or transit to next state*/
+    void transition(GameEngine* GameEngine, string command);
 
+    ReinforcementPhase(); //constructor
+    ~ReinforcementPhase(); //destructor
+
+    ReinforcementPhase(const ReinforcementPhase& other); //deep copy constructor
+    ReinforcementPhase& operator = (const ReinforcementPhase& i); //assignment operator
+        //stream insertion operator:
+    friend ostream& operator<<(ostream& os, const ReinforcementPhase& i);
+    GameState* clone() const; //clone() overridden
+         //toString overridden:
+    void toString();
+    void commandMessage();
+
+private:
+    string* _command1;
+    string* _command2;
+
+};
 /**********************************************************************
 ******************Issue Orders State:**********************************
 ***********************************************************************/

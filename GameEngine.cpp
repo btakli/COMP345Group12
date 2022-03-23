@@ -12,6 +12,7 @@ using std::end;
 #define ADD_PLAYER "addplayer"
 #define GAME_START "gamestart"
 #define ISSUE_ORDER "issueorder"
+
 #define ASSIGN_COUNTRIES "assigncountries"
 
 //Prototypes
@@ -22,8 +23,20 @@ void order_of_play(GameEngine&);
 void give_initial_armies(GameEngine&);
 void create_deck(GameEngine&); 
 void draw_initial_cards(GameEngine&);
+void reinforcementPhase(GameEngine&);
+void issueOrdersPhase(GameEngine&);
+void excecuteOrdersPhase(GameEngine&);
+
 //************GameState****************
 GameState::~GameState(){} //destructor
+
+string GameState::stringToLog() {
+    return "Order Executed: " + *_currentState;
+}
+void GameState::transition(GameEngine* GameEngine, string input) {
+    notify(this);
+}
+
 
 //*********************friends with ostream:*********************************
 
@@ -315,6 +328,17 @@ void AssignedReinforcement::commandMessage(){
     AssignedReinforcement a;
     cout << a;
 }
+/**********************************************************************
+****************Play :***************************
+***********************************************************************/
+
+/**********************************************************************
+****************Reinforcement State:***************************
+***********************************************************************/
+//ReinforcementPhase::ReinforcementPhase() {
+//    _command1 = new string(REINFORCEMENT_PHASE)
+//}
+
 /**********************************************************************
 ******************Issue Orders State:**********************************
 ***********************************************************************/
