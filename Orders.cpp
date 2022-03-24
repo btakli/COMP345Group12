@@ -113,7 +113,8 @@ void Deploy::execute(){
         //cout << "Deploy: place some armies on one of the current player's territories." << endl;
         //New Implementation
         targetTerritory->get_stationed_army();
-        // targetTerritory->set_stationed_army(get_stationed_army() + armiesToDeploy);
+        //targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + armiesToDeploy);
+        //error with the variable armiesToDeploy because not a const?
         notify(this); //Call notify to notify observers
     }
    else
@@ -155,11 +156,12 @@ bool Advance::validate(){
         return false;
     } 
     // Check if 2 Territories are adjacent
-//     else if(sourceTerritory->get_neighbors() != targetTerritory){
-//         cout << "invalid order, two territories are not adjacent" << endl;
-//         return false;
-//     }else
-//         return true;
+    // does not work need to find a way to check adjancency
+    //  else if(sourceTerritory->get_neighbors() != targetTerritory){
+    //      cout << "invalid order, two territories are not adjacent" << endl;
+    //      return false;
+    //  }else
+    //      return true;
      }
     
 
@@ -207,12 +209,15 @@ bool Bomb::validate(){
         cout << "invalid order, don't own territory" << endl;
         return false;
     }else
+    //need to check if territories are adjacent, same problem as for advance
     return true;
 }
 
 void Bomb::execute(){
     if (validate()) {
         cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
+        int bombedArmies = (targetTerritory->get_stationed_army()) / 2;
+        targetTerritory->set_stationed_army(bombedArmies);
         notify(this); //Call notify to notify observers
     }
    else
@@ -307,6 +312,9 @@ bool Airlift::validate(){
 void Airlift::execute(){
     if (validate()) {
         cout << "Airlift: advance some armies from one of the current player's territories to any another territory." << endl;
+        //new implementation
+        sourceTerritory->set_stationed_army(sourceTerritory->get_stationed_army());
+
         notify(this); //Call notify to notify observers
     }
    else
