@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Player.h"
+#include "Map.h"
 #include "LoggingObserver.h"
 
 using namespace std;
@@ -60,6 +62,10 @@ private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Deploy& deploy);
 
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    int armiesToDeploy;
 };
 
 class Advance : public Order{
@@ -83,6 +89,12 @@ public:
   private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Advance& advance);
+
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
+    int armiesToAdvance;
 };
 
 class Bomb : public Order{
@@ -106,6 +118,11 @@ public:
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);
+
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
 
 };
 
@@ -131,6 +148,10 @@ private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);
 
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+
 };
 
 class Airlift : public Order{
@@ -154,6 +175,12 @@ public:
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);
+
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
+    int armiesToAirlift;
 };
 
 class Negotiate : public Order{
@@ -177,6 +204,10 @@ public:
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Negotiate& negotiate);
+
+    //New Implementation
+    Player* player;
+    Player* targetPlayer;
 
 };
 
