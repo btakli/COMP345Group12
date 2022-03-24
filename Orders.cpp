@@ -1,6 +1,7 @@
 #include "Orders.h"
 #include <vector>
 #include <iostream>
+#include "Map.h"
 using namespace std;
 
 
@@ -95,12 +96,24 @@ Deploy* Deploy::clone() const
 }
 
 bool Deploy::validate(){
-    return true;
+    //New Implementation
+     // Check if territory belongs to player
+    if (targetTerritory->get_claimant() == player){
+        cout << "valid order" << endl;
+        return true;
+    }else{
+        cout << "invalid order" << endl;
+        return false;
+    }
+
 }
 
 void Deploy::execute(){
     if (validate()) {
-        cout << "Deploy: place some armies on one of the current player's territories." << endl;
+        //cout << "Deploy: place some armies on one of the current player's territories." << endl;
+        //New Implementation
+        targetTerritory->get_stationed_army();
+        // targetTerritory->set_stationed_army(get_stationed_army() + armiesToDeploy);
         notify(this); //Call notify to notify observers
     }
    else
@@ -135,8 +148,21 @@ Advance* Advance::clone() const
 }
 
 bool Advance::validate(){
-    return true;
-}
+    //New Implementation
+    // Check if territory belongs to player
+    if (sourceTerritory->get_claimant() != player) {
+        cout << "invalid order, don't own territory" << endl;
+        return false;
+    } 
+    // Check if 2 Territories are adjacent
+//     else if(sourceTerritory->get_neighbors() != targetTerritory){
+//         cout << "invalid order, two territories are not adjacent" << endl;
+//         return false;
+//     }else
+//         return true;
+     }
+    
+
 
 void Advance::execute(){
     if (validate()) {
@@ -175,6 +201,12 @@ Bomb* Bomb::clone() const
 }
 
 bool Bomb::validate(){
+    //New Implementation
+    // Check if territory belongs to player
+    if (sourceTerritory->get_claimant() != player) {
+        cout << "invalid order, don't own territory" << endl;
+        return false;
+    }else
     return true;
 }
 
@@ -215,7 +247,13 @@ Blockade* Blockade::clone() const
 }
 
 bool Blockade::validate(){
-    return true;
+   //New Implementation
+    // Check if territory belongs to player
+    if (targetTerritory->get_claimant() == player) {
+        cout << "valid order, owned territory" << endl;
+        return true;
+    }else
+    return false;
 }
 
 void Blockade::execute(){
@@ -255,7 +293,15 @@ Airlift* Airlift::clone() const
 }
 
 bool Airlift::validate(){
-    return true;
+    //New Implementation
+    //Check if both territories belong to player
+    if (targetTerritory->get_claimant() == player && sourceTerritory->get_claimant() == player){
+        cout << "valid order" << endl;
+        return true;
+    } else {
+        cout << "invalid order, don't own both territories" << endl;
+        return false;
+    }
 }
 
 void Airlift::execute(){
@@ -295,7 +341,13 @@ Negotiate* Negotiate::clone() const
 }
 
 bool Negotiate::validate(){
-    return true;
+    //New Implementation
+    //Check if the player issuing the negotiation is the same as the target player
+    if (player == targetPlayer) {
+        return false;
+        cout << "invalid order : negotiation must be done with a different player\n";
+    } else
+        return true;
 }
 
 void Negotiate::execute(){
