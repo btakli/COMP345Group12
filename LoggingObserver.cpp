@@ -1,6 +1,7 @@
 #include "LoggingObserver.h"
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
 ILoggable::~ILoggable()
 {
@@ -27,10 +28,17 @@ LogObserver::LogObserver(): LogObserver("gamelog.txt")
 
 LogObserver::LogObserver(string filename)
 {
+
 	_filename = new string(filename);
-	_stream = new ofstream(); 
+	_stream = new ofstream();
 	_stream->open(*_filename);
 	printGameStartTime();
+
+	if (!(*_stream)) {
+		std::cerr << "An error has occured when trying to open the file " << filename << "... Ensure you have appropriate permissions to use it!" << std::endl;
+		std::cerr << "Exiting the program..." << std::endl;
+		exit(0);
+	}
 }
 
 LogObserver::LogObserver(const LogObserver& other)
