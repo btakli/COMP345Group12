@@ -5,7 +5,10 @@ using std::string;
 using std::vector;
 using std::cout;
 
+int Player::s_index = 0;
+
 Player::Player() {
+    this->_index = new int(s_index++);
     this->_name = new string("player");
     this->_collection = new vector<Territory*> {};
     this->_hand  = new Hand();
@@ -13,6 +16,7 @@ Player::Player() {
 }
 
 Player::Player(string name) {
+    this->_index = new int(s_index++);
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;
     this->_hand = new Hand();                         
@@ -20,6 +24,7 @@ Player::Player(string name) {
 }
 
 Player::Player(string name, vector<Territory*> collection) {
+    this->_index = new int(s_index++);
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;
     for (auto territory : collection) {
@@ -30,6 +35,7 @@ Player::Player(string name, vector<Territory*> collection) {
 }
 
 Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
+    this->_index = new int(s_index++);
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;
     for (auto territory : collection) {
@@ -44,6 +50,7 @@ Player::~Player() {
     delete _collection;
     delete _hand;                          
     delete _listOfOrders;
+    delete _index;
 }
 
 vector<Territory *>* Player::toDefend() {
@@ -56,6 +63,10 @@ vector<Territory *>* Player::toAttack() {
 
 
     return nullptr;
+}
+
+int& Player::getIndex() {
+    return *_index;
 }
 
 void Player::issueOrder() { //no specifications to what it takes in or creates
@@ -81,7 +92,12 @@ string* Player::getName()
     return this->_name;
 }
 
+vector<Territory*>& Player::get_territories() {
+    return *_collection;
+}
+
 Player::Player( const Player &p){
+    this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
     for (auto territory : *p._collection) {
         this->_collection->push_back(territory); //Shallow copy because the territory should not be recreated
@@ -92,6 +108,7 @@ Player::Player( const Player &p){
 
 
 Player& Player::operator=(const Player& p) {
+    this->_index = new int(*p._index);
     this->_name = new string(*p._name);
     this->_collection = new std::vector<Territory*>;
     for (auto territory : *p._collection) {
@@ -110,5 +127,4 @@ std::ostream& operator<<(std::ostream& out, const Player& player) {
     out << *player._hand;
     out << *player._listOfOrders;
     return out;
-
 }

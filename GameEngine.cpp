@@ -2,6 +2,12 @@
 #include <iostream>
 #include <random>
 
+/*********************/
+
+//                loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
+//                loadmap 1 validatemap addplayer A addplayer B addplayer C addplayer D addplayer E gamestart
+/*********************/
+
 
 using std::vector;
 using std::shuffle;
@@ -302,6 +308,7 @@ void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
         GameState* newState = new IssueOrders();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
+
         cout << "Issuing orders..." << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -762,4 +769,30 @@ void draw_initial_cards(GameEngine& engine) {
         cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
     }
 }
-//loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
+
+
+void reinforcementPhase(GameEngine& engine) {
+
+    // # Territories / 3 to floor added to army pool 
+    for (Player* player : engine.get_players()) {
+        *(engine.get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
+    }
+
+    // Bonus Army
+    for (Continent* c : Map::get_instance()->get_continents()) {
+        if (c->get_claimant() != nullptr) {
+            *(engine.get_ArmyPools()[c->get_claimant()->getIndex()]) += c->get_army_bonus_value(); //current army += bonus
+        }
+    }
+
+    // 3 min army points per round
+    for (int* army : engine.get_ArmyPools()) *army += 3; 
+}
+
+void issueOrdersPhase(GameEngine& engine) {
+
+}
+
+void excecuteOrdersPhase(GameEngine& engine) {
+
+}
