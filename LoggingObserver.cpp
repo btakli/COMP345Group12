@@ -68,13 +68,15 @@ LogObserver& LogObserver::operator=(const LogObserver& rhs)
 
 void LogObserver::printGameStartTime()
 {
-	//Get time
+#ifndef __APPLE__
+	//Get time (DOES NOT WORK ON MACS, SO USING PREPROCESSOR DIRECTIVE)
 	auto start = std::chrono::system_clock::now();
 	auto legacyStart = std::chrono::system_clock::to_time_t(start);
 	char tmBuff[30];
 	ctime_s(tmBuff, sizeof(tmBuff), &legacyStart);
 
 	*_stream << "~~~~ Gamelog for game starting on: " << tmBuff << std::endl;
+#endif
 }
 
 void LogObserver::update(ILoggable* obj) {
