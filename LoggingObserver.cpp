@@ -80,7 +80,7 @@ void LogObserver::printGameStartTime()
 	//This should work on MacOS
 	auto now = std::chrono::system_clock::now();
 	std::time_t date = std::chrono::system_clock::to_time_t(now);
-	std::cout << std::ctime(&date);
+	*_stream << "~~~~ Gamelog for game starting on: " << std::ctime(&date) << std::endl;
 #endif
 }
 
