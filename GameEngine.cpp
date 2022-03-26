@@ -92,6 +92,17 @@ void Start::commandMessage(){
     cout << s;
 }
 
+bool Start::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string Start::getName(){
+    return "Start";
+}
+
 /**********************************************************************
 ********************MapLoaded State:***********************************
 ***********************************************************************/
@@ -154,6 +165,16 @@ void MapLoaded::commandMessage(){
     cout << m;
 }
 
+bool MapLoaded::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+        return false;
+}
+
+string MapLoaded::getName(){
+    return "MapLoaded";
+}
 /**********************************************************************
 ********************MapValidated State:********************************
 ***********************************************************************/
@@ -197,6 +218,17 @@ void MapValidated::toString(){
 void MapValidated::commandMessage(){
     MapValidated mv;
     cout << mv;
+}
+
+bool MapValidated::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string MapValidated::getName(){
+    return "MapValidated";
 }
 
 /**********************************************************************
@@ -258,6 +290,17 @@ void PlayersAdded::commandMessage(){
     PlayersAdded p;
     cout << p;
 }
+
+bool PlayersAdded::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+        return false;
+}
+
+string PlayersAdded::getName(){
+    return "PlayersAdded";
+}
 /**********************************************************************
 ****************AssignedReinforcement State:***************************
 ***********************************************************************/
@@ -299,6 +342,14 @@ void AssignedReinforcement::toString(){
 void AssignedReinforcement::commandMessage(){
     AssignedReinforcement a;
     cout << a;
+}
+
+bool AssignedReinforcement::validate(string command){
+    return false;
+}
+
+string AssignedReinforcement::getName(){
+    return "Assignedreinforcement";
 }
 /**********************************************************************
 ******************Issue Orders State:**********************************
@@ -347,6 +398,13 @@ void IssueOrders::toString(){
 void IssueOrders::commandMessage(){
     IssueOrders i;
     cout << i;
+}
+
+bool IssueOrders::validate(string command){
+    return false;
+}
+string IssueOrders::getName(){
+    return "IssueOrders";
 }
 /**********************************************************************
 ******************Execute Orders State:********************************
@@ -407,6 +465,14 @@ void ExcecuteOrders::commandMessage(){
     ExcecuteOrders e;
     cout << e;
 }
+
+bool ExcecuteOrders::validate(string command){
+    return false;
+}
+
+string ExcecuteOrders::getName(){
+    return "ExcecuteOrders";
+}
 /**********************************************************************
 *************************Win State:************************************
 ***********************************************************************/
@@ -461,6 +527,17 @@ void Win::commandMessage(){
     Win w;
     cout << w;
 }
+
+bool Win::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+    return false;
+}
+
+string Win::getName(){
+    return "Win";
+}
 /**********************************************************************
 *************************End State:************************************
 ***********************************************************************/
@@ -485,6 +562,13 @@ void End::toString(){
 
 void End::commandMessage(){
     cout << "NO COMMANDS ACCEPTED ANYMORE!!";
+}
+
+bool End::validate(string command){
+    return false;
+}
+string getName(){
+    return "End";
 }
 /**********************************************************************
 *************************GameEngine Class:*****************************
