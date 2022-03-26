@@ -567,7 +567,7 @@ void End::commandMessage(){
 bool End::validate(string command){
     return false;
 }
-string getName(){
+string End::getName(){
     return "End";
 }
 /**********************************************************************
