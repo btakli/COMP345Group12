@@ -641,46 +641,35 @@ GameEngine::GameEngine(){
     //--> Later, Game engine would validate the command everytime before transit
     //    to next state using the validate() function provided by the Commandprocessor
     string input_option;
-    
-    
-    cout << endl;
-    cout << "How would you like to input commands?" << endl;
-    cout << "Please choose from the following:" << endl;
-    cout << "1. -console" << endl;
-    cout << "2. -file <filename>" <<endl;
-    //getline(cin, input_option);
+    bool pass = true;
+    do{
+        cout << endl;
+        cout << "How would you like to input commands?" << endl;
+        cout << "Please choose from the following:" << endl;
+        cout << "1. -console" << endl;
+        cout << "2. -file <filename>" <<endl;
+        getline(cin, input_option);
     //input_option = "-console";
-    input_option = "-file <command.txt>";
-    string option_prefix = input_option.substr(0, 5);
-    if(input_option == "-console"){
-        _myProcessor = new CommandProcessor();
-        //list<Command>* l1 = _myProcessor->getCommand();
-        //loop through the list:
-        //list<Command>::iterator itConsole;
-        //try{
-        //    for(itConsole = l1->begin(); itConsole != l1->end();itConsole++){
-        //        cout << "current command is: " << itConsole -> getCommandName() << endl;
-        //    }
-    }else if(option_prefix == "-file"){
-        size_t pos = input_option.find("<");
-        size_t pos2 = input_option.find(">");
-        int length = pos2 - pos - 1;
-        string pathIn = input_option.substr(pos+1, length);
-        cout << "path name is:" << pathIn << endl;
-        _myProcessor = new FileCommandProcessorAdapter(pathIn);
-        //list<Command>* l2 = _myProcessor->getCommand();
-         //case #1 Start State:
-        /*cout << "before validation: " << myGame->getCurrentState()->getName() << endl; 
-        fcpa->validate(myGame);
-        cout << "after validation: " << myGame->getCurrentState()->getName() << endl;*/
-        //loop through the list:
-        //list<Command>::iterator itFile;
-        //for(itFile = l2->begin(); itFile != l2->end(); ++itFile){
-        //    cout << itFile -> getCommandName() << endl;
-        //}   
+    //input_option = "-file <command.txt>";
+        string option_prefix = input_option.substr(0, 5);
+        if(input_option == "-console"){
+            pass = true;
+            _myProcessor = new CommandProcessor();
+        }else if(option_prefix == "-file"){
+            pass = true;
+            size_t pos = input_option.find(" ");
+        //size_t pos2 = input_option.find(">");
+        //int length = pos2 - pos - 1;
+            string pathIn = input_option.substr(pos+1);
+            cout << "path name is:" << pathIn << endl;
+            _myProcessor = new FileCommandProcessorAdapter(pathIn);
     }else{
         cout << "Please enter a correct option." << endl;
+        pass = false;
     }
+    }
+    while(!pass);
+    
 }
 
 GameEngine::~GameEngine(){

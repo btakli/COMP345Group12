@@ -1,5 +1,4 @@
 #include "CommandProcessing.h"
-//#include "GameEngine.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -12,6 +11,7 @@ Command::Command(){
 
 }  
 
+//set a deefault effect to avoid segmentation fault:
 Command::Command(string command){
     _command = new string(command);
     string* defaultEffect = new string("no effect yet");
@@ -21,13 +21,11 @@ Command::Command(string command){
 Command::~Command(){}
 
 void Command::saveEffect(string nextState){
-    string errorMessage = "THE COMMAND IS INVALID";
     _effect = &nextState;
 }
 
 string Command::getCommandName(){
     if(_command){
-        //string command = *_command;
         return *_command;
     }else{
         return "error!!";
@@ -39,20 +37,22 @@ string Command::getEffect(){
         string effect = *_effect;
         return effect;
     }else{
-        return "error!!";
+        return "error!! Effect for this command has not been initialized!";
     } 
 }
 
+//Deep copy constructor:
 Command::Command(const Command &c){
     this->_command = new string(*(c._command));
     this->_effect = new string(*(c._effect));
 }
-
+//operator:
 Command& Command::operator = (const Command& c){
     this->_command = new string(*(c._command));
     this->_effect = new string(*(c._effect));
     return *this;
 }
+
 /*****************************************
  *************CommandProcessor************
 ******************************************/
@@ -62,7 +62,7 @@ CommandProcessor::CommandProcessor(){
 }
 
 CommandProcessor::~CommandProcessor(){
-    delete this->commands_ptr;
+    delete this->commands_ptr; //avoid memory leak
 }
 
 void CommandProcessor::readCommand(){
@@ -70,44 +70,38 @@ void CommandProcessor::readCommand(){
     cout << endl;
     cout << "Please enter your commands (please seperated your commands with space):" << endl;
     //used getline because commands are separated using spaces
-    //testing:
-    commands = "loadmap loadmap mymap haha";
+    getline(cin, commands);
     command_in = &commands;
-    /*getline(cin, commands);
-    command_in = &commands;*/
 }
 
 void CommandProcessor::saveCommand(){
-    //list<Command> commands;
-    //commands_ptr = &commands;
-    //new command:
-
     if(command_in){
         string commandLine = *command_in;
         //use stringstream to seperate the command with "space"
         stringstream ss (commandLine);
+        string prev_command= "";
         string oneCommand;
         while (ss >> oneCommand){
-            //create a new Command object
-            /*Command* newCommand = new Command(oneCommand);
-            Command* current = newCommand;*/
-            //push the Command object to the list
-            //cout << "current command is:" << oneCommand << endl;
-            (*commands_ptr).push_back(Command(oneCommand));
+            if(oneCommand != "loadmap" && oneCommand != "addplayer"){
+                if(prev_command == "loadmap"){
+                    string newCommand = "loadmap " + oneCommand;
+                    cout << newCommand;
+                    (*commands_ptr).push_back(Command(newCommand));
+                }else if(prev_command == "addplayer"){
+                    string newCommand = "addplayer " + oneCommand;
+                    (*commands_ptr).push_back(Command(newCommand));
+                }else{
+                    (*commands_ptr).push_back(Command(oneCommand));
+                }
+                prev_command = oneCommand;
+             }
         }
         cout << "The size of the list is: " << (*commands_ptr).size() << endl;
     }else{
         cout << "error!! no commands received!!" << endl;
     }
-    /*list<Command>::iterator itConsole;
-    itConsole = commands_ptr->begin();
-    cout << "The begin() gives us: " << itConsole->getCommandName() << endl;
-    itConsole++;
-    cout << "The begin() gives us: " << itConsole->getCommandName() << endl;
-    cout << "The front() gives us: " << (commands_ptr->front()).getCommandName() << endl;
-    cout << "The back() gives us: " << (commands_ptr->back()).getCommandName() << endl;*/
-    
 }
+
 std::list<Command>* CommandProcessor::getCommand(){
     readCommand();
     saveCommand();
@@ -221,12 +215,12 @@ int main(){
     CommandProcessor* processor = myGame->getCommandProcessor();
     list<Command>* commandList = processor->getCommand();
     //while(myGame->getStatus() == true && commandList->empty() == false){
-        
         for(Command& command : *commandList){
             processor->validate(myGame, &command);
                 //if validated:
                 //myGame->transit(command.getCommandName());
             }
+        
         
     //}
     /*CommandProcessor* cp = new CommandProcessor();
