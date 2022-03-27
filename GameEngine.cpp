@@ -729,7 +729,6 @@ void GameEngine::setState(GameState* newState){
 void GameEngine::transit(string input){
     // print out the Start State:
     if(this->getCurrentState()->getName() == "Start"){
-        cout << "before notify" << endl;
         notify(this);
     }
     _currentState->transition(this, input); //transit to next state

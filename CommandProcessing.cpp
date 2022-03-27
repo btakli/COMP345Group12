@@ -42,10 +42,7 @@ Command::~Command(){
 
 void Command::saveEffect(string nextState){
     _effect = new string(nextState);
-    cout << "saveEffect: "<< *_effect <<endl;
     ILoggable::_currentState = _effect;
-    //ILoggable::_currentState->assign(*_effect);
-    cout << "get here" <<endl;
     notify(this);
 }
 
@@ -110,10 +107,7 @@ void CommandProcessor::readCommand(){
 // of the mapfile or the name of the player
 void CommandProcessor::saveCommand(){
     if(command_in){
-       
         string commandLine = *command_in;
-        cout << "commandLine" << commandLine <<endl;
-        
         //use stringstream to seperate the command with "space"
         stringstream ss (commandLine);
         string prev_command;
@@ -121,13 +115,10 @@ void CommandProcessor::saveCommand(){
         while (ss >> oneCommand){
             if(oneCommand != "loadmap" && oneCommand != "addplayer"){
                 if(prev_command == "loadmap"){
-                    
                     (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
-                    cout << "loadmap "+ oneCommand <<endl;
                     string newStateMap = "loadmap "+ oneCommand;
                     ILoggable::_currentState->assign(newStateMap);
                     notify(this); 
-                    
                 }else if(prev_command == "addplayer"){
                     (*commands_ptr).push_back(Command(("addplayer " + oneCommand)));
                     string newStatePlayer = "addplayer "+ oneCommand;
@@ -140,9 +131,8 @@ void CommandProcessor::saveCommand(){
                 }
              }
              prev_command = oneCommand;
-            
         }
-        cout << "The size of the list is: " << (*commands_ptr).size() << endl;
+        cout << "The size of the command list is: " << (*commands_ptr).size() << endl;
         
     }else{
         cout << "error!! no commands received!!" << endl;
@@ -156,9 +146,12 @@ std::string CommandProcessor::stringToLog(){
 // command getCommand() read commands, and then save them to a list of Command objects
 std::list<Command>* CommandProcessor::getCommand(){
     readCommand();
-    cout << "read command" <<endl;
     saveCommand();
     return commands_ptr;
+}
+
+list<Command>* CommandProcessor::getCommandList(){
+    return this->commands_ptr;
 }
 
 // If the command is valid, save the command's effect, 
@@ -167,9 +160,7 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
     if(myGame != NULL && command != NULL){
     GameState* currentState;
     currentState = myGame->getCurrentState();
-
     string* commandName = new string(command->getCommandName());
-    cout << *commandName <<endl;
     size_t pos1 = (*commandName).find(" ");
     size_t pos2 = 0;
     int length = pos1 - pos2;
@@ -218,10 +209,12 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
 
 CommandProcessor::CommandProcessor(const CommandProcessor &cp){
     this->command_in = new string(*(cp.command_in));
+    this->commands_ptr = new list<Command> (*(cp.commands_ptr));
 }
 
 CommandProcessor& CommandProcessor::operator = (const CommandProcessor& cp){
     this->command_in = new string(*(cp.command_in));
+    this->commands_ptr = new list<Command> (*(cp.commands_ptr));
     return *this;
 }
 /*****************************************

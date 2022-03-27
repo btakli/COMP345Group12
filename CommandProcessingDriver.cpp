@@ -12,14 +12,12 @@ int main(){
     myGame->attach(lo);
     CommandProcessor* processor = myGame->getCommandProcessor();
     processor->attach(lo);
-    cout << "line 15" <<endl;
     list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
     
     //For all the command it has:
     // validate each of them in current state
     // if it is valide, execute and save the effect
     // else, reject and save "INVALID COMMAND" 
-    cout << "got commands" << endl;
     for(Command& command : *commandList){
         command.attach(lo);
         processor->validate(myGame, &command);
