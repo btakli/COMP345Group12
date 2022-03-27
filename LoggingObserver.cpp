@@ -1,6 +1,7 @@
 #include "LoggingObserver.h"
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
 ILoggable::~ILoggable()
 {
@@ -27,10 +28,17 @@ LogObserver::LogObserver(): LogObserver("gamelog.txt")
 
 LogObserver::LogObserver(string filename)
 {
+
 	_filename = new string(filename);
-	_stream = new ofstream(); 
+	_stream = new ofstream();
 	_stream->open(*_filename);
 	printGameStartTime();
+
+	if (!(*_stream)) {
+		std::cerr << "An error has occured when trying to open the file " << filename << "... Ensure you have appropriate permissions to use it!" << std::endl;
+		std::cerr << "Exiting the program..." << std::endl;
+		exit(0);
+	}
 }
 
 LogObserver::LogObserver(const LogObserver& other)
@@ -60,13 +68,20 @@ LogObserver& LogObserver::operator=(const LogObserver& rhs)
 
 void LogObserver::printGameStartTime()
 {
-	//Get time
+#ifndef __APPLE__
+	//Get time (DOES NOT WORK ON MACS, SO USING PREPROCESSOR DIRECTIVE)
 	auto start = std::chrono::system_clock::now();
 	auto legacyStart = std::chrono::system_clock::to_time_t(start);
 	char tmBuff[30];
 	ctime_s(tmBuff, sizeof(tmBuff), &legacyStart);
 
 	*_stream << "~~~~ Gamelog for game starting on: " << tmBuff << std::endl;
+#else
+	//This should work on MacOS
+	auto now = std::chrono::system_clock::now();
+	std::time_t date = std::chrono::system_clock::to_time_t(now);
+	*_stream << "~~~~ Gamelog for game starting on: " << std::ctime(&date) << std::endl;
+#endif
 }
 
 void LogObserver::update(ILoggable* obj) {

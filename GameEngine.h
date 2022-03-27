@@ -4,13 +4,13 @@
 #include <vector>
 #include <string>
 #include "Map.h"
-#include "LoggingObserver.h"
-
-using std::vector;
+#include "CommandProcessing.h"
+//#include "CommandProcessing.h"
 
 using std::cout;
 using std::endl;
 
+class CommandProcessor;
 //solve dependencies
 //Game is defined at the end
 class GameEngine; 
@@ -23,7 +23,8 @@ class GameState : public ILoggable, public Subject
     //needs to be overridden
     virtual void transition(GameEngine* GameEngine, string command); 
     virtual ~GameState(); //destructor
-
+    virtual bool validate(string command) = 0;
+    virtual string getName() = 0;
     //implemented when called to print current state
     //pure virtual function needs to be overridden
     virtual void toString() = 0; 
@@ -52,6 +53,8 @@ class Start : public GameState {
     Start();
     //Destructor
     ~Start();
+    bool validate(string command);
+    string getName();
 
     Start(const Start& other); //copy constructor
     Start& operator = (const Start& s); //assignment operator
@@ -82,6 +85,9 @@ class MapLoaded : public GameState {
     void transition(GameEngine* GameEngine, string command);
     MapLoaded(); //constructor
     ~MapLoaded(); //destructor
+    bool validate(string command);
+    string getName();
+
 
     MapLoaded(const MapLoaded& other); //deep copy constructor
     MapLoaded& operator = (const MapLoaded& m); //assignment operator
@@ -114,6 +120,9 @@ class MapValidated : public GameState {
     MapValidated(); //constructor
     ~MapValidated(); //destructor
 
+    bool validate(string command);
+    string getName();
+
     MapValidated(const MapValidated& other); //deep copy constructor
     MapValidated& operator = (const MapValidated& mv); //assignment operator
     //stream insertion operator:
@@ -143,6 +152,9 @@ class PlayersAdded : public GameState {
     PlayersAdded(); //constructor
     ~PlayersAdded(); //destructor
 
+    bool validate(string command);
+    string getName();  
+
     PlayersAdded(const PlayersAdded& other); //deep copy constructor
     PlayersAdded& operator = (const PlayersAdded& p); //assignment operator
     //stream insertion operator:
@@ -158,6 +170,7 @@ class PlayersAdded : public GameState {
     private:
     string* _command1;
     string* _command2;
+    string* _commandGame;
 };
 
 /**********************************************************************
@@ -172,6 +185,9 @@ class AssignedReinforcement : public GameState {
   
     AssignedReinforcement(); //constructor
     ~AssignedReinforcement(); //destructor
+
+    bool validate(string command);
+    string getName();
 
     AssignedReinforcement(const AssignedReinforcement& other); //deep copy constructor
     AssignedReinforcement& operator = (const AssignedReinforcement& a); //assignment operator
@@ -228,6 +244,9 @@ class IssueOrders : public GameState {
     IssueOrders(); //constructor
     ~IssueOrders(); //destructor
 
+    bool validate(string command);
+    string getName();
+
     IssueOrders(const IssueOrders& other); //deep copy constructor
     IssueOrders& operator = (const IssueOrders& i); //assignment operator
     //stream insertion operator:
@@ -256,6 +275,9 @@ class ExcecuteOrders : public GameState {
     void transition(GameEngine* GameEngine, string command);
     ExcecuteOrders(); //constructor
     ~ExcecuteOrders(); //destructor
+
+    bool validate(string command);
+    string getName();
 
     ExcecuteOrders(const ExcecuteOrders& other); //deep copy constructor
     ExcecuteOrders& operator = (const ExcecuteOrders& e); //assignment operator
@@ -287,6 +309,9 @@ class Win : public GameState {
     Win(); //constructor
     ~Win(); //destructor
 
+    bool validate(string command);
+    string getName();
+
     Win(const Win& other); //deep copy constructor
     Win& operator = (const Win& w); //assignment operator
     //stream insertion operator:
@@ -316,6 +341,9 @@ class End: public GameState{
 
     End();
     ~End();
+
+    bool validate(string command);
+    string getName();
     
     End(const End& other);
     End& operator = (const End& e);
@@ -348,6 +376,8 @@ public:
     void transit(string c); //transition function according to command inputs
     void setState(GameState* newState); //used to set Game object to next stats
 
+    /*void transitCommandProcessor();
+    void transitCommandAdaptor();*/
     //setter is used to set the status to false when we reach the End state
     void setStatus(bool b);
     //getter is used to get the current status of the game
@@ -365,10 +395,13 @@ public:
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const GameEngine& g);
 
+    //return the command processor:
+    CommandProcessor* getCommandProcessor();
+    
     private:
     GameState* _currentState; //current state
     bool _continue; 
-    
+    CommandProcessor* _myProcessor;
 };
 
 

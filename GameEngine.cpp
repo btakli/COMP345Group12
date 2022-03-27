@@ -20,6 +20,7 @@ using std::end;
 #define ISSUE_ORDER "issueorder"
 
 #define ASSIGN_COUNTRIES "assigncountries"
+#define GAME_START "gamestart"
 
 //Prototypes
 void add_new_player(GameEngine&);
@@ -122,6 +123,17 @@ void Start::commandMessage(){
     cout << s;
 }
 
+bool Start::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string Start::getName(){
+    return "Start";
+}
+
 /**********************************************************************
 ********************MapLoaded State:***********************************
 ***********************************************************************/
@@ -184,6 +196,16 @@ void MapLoaded::commandMessage(){
     cout << m;
 }
 
+bool MapLoaded::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+        return false;
+}
+
+string MapLoaded::getName(){
+    return "MapLoaded";
+}
 /**********************************************************************
 ********************MapValidated State:********************************
 ***********************************************************************/
@@ -229,17 +251,30 @@ void MapValidated::commandMessage(){
     cout << mv;
 }
 
+bool MapValidated::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string MapValidated::getName(){
+    return "MapValidated";
+}
+
 /**********************************************************************
 ********************PlayersAdded State:********************************
 ***********************************************************************/
 PlayersAdded::PlayersAdded(){
     _command1 = new string(ADD_PLAYER);
-    _command2 = new string(GAME_START);
+    _command2 = new string(ASSIGN_COUNTRIES);
+    _commandGame = new string (GAME_START);
 }
 
 PlayersAdded::~PlayersAdded(){
     delete _command1;
     delete _command2;
+    delete _commandGame;
 }
 
 void PlayersAdded::transition(GameEngine* GameEngine, string input){
@@ -248,7 +283,7 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
         add_new_player(*GameEngine);
 
 
-    }else if(input == *_command2){
+    }else if(input == *_command2 || input == *_commandGame){
 
         if (GameEngine->get_players().size() < 2) {
             std::cout << "ERROR: Need at least 2 players to play." << endl;
@@ -292,6 +327,17 @@ void PlayersAdded::commandMessage(){
     PlayersAdded p;
     cout << p;
 }
+
+bool PlayersAdded::validate(string command){
+    if(command == *_command1 || command == *_commandGame){
+        return true;
+    }
+        return false;
+}
+
+string PlayersAdded::getName(){
+    return "PlayersAdded";
+}
 /**********************************************************************
 ****************AssignedReinforcement State:***************************
 ***********************************************************************/
@@ -334,6 +380,14 @@ void AssignedReinforcement::toString(){
 void AssignedReinforcement::commandMessage(){
     AssignedReinforcement a;
     cout << a;
+}
+
+bool AssignedReinforcement::validate(string command){
+    return false;
+}
+
+string AssignedReinforcement::getName(){
+    return "Assignedreinforcement";
 }
 /**********************************************************************
 ****************Play :***************************
@@ -395,6 +449,13 @@ void IssueOrders::commandMessage(){
     IssueOrders i;
     cout << i;
 }
+
+bool IssueOrders::validate(string command){
+    return false;
+}
+string IssueOrders::getName(){
+    return "IssueOrders";
+}
 /**********************************************************************
 ******************Execute Orders State:********************************
 ***********************************************************************/
@@ -454,12 +515,20 @@ void ExcecuteOrders::commandMessage(){
     ExcecuteOrders e;
     cout << e;
 }
+
+bool ExcecuteOrders::validate(string command){
+    return false;
+}
+
+string ExcecuteOrders::getName(){
+    return "ExcecuteOrders";
+}
 /**********************************************************************
 *************************Win State:************************************
 ***********************************************************************/
 Win::Win(){
-    _command1 = new string("play");
-    _command2 = new string("end");
+    _command1 = new string("replay");
+    _command2 = new string("quit");
 }
 
 Win::~Win(){
@@ -508,6 +577,17 @@ void Win::commandMessage(){
     Win w;
     cout << w;
 }
+
+bool Win::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+    return false;
+}
+
+string Win::getName(){
+    return "Win";
+}
 /**********************************************************************
 *************************End State:************************************
 ***********************************************************************/
@@ -533,6 +613,13 @@ void End::toString(){
 void End::commandMessage(){
     cout << "NO COMMANDS ACCEPTED ANYMORE!!";
 }
+
+bool End::validate(string command){
+    return false;
+}
+string End::getName(){
+    return "End";
+}
 /**********************************************************************
 *************************GameEngine Class:*****************************
 ***********************************************************************/
@@ -547,11 +634,59 @@ GameEngine::GameEngine(){
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
+
+    // By implementing the CommandProcessor and FileCommandAdaptor, when a
+    //game is initialized (or STARTED) it will ask for commands from the 
+    //command processor using the getCommand() funcction
+    //--> In this case, command processor has all the command for this game
+    //--> Later, Game engine would validate the command everytime before transit
+    //    to next state using the validate() function provided by the Commandprocessor
+    string input_option;
+    
+    
+    cout << endl;
+    cout << "How would you like to input commands?" << endl;
+    cout << "Please choose from the following:" << endl;
+    cout << "1. -console" << endl;
+    cout << "2. -file <filename>" <<endl;
+    //getline(cin, input_option);
+    //input_option = "-console";
+    input_option = "-file <command.txt>";
+    string option_prefix = input_option.substr(0, 5);
+    if(input_option == "-console"){
+        _myProcessor = new CommandProcessor();
+        //list<Command>* l1 = _myProcessor->getCommand();
+        //loop through the list:
+        //list<Command>::iterator itConsole;
+        //try{
+        //    for(itConsole = l1->begin(); itConsole != l1->end();itConsole++){
+        //        cout << "current command is: " << itConsole -> getCommandName() << endl;
+        //    }
+    }else if(option_prefix == "-file"){
+        size_t pos = input_option.find("<");
+        size_t pos2 = input_option.find(">");
+        int length = pos2 - pos - 1;
+        string pathIn = input_option.substr(pos+1, length);
+        cout << "path name is:" << pathIn << endl;
+        _myProcessor = new FileCommandProcessorAdapter(pathIn);
+        //list<Command>* l2 = _myProcessor->getCommand();
+         //case #1 Start State:
+        /*cout << "before validation: " << myGame->getCurrentState()->getName() << endl; 
+        fcpa->validate(myGame);
+        cout << "after validation: " << myGame->getCurrentState()->getName() << endl;*/
+        //loop through the list:
+        //list<Command>::iterator itFile;
+        //for(itFile = l2->begin(); itFile != l2->end(); ++itFile){
+        //    cout << itFile -> getCommandName() << endl;
+        //}   
+    }else{
+        cout << "Please enter a correct option." << endl;
+    }
 }
 
 GameEngine::~GameEngine(){
     delete _currentState;
-
+    delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
     for (int* i : *_armyPool) delete i;
     delete _deck;
@@ -581,6 +716,8 @@ Deck * GameEngine::getDeck() {
 vector<int*>& GameEngine::get_ArmyPools()
 {
     return *_armyPool;
+CommandProcessor* GameEngine::getCommandProcessor(){
+    return _myProcessor;
 }
 
 //function setState receives a pointer to the current state

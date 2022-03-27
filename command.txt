@@ -1,0 +1,12 @@
+loadmap
+loadmap
+validatemap
+addplayer
+addplayer
+addplayer
+addplayer
+gamestart
+issueorder
+issueordersend
+win
+quit
