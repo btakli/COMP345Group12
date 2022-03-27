@@ -399,29 +399,29 @@ public:
     //return the command processor:
     CommandProcessor* getCommandProcessor();
     //startup phase
-    void startupPhase(GameEngine&);
+    void startupPhase();
 
 
     //add new player state
-    void add_new_player(GameEngine&);
+    void add_new_player();
     //map picker state
     void map_picker();
     //assign territores state
-    void assign_territories(GameEngine&);
+    void assign_territories();
     //determines order of play
-    void order_of_play(GameEngine&);
+    void order_of_play();
     //give each army pool initial value of 50
-    void give_initial_armies(GameEngine&);
+    void give_initial_armies();
     //Checks if an interval in army pool of 0 
-    bool has_army(GameEngine& engine, int i);
-    void draw_initial_cards(GameEngine&);
-    void reinforcementPhase(GameEngine&);
-    void issueOrdersPhase(GameEngine&);
-    void excecuteOrdersPhase(GameEngine&);
-    void ordersPicker(GameEngine&, Player&);
-    void cardPicker(GameEngine&, Player&);
-    void cardPicker2(GameEngine& engine, Player& player, string type);
-    void validateMap(GameEngine&);
+    bool has_army(int i);
+    void draw_initial_cards();
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void excecuteOrdersPhase();
+    void ordersPicker(Player&);
+    void cardPicker(Player&);
+    void cardPicker2(Player& player, string type);
+    void validateMap();
    
 
     private:

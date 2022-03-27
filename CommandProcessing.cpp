@@ -231,24 +231,9 @@ int main(){
     //string input_option;
     GameEngine* myGame; // create a new game
     myGame = new GameEngine(); // initialize the game
-    CommandProcessor* processor = myGame->getCommandProcessor();
-    list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
-    //For all the command it has:
-    // validate each of them in current state
-    // if it is valide, execute and save the effect
-    // else, reject and save "INVALID COMMAND" 
-    for(Command& command : *commandList){
-        processor->validate(myGame, &command);
-    }
-
-
-
-    /*
     
-        Startup phase? - Yu
+    myGame->startupPhase();
 
-    */
-    
 
 
     //prevent memory leak:
