@@ -1,7 +1,7 @@
 //To prevent mutiple inclusion:
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
-
+#include <vector>
 #include <string>
 #include "Map.h"
 #include "CommandProcessing.h"
@@ -16,12 +16,12 @@ class CommandProcessor;
 class GameEngine; 
 
 //An abstract class:
-class GameState
+class GameState : public ILoggable, public Subject
 {
     public:
     //pure virtual function
     //needs to be overridden
-    virtual void transition(GameEngine* GameEngine, string command) = 0; 
+    virtual void transition(GameEngine* GameEngine, string command); 
     virtual ~GameState(); //destructor
     virtual bool validate(string command) = 0;
     virtual string getName() = 0;
@@ -35,6 +35,7 @@ class GameState
     virtual GameState* clone() const = 0;
 
     virtual void commandMessage() = 0;
+    string stringToLog();
 };
 
 ostream& operator<<(ostream& os, const GameState& s);
@@ -204,7 +205,32 @@ class AssignedReinforcement : public GameState {
     string* _command;
 };
 
+/**********************************************************************
+******************Issue Orders State:**********************************
+***********************************************************************/
+class ReinforcementPhase : public GameState {
+public:
+       /*Takes two arguments, validate the input command and makes decision about
+    whether stay in current ststate or transit to next state*/
+    void transition(GameEngine* GameEngine, string command);
 
+    ReinforcementPhase(); //constructor
+    ~ReinforcementPhase(); //destructor
+
+    ReinforcementPhase(const ReinforcementPhase& other); //deep copy constructor
+    ReinforcementPhase& operator = (const ReinforcementPhase& i); //assignment operator
+        //stream insertion operator:
+    friend ostream& operator<<(ostream& os, const ReinforcementPhase& i);
+    GameState* clone() const; //clone() overridden
+         //toString overridden:
+    void toString();
+    void commandMessage();
+
+private:
+    string* _command1;
+    string* _command2;
+
+};
 /**********************************************************************
 ******************Issue Orders State:**********************************
 ***********************************************************************/
@@ -335,12 +361,14 @@ received a command from the console.*/
 class GameEngine{
 
     std::vector<Player*>* _players_ptr;
-
+    vector<int*>* _armyPool;
+    Deck * _deck;
+    
 public:
     
     // Returns a pointer to the current players in game
     std::vector<Player*>& get_players();
-
+    
     GameEngine();
     ~GameEngine();
     GameState* getCurrentState() const; //returns pointer of current state
@@ -354,7 +382,10 @@ public:
     void setStatus(bool b);
     //getter is used to get the current status of the game
     bool getStatus();
-
+    //retunrs the _armyPool
+    vector<int*>& get_ArmyPools();
+    //returns the _deck
+    Deck* getDeck();
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);

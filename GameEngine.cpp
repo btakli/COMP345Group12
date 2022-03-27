@@ -1,10 +1,24 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <random>
 
+/*********************/
+
+//                loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
+//                loadmap 1 validatemap addplayer A addplayer B addplayer C addplayer D addplayer E gamestart
+/*********************/
+
+
+using std::vector;
+using std::shuffle;
+using std::begin;
+using std::end; 
 #define LOADMAP "loadmap"
 #define VALIDATE_MAP "validatemap"
 #define ADD_PLAYER "addplayer"
+#define GAME_START "gamestart"
 #define ISSUE_ORDER "issueorder"
+
 #define ASSIGN_COUNTRIES "assigncountries"
 #define GAME_START "gamestart"
 
@@ -12,8 +26,23 @@
 void add_new_player(GameEngine&);
 void map_picker();
 void assign_territories(GameEngine&);
+void order_of_play(GameEngine&);
+void give_initial_armies(GameEngine&);
+void draw_initial_cards(GameEngine&);
+void reinforcementPhase(GameEngine&);
+void issueOrdersPhase(GameEngine&);
+void excecuteOrdersPhase(GameEngine&);
+
 //************GameState****************
 GameState::~GameState(){} //destructor
+
+string GameState::stringToLog() {
+    return "Order Executed: " + *_currentState;
+}
+void GameState::transition(GameEngine* GameEngine, string input) {
+    notify(this);
+}
+
 
 //*********************friends with ostream:*********************************
 
@@ -264,6 +293,10 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             GameEngine->setState(newState);
             
             assign_territories(*GameEngine);
+            order_of_play(*GameEngine);
+            give_initial_armies(*GameEngine);
+            draw_initial_cards(*GameEngine);
+            
 
         }
     }else{
@@ -320,6 +353,7 @@ void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
         GameState* newState = new IssueOrders();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
+
         cout << "Issuing orders..." << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -355,6 +389,17 @@ string AssignedReinforcement::getName(){
     return "Assignedreinforcement";
 }
 /**********************************************************************
+****************Play :***************************
+***********************************************************************/
+
+/**********************************************************************
+****************Reinforcement State:***************************
+***********************************************************************/
+//ReinforcementPhase::ReinforcementPhase() {
+//    _command1 = new string(REINFORCEMENT_PHASE)
+//}
+
+/**********************************************************************
 ******************Issue Orders State:**********************************
 ***********************************************************************/
 IssueOrders::IssueOrders(){
@@ -370,6 +415,7 @@ IssueOrders::~IssueOrders(){
 void IssueOrders::transition(GameEngine* GameEngine, string input){
     if(input == *_command1){
         cout << "Issuing orders..." << endl;
+
     }else if(input == "endissueorders"){
         GameState* newState = new ExcecuteOrders();
         delete GameEngine->getCurrentState();
@@ -581,6 +627,9 @@ GameEngine::GameEngine(){
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
+    _armyPool = new std::vector<int*>();
+    _deck = new Deck();
+
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -627,7 +676,8 @@ GameEngine::~GameEngine(){
     delete _currentState;
     delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
-
+    for (int* i : *_armyPool) delete i;
+    delete _deck;
 }
 
 std::vector<Player*>& GameEngine::get_players() {
@@ -644,6 +694,16 @@ void GameEngine::setStatus(bool b){
 
 bool GameEngine::getStatus(){
     return _continue;
+}
+
+
+Deck * GameEngine::getDeck() {
+    return _deck;
+}
+
+vector<int*>& GameEngine::get_ArmyPools()
+{
+    return *_armyPool;
 }
 
 CommandProcessor* GameEngine::getCommandProcessor(){
@@ -667,6 +727,7 @@ GameEngine::GameEngine(const GameEngine& other){
     //called the virtual function clone to perform deep copy:
     this->_currentState = other._currentState->clone(); 
     this->setStatus(other._continue);
+
 }
 
 GameEngine& GameEngine::operator = (const GameEngine& e){
@@ -789,9 +850,71 @@ void assign_territories(GameEngine& engine) {
                 num = rand() % map->get_territories().size() + 1;
                 territory = map->get_territory(num);
             } while (territory->get_claimant() != nullptr); // RNG pick territory
-            territory->claim(*player);
+            territory->claim(player, false);
         }
     }
 
     cout << *Map::get_instance(); // DEBUG LINE
+}
+
+void order_of_play(GameEngine& engine) {
+
+    random_shuffle(begin(engine.get_players()), end(engine.get_players()));         //not true random
+    cout << "The order of play is the following: " << endl;     
+    int i = 0; 
+    for (Player* player : engine.get_players()) {
+        cout << "Player " << i++ << ": \t" << *player->getName() << endl;
+    }
+
+}
+
+void give_initial_armies(GameEngine& engine) {
+    int size = engine.get_players().size();
+    int i = 0;
+    for (i; i < size; i++) {
+        engine.get_ArmyPools().push_back(new int(50));
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: engine.get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
+    }
+}
+
+void draw_initial_cards(GameEngine& engine) {
+    
+    for (Player* player : engine.get_players()) {
+        player->getHand()->addCard(engine.getDeck()->draw());
+        player->getHand()->addCard(engine.getDeck()->draw());
+        cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
+    }
+}
+
+
+void reinforcementPhase(GameEngine& engine) {
+
+    // # Territories / 3 to floor added to army pool 
+    for (Player* player : engine.get_players()) {
+        *(engine.get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
+    }
+
+    // Bonus Army
+    for (Continent* c : Map::get_instance()->get_continents()) {
+        if (c->get_claimant() != nullptr) {
+            *(engine.get_ArmyPools()[c->get_claimant()->getIndex()]) += c->get_army_bonus_value(); //current army += bonus
+        }
+    }
+
+    // 3 min army points per round
+    for (int* army : engine.get_ArmyPools()) *army += 3; 
+}
+
+void issueOrdersPhase(GameEngine& engine) {
+
+}
+
+void excecuteOrdersPhase(GameEngine& engine) {
+
 }

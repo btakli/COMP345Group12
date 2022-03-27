@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.21)
-project(Backup2022.02.09)
+project(COMP345Group12)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(.)
+include_directories(../../Winter2022/comp345/CmakeBackup)
 
-add_executable(Backup2022.02.09
-
+add_executable(COMP345Group12
         Player.cpp
         Player.h
-        PlayerDriver.cpp
-
-        OrdersList.cpp OrdersList.h Territory.cpp Territory.h Hand.cpp Hand.h Order.cpp Order.h)
+        GameEngine.cpp
+        GameEngine.h
+        GameEngineDriver.cpp
+        Orders.cpp
+        Orders.h
+        Map.cpp
+        Map.h
+        Main.cpp
+        )

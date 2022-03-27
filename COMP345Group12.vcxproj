@@ -140,7 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cards.cpp" />
+    <ClCompile Include="CommandProcessing.cpp" />
+    <ClCompile Include="CommandProcessingDriver.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="GameEngineDriver.cpp" />
     <ClCompile Include="LoggingObserver.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Orders.cpp" />
@@ -149,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cards.h" />
+    <ClInclude Include="CommandProcessing.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="LoggingObserver.h" />
     <ClInclude Include="Map.h" />

@@ -7,13 +7,15 @@ using namespace std;
 /*****************************************
  ******************Command****************
 ******************************************/
-Command::Command(){}  
+Command::Command(){
+
+}  
 
 //set a deefault effect to avoid segmentation fault:
 Command::Command(string command){
-    _command = &command;
-    string defaultEffect = "no effect yet";
-    _effect = &defaultEffect;
+    _command = new string(command);
+    string* defaultEffect = new string("no effect yet");
+    _effect = defaultEffect;
 }
 
 Command::~Command(){}
@@ -55,6 +57,7 @@ Command& Command::operator = (const Command& c){
  *************CommandProcessor************
 ******************************************/
 CommandProcessor::CommandProcessor(){
+    command_in = new string("ASDFADSF");
     this->commands_ptr = new list<Command>();
 }
 
@@ -118,7 +121,7 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
     GameState* currentState;
     currentState = myGame->getCurrentState();
 
-    string commandName = command->getCommandName();
+    string* commandName = new string(command->getCommandName());
     //list<Command>::iterator it;
     //for(it = commands_ptr->begin() ; it != commands_ptr->end(); it++){
         //string currentCommand;
@@ -127,10 +130,10 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
 
         //Note: from grading sheet:
         //"For valid command, it results in correct effect and state change"
-        if(currentState->validate(commandName)){
-            cout << "The current command: " << commandName 
+        if(currentState->validate(*commandName)){
+            cout << "The current command: " << *commandName 
             << " is valid in current state: " << currentState->getName() << endl;
-            myGame->transit(commandName);
+            myGame->transit(*commandName);
             currentState = myGame->getCurrentState();
             command->saveEffect(currentState->getName());
             cout << "The effect of the command is:" << command->getEffect() << endl;
@@ -155,7 +158,7 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(){}
 
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(string pathIn){
-    this->_pathIn = &pathIn;
+    this->_pathIn = new string(pathIn);
 }
 
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){}
@@ -163,8 +166,8 @@ FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){}
 void FileCommandProcessorAdapter::readCommand(){
     string str_path = *_pathIn;
     flr = new FileLineReader(str_path);
-    string commandsFile = flr->readLineFromFile();
-    command_in = &commandsFile;
+    string* commandsFile = new string(flr->readLineFromFile());
+    command_in = commandsFile;
     delete(flr);
 }
 

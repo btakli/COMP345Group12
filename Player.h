@@ -46,7 +46,20 @@ public:
     Hand* getHand();
     //Returns player's OrdersList
     OrdersList* getOrdersList();
+    //Returns player's _name
+    string* getName();
+    
+    //Returns player index.
+    int& getIndex();
+
+    vector<Territory*>& get_territories();
+
 private:
+
+    //static index
+    static int s_index;
+    //player index
+    int* _index;
     //player name
     string* _name;
     //collection of territories
