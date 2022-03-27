@@ -362,6 +362,7 @@ IssueOrders::~IssueOrders(){
 void IssueOrders::transition(GameEngine* GameEngine, string input){
     if(input == *_command1){
         cout << "Issuing orders..." << endl;
+
     }else if(input == "endissueorders"){
         GameState* newState = new ExcecuteOrders();
         delete GameEngine->getCurrentState();

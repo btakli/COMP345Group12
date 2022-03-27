@@ -70,8 +70,96 @@ int& Player::getIndex() {
 }
 
 void Player::issueOrder() { //no specifications to what it takes in or creates
-    Order *ord = new Order("issueOrderExample");
-   this->_listOfOrders->addOrder(ord);
+#define DEPLOY "deploy"
+#define ADVANCE "advance"
+#define AIRLIFT "airlift"
+#define BOMB "bomb"
+#define NEGOTIATE "negotiate"
+#define BLOCKADE "blockade"
+
+#define UPPERLIMIT 6
+
+    int option;
+    try {
+        do {
+            Hand * hand = new Hand(*this->_hand);
+            std::cout << "Please enter a number between 1 to " << UPPERLIMIT << "."
+                "\n 1. " << DEPLOY
+                "\n 2. " << ADVANCE
+                "\n 3. " << AIRLIFT
+                "\n 4. " << BOMB
+                "\n 5. " << NEGOTIATE 
+                "\n 6. " << BLOCKADE
+                "\n> ";
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > UPPERLIMIT || option < 1);
+
+        switch (option)
+        {
+        case 1:
+
+            this->_listOfOrders->addOrder(new Deploy());
+            break;
+
+        case 2:
+            this->_listOfOrders->addOrder(new Advance());
+            break;
+
+        case 3:
+
+            for (auto card : _hand->getCards()) {
+                if (card->getType() == "Airlift") { this->_listOfOrders->addOrder(new Airlift()); }
+                else {
+                    cout << "Player " << getName() << " does not have an airlift card" << endl;
+                }
+            }
+
+            break;
+
+        case 4:
+            for (auto card : _hand->getCards()) {
+                if (card->getType() == "Bomb") { this->_listOfOrders->addOrder(new Bomb());; }
+                else {
+                cout << "Player " << getName() << " does not have a bomb card" << endl;
+                }
+            }
+            
+            break;
+
+        case 5:
+
+            for (auto card : _hand->getCards()) {
+                if (card->getType() == "Negotiate") { this->_listOfOrders->addOrder(new Negotiate()); }
+                else {
+                cout << "Player " << getName() << " does not have a negotiate card" << endl;
+                }
+            }
+
+            break;
+
+        case 6:
+            bool has_card4 = false;
+            for (auto card : _hand->getCards()) {
+                if (card->getType() == "Blockade") { this->_listOfOrders->addOrder(new Blockade()); }
+                else {
+                cout << "Player " << getName() << " does not have a blockade card" << endl;
+                }
+            }
+           
+            break;
+        }
+    }
+    catch (runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+
+    }
 }
 
 void Player::issueOrder(Order *pOrder) {
