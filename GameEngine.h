@@ -5,7 +5,7 @@
 #include <string>
 #include "Map.h"
 #include "CommandProcessing.h"
-//#include "CommandProcessing.h"
+#include "LoggingObserver.h"
 
 using std::cout;
 using std::endl;
@@ -358,7 +358,7 @@ class End: public GameState{
 /*Game class would be used to create new object which contains
 the current state of the game, and transit between states when 
 received a command from the console.*/
-class GameEngine{
+class GameEngine : public ILoggable, public Subject{
 
     std::vector<Player*>* _players_ptr;
     vector<int*>* _armyPool;
@@ -374,6 +374,7 @@ public:
     ~GameEngine();
     GameState* getCurrentState() const; //returns pointer of current state
 
+    string stringToLog();
     void transit(string c); //transition function according to command inputs
     void setState(GameState* newState); //used to set Game object to next stats
 

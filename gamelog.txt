@@ -1,4 +1,19 @@
-~~~~ Gamelog for game starting on: Fri Mar 25 15:39:48 2022
+~~~~ Gamelog for game starting on: Sun Mar 27 17:44:47 2022
 
-Order Executed: Deploy: place some armies on one of the current player's territories.
-Order Executed: Negotiate: prevent attacks between the current player and another player until the end of the turn.
+Command: loadmap canada
+Command: loadmap invalid2
+Command: validatemap
+Command: addplayer player1
+Command: addplayer player2
+Command: addplayer player3
+Command: addplayer player4
+Command: gamestart
+Command: issueorder
+Command: issueordersend
+Command: win
+Command: quit
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded

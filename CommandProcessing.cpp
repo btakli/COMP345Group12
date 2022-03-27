@@ -4,6 +4,22 @@
 #include <fstream>
 using namespace std;
 
+ostream& operator<<(ostream& os, const Command& c){
+    return cout << "the name of the command is "<< *(c._command) << endl
+    << ", and the effect of the command is "<< *(c._effect) << endl;
+}
+
+ostream& operator<<(ostream& os, const CommandProcessor& cp){
+    return cout << "the address of the command list is "<< cp.commands_ptr <<endl;
+
+}
+ostream& operator<<(ostream& os, const FileLineReader& flr){
+    return cout << "the path of the file line reader is "<< *(flr._path) <<endl;
+}
+
+ostream& operator<<(ostream& os, const FileCommandProcessorAdapter& fcpa){
+    return cout << "the path of the file command processor adaptor is "<< *(fcpa._pathIn) <<endl;
+}
 /*****************************************
  ******************Command****************
 ******************************************/
@@ -16,6 +32,7 @@ Command::Command(string command){
     _command = new string(command);
     string* defaultEffect = new string("no effect yet");
     _effect = defaultEffect;
+     ILoggable::_currentState = new string(*_effect);
 }
 
 Command::~Command(){
@@ -24,7 +41,9 @@ Command::~Command(){
 }
 
 void Command::saveEffect(string nextState){
-    _effect = &nextState;
+    _effect = new string(nextState);
+    ILoggable::_currentState = _effect;
+    notify(this);
 }
 
 string Command::getCommandName(){
@@ -44,6 +63,9 @@ string Command::getEffect(){
     } 
 }
 
+string Command::stringToLog(){
+    return "Command's Effect: Transitioning to state " + *ILoggable::_currentState;
+}
 //Deep copy constructor:
 Command::Command(const Command &c){
     this->_command = new string(*(c._command));
@@ -62,6 +84,7 @@ Command& Command::operator = (const Command& c){
 CommandProcessor::CommandProcessor(){
     command_in = new string("ASDFADSF");
     this->commands_ptr = new list<Command>();
+    ILoggable::_currentState = new string("Initial");
 }
 
 CommandProcessor::~CommandProcessor(){
@@ -75,7 +98,7 @@ void CommandProcessor::readCommand(){
     cout << "Please enter your commands (please seperated your commands with space):" << endl;
     //used getline because commands are separated using spaces
     getline(cin, commands);
-    command_in = &commands;
+    command_in = new string(commands);
 }
 
 // SPECIAL NOTES HERE:
@@ -93,18 +116,31 @@ void CommandProcessor::saveCommand(){
             if(oneCommand != "loadmap" && oneCommand != "addplayer"){
                 if(prev_command == "loadmap"){
                     (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
+                    string newStateMap = "loadmap "+ oneCommand;
+                    ILoggable::_currentState->assign(newStateMap);
+                    notify(this); 
                 }else if(prev_command == "addplayer"){
                     (*commands_ptr).push_back(Command(("addplayer " + oneCommand)));
+                    string newStatePlayer = "addplayer "+ oneCommand;
+                    ILoggable::_currentState->assign(newStatePlayer);
+                    notify(this); 
                 }else{
                     (*commands_ptr).push_back(Command(oneCommand));
+                    ILoggable::_currentState->assign(oneCommand);
+                    notify(this); 
                 }
              }
              prev_command = oneCommand;
         }
-        cout << "The size of the list is: " << (*commands_ptr).size() << endl;
+        cout << "The size of the command list is: " << (*commands_ptr).size() << endl;
+        
     }else{
         cout << "error!! no commands received!!" << endl;
     }
+}
+
+std::string CommandProcessor::stringToLog(){
+    return "Command: " + *ILoggable::_currentState;
 }
 
 // command getCommand() read commands, and then save them to a list of Command objects
@@ -114,15 +150,17 @@ std::list<Command>* CommandProcessor::getCommand(){
     return commands_ptr;
 }
 
+list<Command>* CommandProcessor::getCommandList(){
+    return this->commands_ptr;
+}
+
 // If the command is valid, save the command's effect, 
 // else save an error message
 bool CommandProcessor::validate(GameEngine* myGame, Command* command){
     if(myGame != NULL && command != NULL){
     GameState* currentState;
     currentState = myGame->getCurrentState();
-
     string* commandName = new string(command->getCommandName());
-    cout << *commandName <<endl;
     size_t pos1 = (*commandName).find(" ");
     size_t pos2 = 0;
     int length = pos1 - pos2;
@@ -169,6 +207,16 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
     return false;
 }
 
+CommandProcessor::CommandProcessor(const CommandProcessor &cp){
+    this->command_in = new string(*(cp.command_in));
+    this->commands_ptr = new list<Command> (*(cp.commands_ptr));
+}
+
+CommandProcessor& CommandProcessor::operator = (const CommandProcessor& cp){
+    this->command_in = new string(*(cp.command_in));
+    this->commands_ptr = new list<Command> (*(cp.commands_ptr));
+    return *this;
+}
 /*****************************************
  *******FileCommandProcessorAdapter*******
 ******************************************/
@@ -190,6 +238,16 @@ void FileCommandProcessorAdapter::readCommand(){
     delete(flr);
 }
 
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(const FileCommandProcessorAdapter &fcpa){
+    this->_pathIn = new string(*(fcpa._pathIn));
+    this->flr = new FileLineReader(*(fcpa.flr));
+}
+
+FileCommandProcessorAdapter& FileCommandProcessorAdapter::operator= (const FileCommandProcessorAdapter& fcpa){
+    this->_pathIn = new string(*(fcpa._pathIn));
+    this->flr = new FileLineReader(*(fcpa.flr));
+    return *this;
+}
 /*****************************************
  ****************LineReader***************
 ******************************************/
@@ -227,16 +285,12 @@ string FileLineReader::getPath(){
     }
 }
 
-int main(){
-    //string input_option;
-    GameEngine* myGame; // create a new game
-    myGame = new GameEngine(); // initialize the game
-    
-    myGame->startupPhase();
+FileLineReader::FileLineReader(const FileLineReader &flr){
+    this->_path = new string(*(flr._path));
+}
 
+FileLineReader& FileLineReader::operator = (const FileLineReader& flr){
+    this->_path = new string(*(flr._path));
+    return *this;
 
-
-    //prevent memory leak:
-    //delete myGame;                                                                                                                                                                                                                                                   
-    return 0;
 }
