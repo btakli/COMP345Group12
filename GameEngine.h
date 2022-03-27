@@ -399,7 +399,7 @@ public:
     //return the command processor:
     CommandProcessor* getCommandProcessor();
     //startup phase
-    void startupPhase();
+    void startupPhase(GameEngine&);
 
 
     //add new player state
@@ -421,6 +421,9 @@ public:
     void ordersPicker(GameEngine&, Player&);
     void cardPicker(GameEngine&, Player&);
     void cardPicker2(GameEngine& engine, Player& player, string type);
+    void validateMap(GameEngine&);
+   
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

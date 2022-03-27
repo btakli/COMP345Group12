@@ -240,6 +240,17 @@ int main(){
     for(Command& command : *commandList){
         processor->validate(myGame, &command);
     }
+
+
+
+    /*
+    
+        Startup phase? - Yu
+
+    */
+    
+
+
     //prevent memory leak:
     //delete myGame;                                                                                                                                                                                                                                                   
     return 0;
