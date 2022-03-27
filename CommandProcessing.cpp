@@ -285,7 +285,6 @@ string FileLineReader::getPath(){
     }
 }
 
-
 FileLineReader::FileLineReader(const FileLineReader &flr){
     this->_path = new string(*(flr._path));
 }
@@ -293,4 +292,5 @@ FileLineReader::FileLineReader(const FileLineReader &flr){
 FileLineReader& FileLineReader::operator = (const FileLineReader& flr){
     this->_path = new string(*(flr._path));
     return *this;
+
 }
