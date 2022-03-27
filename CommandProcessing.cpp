@@ -18,7 +18,10 @@ Command::Command(string command){
     _effect = defaultEffect;
 }
 
-Command::~Command(){}
+Command::~Command(){
+    delete this->_command;
+    delete this->_effect;
+}
 
 void Command::saveEffect(string nextState){
     _effect = &nextState;
@@ -63,6 +66,7 @@ CommandProcessor::CommandProcessor(){
 
 CommandProcessor::~CommandProcessor(){
     delete this->commands_ptr; //avoid memory leak
+    delete this->command_in;
 }
 
 void CommandProcessor::readCommand(){
@@ -74,27 +78,28 @@ void CommandProcessor::readCommand(){
     command_in = &commands;
 }
 
+// SPECIAL NOTES HERE:
+// If the command has a prefix as "loadmap" or "addplayer"
+// sasvemap would stop adding it to the list until it reads the name
+// of the mapfile or the name of the player
 void CommandProcessor::saveCommand(){
     if(command_in){
         string commandLine = *command_in;
         //use stringstream to seperate the command with "space"
         stringstream ss (commandLine);
-        string prev_command= "";
+        string prev_command;
         string oneCommand;
         while (ss >> oneCommand){
             if(oneCommand != "loadmap" && oneCommand != "addplayer"){
                 if(prev_command == "loadmap"){
-                    string newCommand = "loadmap " + oneCommand;
-                    cout << newCommand;
-                    (*commands_ptr).push_back(Command(newCommand));
+                    (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
                 }else if(prev_command == "addplayer"){
-                    string newCommand = "addplayer " + oneCommand;
-                    (*commands_ptr).push_back(Command(newCommand));
+                    (*commands_ptr).push_back(Command(("addplayer " + oneCommand)));
                 }else{
                     (*commands_ptr).push_back(Command(oneCommand));
                 }
-                prev_command = oneCommand;
              }
+             prev_command = oneCommand;
         }
         cout << "The size of the list is: " << (*commands_ptr).size() << endl;
     }else{
@@ -102,6 +107,7 @@ void CommandProcessor::saveCommand(){
     }
 }
 
+// command getCommand() read commands, and then save them to a list of Command objects
 std::list<Command>* CommandProcessor::getCommand(){
     readCommand();
     saveCommand();
@@ -112,24 +118,35 @@ std::list<Command>* CommandProcessor::getCommand(){
 // else save an error message
 bool CommandProcessor::validate(GameEngine* myGame, Command* command){
     if(myGame != NULL && command != NULL){
-    cout << "validating" << endl; 
-    // Note: We made a copy of myGame but not command
-    // because we don't want to modify the value of the input
-    // game, but we want to save the effect of the input command
-    // if the command string is valid 
-    //GameEngine* copy = new GameEngine(*myGame);
     GameState* currentState;
     currentState = myGame->getCurrentState();
 
     string* commandName = new string(command->getCommandName());
-    //list<Command>::iterator it;
-    //for(it = commands_ptr->begin() ; it != commands_ptr->end(); it++){
-        //string currentCommand;
-        //currentCommand = it->getCommandName();
-        //cout << currentCommand << endl;
-
-        //Note: from grading sheet:
-        //"For valid command, it results in correct effect and state change"
+    cout << *commandName <<endl;
+    size_t pos1 = (*commandName).find(" ");
+    size_t pos2 = 0;
+    int length = pos1 - pos2;
+    string commandprefix = (*commandName).substr(0, length);
+    //if the command is loadmap <mapfile> or addplayer <playername>
+    // validate the prefix of the command:
+    if(commandprefix == "loadmap" || commandprefix == "addplayer"){
+        if(currentState->validate(commandprefix)){
+            cout << "The current command: " << *commandName
+            << " is valid in current state: " << currentState->getName() << endl;
+            myGame->transit(commandprefix);
+            currentState = myGame->getCurrentState();
+            command->saveEffect(currentState->getName());
+            cout << "The effect of the command is:" << command->getEffect() << endl;
+            return true;
+        }else{
+            cout << "The current command: " << *commandName 
+            << " is INVALID in current state: " << currentState->getName() << endl;
+            command->saveEffect("INVALID COMMAND");
+            cout << "The effect of the command is:" << command->getEffect() << endl;
+        }
+    }
+    // else, validate the whole command:
+    else{
         if(currentState->validate(*commandName)){
             cout << "The current command: " << *commandName 
             << " is valid in current state: " << currentState->getName() << endl;
@@ -139,13 +156,13 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
             cout << "The effect of the command is:" << command->getEffect() << endl;
             return true;
         }else{
-            cout << "The current command: " << commandName 
+            cout << "The current command: " << *commandName 
             << " is INVALID in current state: " << currentState->getName() << endl;
             command->saveEffect("INVALID COMMAND");
             cout << "The effect of the command is:" << command->getEffect() << endl;
-        //}
+         }
     }
-    //delete copy;
+        
     }else{
         cout << "uninitialized game detected!" << endl;
     }
@@ -161,7 +178,9 @@ FileCommandProcessorAdapter::FileCommandProcessorAdapter(string pathIn){
     this->_pathIn = new string(pathIn);
 }
 
-FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){}
+FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){
+    delete this->_pathIn;
+}
 
 void FileCommandProcessorAdapter::readCommand(){
     string str_path = *_pathIn;
@@ -210,71 +229,18 @@ string FileLineReader::getPath(){
 
 int main(){
     //string input_option;
-    GameEngine* myGame;
-    myGame = new GameEngine();
+    GameEngine* myGame; // create a new game
+    myGame = new GameEngine(); // initialize the game
     CommandProcessor* processor = myGame->getCommandProcessor();
-    list<Command>* commandList = processor->getCommand();
-    //while(myGame->getStatus() == true && commandList->empty() == false){
-        for(Command& command : *commandList){
-            processor->validate(myGame, &command);
-                //if validated:
-                //myGame->transit(command.getCommandName());
-            }
-        
-        
-    //}
-    /*CommandProcessor* cp = new CommandProcessor();
-    
-    cout << endl;
-    cout << "How would you like to input commands?" << endl;
-    cout << "Please choose from the following:" << endl;
-    cout << "1. -console" << endl;
-    cout << "2. -file <filename>" <<endl;
-    //getline(cin, input_option);
-    //input_option = "-console";
-    input_option = "-file <command.txt>";
-    string option_prefix = input_option.substr(0, 5);
-    if(input_option == "-console"){
-        list<Command>* l1 = cp->getCommand();
-        //loop through the list:
-        list<Command>::iterator itConsole;
-        try{
-            for(itConsole = l1->begin(); itConsole != l1->end();itConsole++){
-                cout << "current command is: " << itConsole -> getCommandName() << endl;
-            }
-        }catch(const std::bad_alloc&){
-            cout << "Out of memory!!" << endl;
-            return -1;
-        }
-        l1->clear();
-    }else if(option_prefix == "-file"){
-        cout << "get here" <<endl;
-        size_t pos = input_option.find("<");
-        size_t pos2 = input_option.find(">");
-        int length = pos2 - pos - 1;
-        string pathIn = input_option.substr(pos+1, length);
-        cout << "path name is:" << pathIn << endl;
-        FileCommandProcessorAdapter* fcpa = new FileCommandProcessorAdapter(pathIn);
-        list<Command>* l2 = fcpa->getCommand();
-         //case #1 Start State:
-        cout << "before validation: " << myGame->getCurrentState()->getName() << endl; 
-        fcpa->validate(myGame);
-        cout << "after validation: " << myGame->getCurrentState()->getName() << endl;
-        //loop through the list:
-        list<Command>::iterator itFile;
-        for(itFile = l2->begin(); itFile != l2->end(); ++itFile){
-            cout << itFile -> getCommandName() << endl;
-        }
-       
-         while(myGame->getStatus() == true){
-             
-         }
-        delete fcpa;   
-    }else{
-        cout << "Please enter a correct option." << endl;
+    list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
+    //For all the command it has:
+    // validate each of them in current state
+    // if it is valide, execute and save the effect
+    // else, reject and save "INVALID COMMAND" 
+    for(Command& command : *commandList){
+        processor->validate(myGame, &command);
     }
-    
-
-    delete cp;   */                                                                                                                                                                                                                                                                                             
+    //prevent memory leak:
+    //delete myGame;                                                                                                                                                                                                                                                   
     return 0;
 }

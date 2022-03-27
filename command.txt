@@ -1,10 +1,10 @@
-loadmap
-loadmap
+loadmap canada
+loadmap invalid2
 validatemap
-addplayer
-addplayer
-addplayer
-addplayer
+addplayer player1
+addplayer player2
+addplayer player3
+addplayer player4
 gamestart
 issueorder
 issueordersend
