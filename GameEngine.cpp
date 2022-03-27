@@ -634,6 +634,10 @@ GameEngine::GameEngine(){
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
 
+    //logger:
+    // special case for Start state:
+    ILoggable::_currentState =  new string("Start");
+
     // By implementing the CommandProcessor and FileCommandAdaptor, when a
     //game is initialized (or STARTED) it will ask for commands from the 
     //command processor using the getCommand() funcction
@@ -680,6 +684,10 @@ GameEngine::~GameEngine(){
     delete _deck;
 }
 
+std::string GameEngine::stringToLog(){
+    return "Game Engine new state: " + *ILoggable::_currentState;
+}
+
 std::vector<Player*>& GameEngine::get_players() {
     return *_players_ptr;
 }
@@ -719,7 +727,14 @@ void GameEngine::setState(GameState* newState){
 //function transit receives a string (the user input)
 //then triggers the transition() funtion of the current state
 void GameEngine::transit(string input){
+    // print out the Start State:
+    if(this->getCurrentState()->getName() == "Start"){
+        cout << "before notify" << endl;
+        notify(this);
+    }
     _currentState->transition(this, input); //transit to next state
+    ILoggable::_currentState->assign(this->getCurrentState()->getName());
+    notify(this);
 }
 
 //Copy Constructor of GameEngine:

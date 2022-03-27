@@ -1,48 +1,31 @@
-//#include "CommandProcessing.h"
-//#include <iostream>
-////#include "GameEngine.h"
-//using namespace std;
-//
-//int main(){
-//    string input_option;
-//    /*GameEngine* myGame;
-//    myGame = new GameEngine();*/
-//
-//    CommandProcessor* cp = new CommandProcessor();
-//    
-//    cout << endl;
-//    cout << "How would you like to input commands?" << endl;
-//    cout << "Please choose from the following:" << endl;
-//    cout << "1. -console" << endl;
-//    cout << "2. -file <filename>" <<endl;
-//    getline(cin, input_option);
-//    string option_prefix = input_option.substr(0, 4);
-//    if(input_option == "-console"){
-//        list<Command>* l1 = cp->getCommand();
-//        //list<Command> myConsoleInputs = *l1;
-//        //loop through the list:
-//        cout << "get here" <<endl;
-//        list<Command>::iterator itConsole;
-//        for(itConsole = l1->begin(); itConsole != l1->end(); ++itConsole){
-//                cout << "get in loop" << endl;
-//                cout << itConsole -> getCommandName() << endl;
-//            
-//        }
-//    }else if(option_prefix == "-file"){
-//        size_t pos = input_option.find("<");
-//        string pathIn = input_option.substr(pos+1);
-//        FileCommandProcessorAdapter* fcpa = new FileCommandProcessorAdapter(pathIn);
-//        list<Command>* l2 = fcpa->getCommand();
-//        list<Command> myFileInputs = *l2;
-//        //loop through the list:
-//        list<Command>::iterator itFile;
-//        for(itFile = myFileInputs.begin(); itFile != myFileInputs.end(); ++itFile){
-//            cout << itFile -> getCommandName() << endl;
-//        }
-//        delete fcpa;   
-//    }else{
-//        cout << "Please enter a correct option." << endl;
-//    }
-//    delete cp;                                                                                                                                                                                                                                                                                                
-//    return 0;
-//}
+#include "CommandProcessing.h"
+#include "GameEngine.h"
+#include <iostream>
+
+using namespace std;
+
+int main(){
+    LogObserver* lo = new LogObserver();
+    //string input_option;
+    GameEngine* myGame; // create a new game
+    myGame = new GameEngine(); // initialize the game
+    myGame->attach(lo);
+    CommandProcessor* processor = myGame->getCommandProcessor();
+    processor->attach(lo);
+    cout << "line 15" <<endl;
+    list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
+    
+    //For all the command it has:
+    // validate each of them in current state
+    // if it is valide, execute and save the effect
+    // else, reject and save "INVALID COMMAND" 
+    cout << "got commands" << endl;
+    for(Command& command : *commandList){
+        command.attach(lo);
+        processor->validate(myGame, &command);
+    }
+    //prevent memory leak:
+    //delete myGame;  
+    delete lo;                                                                                                                                                                                                                                                 
+    return 0;
+}
