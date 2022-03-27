@@ -82,7 +82,6 @@ void CommandProcessor::saveCommand(){
     //commands_ptr = &commands;
     //new command:
 
-    cout << "ASDF : " << *command_in << " | " << command_in << endl;
     if(command_in){
         string commandLine = *command_in;
         //use stringstream to seperate the command with "space"
@@ -138,7 +137,7 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command){
         //Note: from grading sheet:
         //"For valid command, it results in correct effect and state change"
         if(currentState->validate(*commandName)){
-            cout << "The current command: " << commandName 
+            cout << "The current command: " << *commandName 
             << " is valid in current state: " << currentState->getName() << endl;
             myGame->transit(*commandName);
             currentState = myGame->getCurrentState();

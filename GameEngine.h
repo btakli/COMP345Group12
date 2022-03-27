@@ -386,8 +386,6 @@ public:
     vector<int*>& get_ArmyPools();
     //returns the _deck
     Deck* getDeck();
-    //Set deck
-    void setDeck();
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);

@@ -28,7 +28,6 @@ void map_picker();
 void assign_territories(GameEngine&);
 void order_of_play(GameEngine&);
 void give_initial_armies(GameEngine&);
-void create_deck(GameEngine&); 
 void draw_initial_cards(GameEngine&);
 void reinforcementPhase(GameEngine&);
 void issueOrdersPhase(GameEngine&);
@@ -716,6 +715,8 @@ Deck * GameEngine::getDeck() {
 vector<int*>& GameEngine::get_ArmyPools()
 {
     return *_armyPool;
+}
+
 CommandProcessor* GameEngine::getCommandProcessor(){
     return _myProcessor;
 }
@@ -893,9 +894,6 @@ void give_initial_armies(GameEngine& engine) {
     }
 }
 
-void create_deck(GameEngine& engine) {
-    engine.setDeck();
-}
 void draw_initial_cards(GameEngine& engine) {
     
     for (Player* player : engine.get_players()) {
