@@ -325,6 +325,10 @@ OrdersList::~OrdersList() { //Destructor
     delete(_orderlist);
 }
 
+std::vector<Order*>& OrdersList::get_order_list() {
+    return *_orderlist;
+}
+
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
     //Wipe out all old orders
     for (int i = 0; i < _orderlist->size(); i++) {

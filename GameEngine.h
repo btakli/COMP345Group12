@@ -363,7 +363,8 @@ class GameEngine{
     std::vector<Player*>* _players_ptr;
     vector<int*>* _armyPool;
     Deck * _deck;
-    
+    queue<Order*>* _orders;
+
 public:
     
     // Returns a pointer to the current players in game
@@ -389,13 +390,15 @@ public:
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);
-    
+    //get orders
+    queue<Order*>& get_orders();
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const GameEngine& g);
-
     //return the command processor:
     CommandProcessor* getCommandProcessor();
-    
+    //startup phase
+    void startupPhase();
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

@@ -23,15 +23,17 @@ using std::end;
 #define GAME_START "gamestart"
 
 //Prototypes
-void add_new_player(GameEngine&);
-void map_picker();
-void assign_territories(GameEngine&);
-void order_of_play(GameEngine&);
-void give_initial_armies(GameEngine&);
-void draw_initial_cards(GameEngine&);
-void reinforcementPhase(GameEngine&);
-void issueOrdersPhase(GameEngine&);
-void excecuteOrdersPhase(GameEngine&);
+static void add_new_player(GameEngine&);
+static void map_picker();
+static void assign_territories(GameEngine&);
+static void order_of_play(GameEngine&);
+static void give_initial_armies(GameEngine&);
+static void draw_initial_cards(GameEngine&);
+static void reinforcementPhase(GameEngine&);
+static void issueOrdersPhase(GameEngine&);
+static void excecuteOrdersPhase(GameEngine&);
+static void ordersPicker(GameEngine&, Player&);
+static void cardPicker(GameEngine&, Player&);
 
 //************GameState****************
 GameState::~GameState(){} //destructor
@@ -350,6 +352,11 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
     if(input == *_command){
+
+        // Add new reinforcements
+        reinforcementPhase(*GameEngine); 
+        issueOrdersPhase(*GameEngine);
+
         GameState* newState = new IssueOrders();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
@@ -359,6 +366,11 @@ void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
         std::cout << "ERROR: Please enter a valid command." << endl;
     }
 }
+
+
+
+
+
 
 AssignedReinforcement::AssignedReinforcement(const AssignedReinforcement& other){
     this->_command = new string(*(other._command));
@@ -903,7 +915,11 @@ void draw_initial_cards(GameEngine& engine) {
     }
 }
 
+queue<Order*>& GameEngine::get_orders() {
+    return *_orders;
+}
 
+// Add new reinforcements
 void reinforcementPhase(GameEngine& engine) {
 
     // # Territories / 3 to floor added to army pool 
@@ -923,9 +939,138 @@ void reinforcementPhase(GameEngine& engine) {
 }
 
 void issueOrdersPhase(GameEngine& engine) {
-
+    for (Player* p : engine.get_players()) {
+        ordersPicker(engine, *p);
+    }
 }
 
 void excecuteOrdersPhase(GameEngine& engine) {
+
+    int count = 0;
+
+    // Requeue round-robin orders
+    while (count != engine.get_players().size()) {
+        for (Player* p : engine.get_players()) {
+            if (p->getOrdersList()->size() > 0) {
+                engine.get_orders().push(p->getOrdersList()->getOrder(0));
+                p->getOrdersList()->remove(0);
+                p->getOrdersList()->get_order_list().shrink_to_fit();
+            }
+            else {
+                count++;
+            }
+        }
+        count = 0;
+    }
+
+    // Execute orders round-robin way
+    for (size_t i = 0; i < engine.get_orders().size(); i++) {
+        Order* order = engine.get_orders().front();
+        order->execute();
+        engine.get_orders().pop();
+        delete order;
+    }
+}
+
+void GameEngine::startupPhase() {
+
+}
+
+
+void cardPicker(GameEngine& engine, Player& player) {
+
+    while (true) {
+
+        int option;
+
+        do {
+            std::cout << "Please enter a number between 1 to " << player.getHand()->size() << "." << endl;
+
+            int count = 1;
+            for (Card* c : player.getHand()->getCards()) {
+                cout << count << ". " << c << endl;
+            }
+
+            cout << "> " << endl;
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > player.getHand()->size() || option < 1);
+
+        if (option == player.getHand()->size()) return;
+
+        player.getOrdersList()->addOrder(player.getHand()->playAndReturnToDeck(option, engine.getDeck()));
+    }
+}
+
+
+void ordersPicker(GameEngine& engine, Player& player) {
+
+    int option;
+    try {
+        do {
+            std::cout << "Please enter a number between 1 to 8."
+                "\n 1. Negotiate"
+                "\n 2. Airlift"
+                "\n 3. Blockade"
+                "\n 4. Bomb"
+                "\n 5. Advance"
+                "\n 6. Deploy"
+                "\n 7. Play Card"
+                "\n 8. Finish"
+                "\n> ";
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > UPPERLIMIT || option < 1);
+
+        switch (option)
+        {
+        case 1:
+            player.getOrdersList()->addOrder(new Negotiate());
+            break;
+
+        case 2:
+            player.getOrdersList()->addOrder(new Airlift());
+            break;
+
+        case 3:
+            player.getOrdersList()->addOrder(new Blockade);
+            break;
+
+        case 4:
+            player.getOrdersList()->addOrder(new Bomb());
+            break;
+
+        case 5:
+            player.getOrdersList()->addOrder(new Advance());
+            break;
+
+        case 6:
+            player.getOrdersList()->addOrder(new Deploy());
+            break;
+
+        case 7:
+            cardPicker(engine, player);
+            break;
+
+        case 8:
+            break;
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        Map::get_instance()->unload();
+    }
 
 }
