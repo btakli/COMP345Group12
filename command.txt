@@ -1,4 +1,12 @@
 loadmap
 loadmap
-validatema
+validatemap
 addplayer
+addplayer
+addplayer
+addplayer
+gamestart
+issueorder
+issueordersend
+win
+quit

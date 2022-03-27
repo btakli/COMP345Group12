@@ -6,6 +6,7 @@
 #include <string>
 #include <list>
 
+class GameEngine;
 //Command class:
 class Command
 {
@@ -38,7 +39,7 @@ class CommandProcessor
     CommandProcessor();
     virtual ~CommandProcessor();
     std::list<Command>* getCommand();
-    void validate(GameEngine* myGame, GameState* currentState);
+    bool validate(GameEngine* myGame, Command* command);
 
     protected:
     virtual void readCommand();

@@ -110,25 +110,48 @@ std::list<Command>* CommandProcessor::getCommand(){
     return commands_ptr;
 }
 
-void CommandProcessor::validate(GameEngine* myGame, GameState* currentState){
-    GameEngine* myGameCopy = new GameEngine(*myGame);
-    //GameState* currentStateCopy = new GameState(*currentState);
-    list<Command>::iterator it;
-    for(it = commands_ptr->begin(); it != commands_ptr->end(); it++){
-        string currentCommand;
-        currentCommand = it->getCommandName();
-        if(currentState->validate(currentCommand)){
-            cout << "The current command: " << currentCommand 
-            << " is valid in current state: " << currentState << endl;
-            myGameCopy->transit(currentCommand);
-            it->saveEffect(myGameCopy->getCurrentState()->getName());
+// If the command is valid, save the command's effect, 
+// else save an error message
+bool CommandProcessor::validate(GameEngine* myGame, Command* command){
+    if(myGame != NULL && command != NULL){
+    cout << "validating" << endl; 
+    // Note: We made a copy of myGame but not command
+    // because we don't want to modify the value of the input
+    // game, but we want to save the effect of the input command
+    // if the command string is valid 
+    //GameEngine* copy = new GameEngine(*myGame);
+    GameState* currentState;
+    currentState = myGame->getCurrentState();
+
+    string commandName = command->getCommandName();
+    //list<Command>::iterator it;
+    //for(it = commands_ptr->begin() ; it != commands_ptr->end(); it++){
+        //string currentCommand;
+        //currentCommand = it->getCommandName();
+        //cout << currentCommand << endl;
+
+        //Note: from grading sheet:
+        //"For valid command, it results in correct effect and state change"
+        if(currentState->validate(commandName)){
+            cout << "The current command: " << commandName 
+            << " is valid in current state: " << currentState->getName() << endl;
+            myGame->transit(commandName);
+            currentState = myGame->getCurrentState();
+            command->saveEffect(currentState->getName());
+            cout << "The effect of the command is:" << command->getEffect() << endl;
+            return true;
         }else{
-            cout << "The current command: " << currentCommand 
-            << " is INVALID in current state: " << currentState << endl;
-            it->saveEffect("INVALID COMMAND");
-        }
+            cout << "The current command: " << commandName 
+            << " is INVALID in current state: " << currentState->getName() << endl;
+            command->saveEffect("INVALID COMMAND");
+            cout << "The effect of the command is:" << command->getEffect() << endl;
+        //}
     }
-    delete myGameCopy;
+    //delete copy;
+    }else{
+        cout << "uninitialized game detected!" << endl;
+    }
+    return false;
 }
 
 /*****************************************
@@ -188,12 +211,21 @@ string FileLineReader::getPath(){
 }
 
 int main(){
-    string input_option;
+    //string input_option;
     GameEngine* myGame;
     myGame = new GameEngine();
-
-    
-    CommandProcessor* cp = new CommandProcessor();
+    CommandProcessor* processor = myGame->getCommandProcessor();
+    list<Command>* commandList = processor->getCommand();
+    //while(myGame->getStatus() == true && commandList->empty() == false){
+        
+        for(Command& command : *commandList){
+            processor->validate(myGame, &command);
+                //if validated:
+                //myGame->transit(command.getCommandName());
+            }
+        
+    //}
+    /*CommandProcessor* cp = new CommandProcessor();
     
     cout << endl;
     cout << "How would you like to input commands?" << endl;
@@ -226,18 +258,25 @@ int main(){
         cout << "path name is:" << pathIn << endl;
         FileCommandProcessorAdapter* fcpa = new FileCommandProcessorAdapter(pathIn);
         list<Command>* l2 = fcpa->getCommand();
-        //list<Command> myFileInputs = *l2;
+         //case #1 Start State:
+        cout << "before validation: " << myGame->getCurrentState()->getName() << endl; 
+        fcpa->validate(myGame);
+        cout << "after validation: " << myGame->getCurrentState()->getName() << endl;
         //loop through the list:
         list<Command>::iterator itFile;
         for(itFile = l2->begin(); itFile != l2->end(); ++itFile){
             cout << itFile -> getCommandName() << endl;
         }
+       
+         while(myGame->getStatus() == true){
+             
+         }
         delete fcpa;   
     }else{
         cout << "Please enter a correct option." << endl;
     }
-    cp->validate(myGame, myGame->getCurrentState());
+    
 
-    delete cp;                                                                                                                                                                                                                                                                                                
+    delete cp;   */                                                                                                                                                                                                                                                                                             
     return 0;
 }

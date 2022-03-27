@@ -4,11 +4,13 @@
 
 #include <string>
 #include "Map.h"
+#include "CommandProcessing.h"
 //#include "CommandProcessing.h"
 
 using std::cout;
 using std::endl;
 
+class CommandProcessor;
 //solve dependencies
 //Game is defined at the end
 class GameEngine; 
@@ -167,6 +169,7 @@ class PlayersAdded : public GameState {
     private:
     string* _command1;
     string* _command2;
+    string* _commandGame;
 };
 
 /**********************************************************************
@@ -359,10 +362,13 @@ public:
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const GameEngine& g);
 
+    //return the command processor:
+    CommandProcessor* getCommandProcessor();
+    
     private:
     GameState* _currentState; //current state
     bool _continue; 
-    //CommandProcessor* _myProcessor;
+    CommandProcessor* _myProcessor;
 };
 
 
