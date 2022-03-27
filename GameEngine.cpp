@@ -22,18 +22,6 @@ using std::end;
 #define ASSIGN_COUNTRIES "assigncountries"
 #define GAME_START "gamestart"
 
-//Prototypes
-static void add_new_player(GameEngine&);
-static void map_picker();
-static void assign_territories(GameEngine&);
-static void order_of_play(GameEngine&);
-static void give_initial_armies(GameEngine&);
-static void draw_initial_cards(GameEngine&);
-static void reinforcementPhase(GameEngine&);
-static void issueOrdersPhase(GameEngine&);
-static void excecuteOrdersPhase(GameEngine&);
-static void ordersPicker(GameEngine&, Player&);
-static void cardPicker(GameEngine&, Player&);
 
 //************GameState****************
 GameState::~GameState(){} //destructor
@@ -91,9 +79,10 @@ Start::~Start(){
     delete _command;
 }
 
-void Start::transition(GameEngine* GameEngine, string input){  
+void Start::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
     if(input == *_command){
-        map_picker();
+        GameEngine->map_picker();
         GameState* newState = new MapLoaded();
         delete GameEngine->getCurrentState();
         GameEngine->setState(newState);
@@ -149,9 +138,11 @@ MapLoaded::~MapLoaded(){
 }
 
 void MapLoaded::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
+
     if(input == *_command1){ // Load a new map
         
-        map_picker();
+        GameEngine->map_picker();
 
     }else if(input == *_command2){ // Validate Map
 
@@ -219,9 +210,10 @@ MapValidated::~MapValidated(){
 }
 
 void MapValidated::transition(GameEngine* GameEngine, string input){
+
+    GameState::transition(GameEngine, input);
     if(input == *_command){
-        
-        add_new_player(*GameEngine);
+        GameEngine->add_new_player(*GameEngine);
 
         GameState* newState = new PlayersAdded();
         delete GameEngine->getCurrentState();
@@ -279,9 +271,11 @@ PlayersAdded::~PlayersAdded(){
 }
 
 void PlayersAdded::transition(GameEngine* GameEngine, string input){
+
+    GameState::transition(GameEngine, input);
     if(input == *_command1){
-        
-        add_new_player(*GameEngine);
+
+        GameEngine->add_new_player(*GameEngine);
 
 
     }else if(input == *_command2 || input == *_commandGame){
@@ -294,10 +288,10 @@ void PlayersAdded::transition(GameEngine* GameEngine, string input){
             delete GameEngine->getCurrentState();
             GameEngine->setState(newState);
             
-            assign_territories(*GameEngine);
-            order_of_play(*GameEngine);
-            give_initial_armies(*GameEngine);
-            draw_initial_cards(*GameEngine);
+            GameEngine->assign_territories(*GameEngine);
+            GameEngine->order_of_play(*GameEngine);
+            GameEngine->give_initial_armies(*GameEngine);
+            GameEngine->draw_initial_cards(*GameEngine);
             
 
         }
@@ -351,11 +345,13 @@ AssignedReinforcement::~AssignedReinforcement(){
 }
 
 void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
+
+    GameState::transition(GameEngine, input);
     if(input == *_command){
 
         // Add new reinforcements
-        reinforcementPhase(*GameEngine); 
-        issueOrdersPhase(*GameEngine);
+        GameEngine->reinforcementPhase(*GameEngine); 
+        GameEngine->issueOrdersPhase(*GameEngine);
 
         GameState* newState = new IssueOrders();
         delete GameEngine->getCurrentState();
@@ -425,7 +421,10 @@ IssueOrders::~IssueOrders(){
 }
 
 void IssueOrders::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
+
     if(input == *_command1){
+
         cout << "Issuing orders..." << endl;
 
     }else if(input == "endissueorders"){
@@ -483,6 +482,7 @@ ExcecuteOrders::~ExcecuteOrders(){
 }
 
 void ExcecuteOrders::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
     if(input == *_command1){
         cout << "Executing orders..." << endl;
     }else if(input == *_command2){
@@ -548,6 +548,7 @@ Win::~Win(){
 }
 
 void Win::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
     if(input == *_command2){
         GameState* newState_end = new End();
         delete GameEngine->getCurrentState();
@@ -607,6 +608,7 @@ End::End(){}
 End::~End(){}
 
 void End::transition(GameEngine* GameEngine, string input){
+    GameState::transition(GameEngine, input);
     delete GameEngine->getCurrentState(); //delete the last object to prevent memeory leak
 }
 
@@ -729,9 +731,9 @@ vector<int*>& GameEngine::get_ArmyPools()
     return *_armyPool;
 }
 
-//int* GameEngine::get_ArmyPoolAt(int index) {
-//    return *_armyPool(index);
-//}
+int* GameEngine::get_ArmyPoolAt(int index) {
+    return (*_armyPool)[index];
+}
 
 CommandProcessor* GameEngine::getCommandProcessor(){
     return _myProcessor;
@@ -767,7 +769,7 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
 
 
 // MapDriver
-void map_picker() {
+void GameEngine::map_picker() {
 
 #define BERLIN "berlin"
 #define CANADA "canada"
@@ -847,7 +849,7 @@ void map_picker() {
 }
 
 // Add a new player
-void add_new_player(GameEngine& engine) {
+void GameEngine::add_new_player(GameEngine& engine) {
     if (engine.get_players().size() + 1 > 6) std::cout << "WARNING: Maximum of players reached: 6" << std::endl;
     else {
         std::string player_name;
@@ -860,7 +862,7 @@ void add_new_player(GameEngine& engine) {
 }
 
 // Assign territory to players
-void assign_territories(GameEngine& engine) {
+void GameEngine::assign_territories(GameEngine& engine) {
 
     Map* map = Map::get_instance();
     
@@ -884,7 +886,7 @@ void assign_territories(GameEngine& engine) {
     cout << *Map::get_instance(); // DEBUG LINE
 }
 
-void order_of_play(GameEngine& engine) {
+void GameEngine::order_of_play(GameEngine& engine) {
 
     random_shuffle(begin(engine.get_players()), end(engine.get_players()));         //not true random
     cout << "The order of play is the following: " << endl;     
@@ -895,7 +897,7 @@ void order_of_play(GameEngine& engine) {
 
 }
 
-void give_initial_armies(GameEngine& engine) {
+void GameEngine::give_initial_armies(GameEngine& engine) {
     int size = engine.get_players().size();
     int i = 0;
     for (i; i < size; i++) {
@@ -910,13 +912,13 @@ void give_initial_armies(GameEngine& engine) {
     }
 }
 
-bool has_army(GameEngine& engine, int i) {
-    //if (engine.get_ArmyPools(i) != 0) {
-    return false;
+bool GameEngine::has_army(GameEngine& engine, int i) {
+    if (engine.get_ArmyPoolAt(i) == 0) { return false; }
+    return true;
     
 }
 
-void draw_initial_cards(GameEngine& engine) {
+void GameEngine::draw_initial_cards(GameEngine& engine) {
     
     for (Player* player : engine.get_players()) {
         player->getHand()->addCard(engine.getDeck()->draw());
@@ -930,7 +932,7 @@ queue<Order*>& GameEngine::get_orders() {
 }
 
 // Add new reinforcements
-void reinforcementPhase(GameEngine& engine) {
+void GameEngine::reinforcementPhase(GameEngine& engine) {
 
     // # Territories / 3 to floor added to army pool 
     for (Player* player : engine.get_players()) {
@@ -948,13 +950,13 @@ void reinforcementPhase(GameEngine& engine) {
     for (int* army : engine.get_ArmyPools()) *army += 3; 
 }
 
-void issueOrdersPhase(GameEngine& engine) {
+void GameEngine::issueOrdersPhase(GameEngine& engine) {
     for (Player* p : engine.get_players()) {
         ordersPicker(engine, *p);
     }
 }
 
-void excecuteOrdersPhase(GameEngine& engine) {
+void GameEngine::excecuteOrdersPhase(GameEngine& engine) {
 
     int count = 0;
 
@@ -987,7 +989,7 @@ void GameEngine::startupPhase() {
 }
 
 
-void cardPicker(GameEngine& engine, Player& player) {
+void GameEngine::cardPicker(GameEngine& engine, Player& player) {
 
     while (true) {
 
@@ -1014,16 +1016,16 @@ void cardPicker(GameEngine& engine, Player& player) {
 
         if (option == player.getHand()->size()) return;
 
-        player.getOrdersList()->addOrder(player.getHand()->playAndReturnToDeck(option, engine.getDeck()));
+        player.issueOrder(player.getHand()->playAndReturnToDeck(option, engine.getDeck()));
     }
 }
 
-void cardPicker2(GameEngine& engine, Player& player, string type) {
+void GameEngine::cardPicker2(GameEngine& engine, Player& player, string type) {
     int card = 0;
     bool hasCard = false;
     for (Card* c : player.getHand()->getCards()) {
         if (c->getType() == type) {
-            player.getOrdersList()->addOrder(player.getHand()->playAndReturnToDeck(card, engine.getDeck()));
+            player.issueOrder(player.getHand()->playAndReturnToDeck(card, engine.getDeck()));
             break;
 
            
@@ -1037,10 +1039,10 @@ void cardPicker2(GameEngine& engine, Player& player, string type) {
 }
 
 
-void ordersPicker(GameEngine& engine, Player& player) {
+void GameEngine::ordersPicker(GameEngine& engine, Player& player) {
 
     int option;
-    try {                   //TODO: on cases where the order is a card, the players _hand needs to be checked to see that it has the card
+    try {
                             //TODO: the players army pool needs to be depleted before anything but deploy can be used.
         do {
             std::cout << "Please enter a number between 1 to 8."
@@ -1062,38 +1064,66 @@ void ordersPicker(GameEngine& engine, Player& player) {
                 option = -1;
             }
         } while (option > UPPERLIMIT || option < 1);
-        bool has_army = true;
+        bool HasArmy = has_army(engine, player.getIndex());
         switch (option)
         {
         case 1:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             cardPicker2(engine, player, "Negotiate");
             break;
 
         case 2:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             cardPicker2(engine, player, "Airlift");
             break;
 
         case 3:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             cardPicker2(engine, player, "Blockade");
             break;
 
         case 4:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             cardPicker2(engine, player, "Bomb");
             break;
 
         case 5:
-            player.getOrdersList()->addOrder(new Advance());
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            player.issueOrder(new Advance());
             break;
 
         case 6:
-            player.getOrdersList()->addOrder(new Deploy());
+            player.issueOrder(new Deploy());
             break;
 
         case 7:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             cardPicker(engine, player);
             break;
 
         case 8:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
             break;
         }
     }
