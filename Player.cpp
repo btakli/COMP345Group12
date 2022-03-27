@@ -100,7 +100,8 @@ void Player::issueOrder() { //no specifications to what it takes in or creates
                 option = -1;
             }
         } while (option > UPPERLIMIT || option < 1);
-
+        bool emptyPool = false;
+        
         switch (option)
         {
         case 1:
@@ -116,9 +117,7 @@ void Player::issueOrder() { //no specifications to what it takes in or creates
 
             for (auto card : _hand->getCards()) {
                 if (card->getType() == "Airlift") { this->_listOfOrders->addOrder(new Airlift()); }
-                else {
-                    cout << "Player " << getName() << " does not have an airlift card" << endl;
-                }
+
             }
 
             break;
@@ -126,10 +125,9 @@ void Player::issueOrder() { //no specifications to what it takes in or creates
         case 4:
             for (auto card : _hand->getCards()) {
                 if (card->getType() == "Bomb") { this->_listOfOrders->addOrder(new Bomb());; }
-                else {
-                cout << "Player " << getName() << " does not have a bomb card" << endl;
-                }
+
             }
+            
             
             break;
 
@@ -137,9 +135,7 @@ void Player::issueOrder() { //no specifications to what it takes in or creates
 
             for (auto card : _hand->getCards()) {
                 if (card->getType() == "Negotiate") { this->_listOfOrders->addOrder(new Negotiate()); }
-                else {
-                cout << "Player " << getName() << " does not have a negotiate card" << endl;
-                }
+
             }
 
             break;

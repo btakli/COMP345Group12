@@ -729,6 +729,10 @@ vector<int*>& GameEngine::get_ArmyPools()
     return *_armyPool;
 }
 
+//int* GameEngine::get_ArmyPoolAt(int index) {
+//    return *_armyPool(index);
+//}
+
 CommandProcessor* GameEngine::getCommandProcessor(){
     return _myProcessor;
 }
@@ -906,6 +910,12 @@ void give_initial_armies(GameEngine& engine) {
     }
 }
 
+bool has_army(GameEngine& engine, int i) {
+    //if (engine.get_ArmyPools(i) != 0) {
+    return false;
+    
+}
+
 void draw_initial_cards(GameEngine& engine) {
     
     for (Player* player : engine.get_players()) {
@@ -1008,11 +1018,30 @@ void cardPicker(GameEngine& engine, Player& player) {
     }
 }
 
+void cardPicker2(GameEngine& engine, Player& player, string type) {
+    int card = 0;
+    bool hasCard = false;
+    for (Card* c : player.getHand()->getCards()) {
+        if (c->getType() == type) {
+            player.getOrdersList()->addOrder(player.getHand()->playAndReturnToDeck(card, engine.getDeck()));
+            break;
+
+           
+        }
+        card++;
+    }
+    if (!hasCard) {
+        cout << "Player " << player.getName() << " does not have " << type<<  " card" << endl;
+    }
+
+}
+
 
 void ordersPicker(GameEngine& engine, Player& player) {
 
     int option;
-    try {
+    try {                   //TODO: on cases where the order is a card, the players _hand needs to be checked to see that it has the card
+                            //TODO: the players army pool needs to be depleted before anything but deploy can be used.
         do {
             std::cout << "Please enter a number between 1 to 8."
                 "\n 1. Negotiate"
@@ -1033,23 +1062,23 @@ void ordersPicker(GameEngine& engine, Player& player) {
                 option = -1;
             }
         } while (option > UPPERLIMIT || option < 1);
-
+        bool has_army = true;
         switch (option)
         {
         case 1:
-            player.getOrdersList()->addOrder(new Negotiate());
+            cardPicker2(engine, player, "Negotiate");
             break;
 
         case 2:
-            player.getOrdersList()->addOrder(new Airlift());
+            cardPicker2(engine, player, "Airlift");
             break;
 
         case 3:
-            player.getOrdersList()->addOrder(new Blockade);
+            cardPicker2(engine, player, "Blockade");
             break;
 
         case 4:
-            player.getOrdersList()->addOrder(new Bomb());
+            cardPicker2(engine, player, "Bomb");
             break;
 
         case 5:
