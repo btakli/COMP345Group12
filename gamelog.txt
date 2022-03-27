@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Sun Mar 27 17:44:47 2022
+~~~~ Gamelog for game starting on: Sun Mar 27 19:55:15 2022
 
 Command: loadmap canada
 Command: loadmap invalid2
@@ -13,7 +13,3 @@ Command: issueordersend
 Command: win
 Command: quit
 Game Engine new state: Start
-Game Engine new state: MapLoaded
-Command's Effect: Transitioning to state MapLoaded
-Game Engine new state: MapLoaded
-Command's Effect: Transitioning to state MapLoaded

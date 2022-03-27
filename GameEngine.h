@@ -21,7 +21,7 @@ class GameState : public ILoggable, public Subject
     public:
     //pure virtual function
     //needs to be overridden
-    void transition(GameEngine* GameEngine, string command); 
+    virtual void transition(GameEngine* GameEngine, string command); 
     virtual ~GameState(); //destructor
     virtual bool validate(string command) = 0;
     virtual string getName() = 0;
