@@ -542,7 +542,8 @@ GameEngine::GameEngine(){
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
     _armyPool = new std::vector<int*>();
-    setDeck();
+    _deck = new Deck();
+
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -576,11 +577,7 @@ bool GameEngine::getStatus(){
 Deck * GameEngine::getDeck() {
     return _deck;
 }
-void GameEngine::setDeck() {
-    vector<Card*> cards;
-    for (int i = 0; i < 20; i++) { cards.push_back(new Card()); }
-    this->_deck = new Deck(cards);
-}
+
 vector<int*>& GameEngine::get_ArmyPools()
 {
     return *_armyPool;
