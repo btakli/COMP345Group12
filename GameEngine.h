@@ -21,7 +21,7 @@ class GameState : public ILoggable, public Subject
     public:
     //pure virtual function
     //needs to be overridden
-    virtual void transition(GameEngine* GameEngine, string command); 
+    void transition(GameEngine* GameEngine, string command); 
     virtual ~GameState(); //destructor
     virtual bool validate(string command) = 0;
     virtual string getName() = 0;
@@ -363,7 +363,8 @@ class GameEngine{
     std::vector<Player*>* _players_ptr;
     vector<int*>* _armyPool;
     Deck * _deck;
-    
+    queue<Order*>* _orders;
+
 public:
     
     // Returns a pointer to the current players in game
@@ -384,18 +385,42 @@ public:
     bool getStatus();
     //retunrs the _armyPool
     vector<int*>& get_ArmyPools();
+    //return amount in army pool at index
+    int* get_ArmyPoolAt(int index);
     //returns the _deck
     Deck* getDeck();
     //Copy Constructor and operator:
     GameEngine(const GameEngine& other);
     GameEngine& operator = (const GameEngine& e);
-    
+    //get orders
+    queue<Order*>& get_orders();
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const GameEngine& g);
-
     //return the command processor:
     CommandProcessor* getCommandProcessor();
-    
+    //startup phase
+    void startupPhase();
+
+
+    //add new player state
+    void add_new_player(GameEngine&);
+    //map picker state
+    void map_picker();
+    //assign territores state
+    void assign_territories(GameEngine&);
+    //determines order of play
+    void order_of_play(GameEngine&);
+    //give each army pool initial value of 50
+    void give_initial_armies(GameEngine&);
+    //Checks if an interval in army pool of 0 
+    bool has_army(GameEngine& engine, int i);
+    void draw_initial_cards(GameEngine&);
+    void reinforcementPhase(GameEngine&);
+    void issueOrdersPhase(GameEngine&);
+    void excecuteOrdersPhase(GameEngine&);
+    void ordersPicker(GameEngine&, Player&);
+    void cardPicker(GameEngine&, Player&);
+    void cardPicker2(GameEngine& engine, Player& player, string type);
     private:
     GameState* _currentState; //current state
     bool _continue; 

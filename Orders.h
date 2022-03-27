@@ -10,6 +10,7 @@ using namespace std;
 class Order : public ILoggable, public Subject {
 
 public:
+
     //default constructor
     Order();
     //destructor
@@ -32,6 +33,8 @@ public:
     std::string stringToLog();
 
 private:
+
+
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Order& order);
     //order type
@@ -201,6 +204,8 @@ public:
 	void move(int from, int to);
     //remove method to delete a specific order from the list using its index inside the orderslist
 	void remove(int index);
+    //get order list
+    std::vector<Order*>& get_order_list();
 
 private:
     //The vector of Order pointers
