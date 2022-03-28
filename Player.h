@@ -57,6 +57,8 @@ public:
     int& getIndex();
 
     vector<Territory*>& get_territories();
+    
+    void setNeutral(Territory* ter);
 
 private:
 
