@@ -401,6 +401,34 @@ public:
     CommandProcessor* getCommandProcessor();
     //startup phase
     void startupPhase();
+    //add new player state
+    void add_new_player();
+    //map picker state
+    void map_picker();
+    //assign territores state
+    void assign_territories();
+    //determines order of play
+    void order_of_play();
+    //give each army pool initial value of 50
+    void give_initial_armies();
+    //Checks if an interval in army pool of 0 
+    bool has_army(int i);
+    //draw 2 cards per player
+    void draw_initial_cards();
+    //goes to reinforcement phase
+    void reinforcementPhase();
+    //goes to issue order phase
+    void issueOrdersPhase();
+    //goes to execute order phase
+    void excecuteOrdersPhase();
+    //goes to orders picker phase
+    void ordersPicker(Player&);
+    //pick a card for each player
+    void cardPicker(Player&);
+    //pick a card type for a player
+    void cardPicker2(Player& player, string type);
+    //validate a loaded map
+    void validateMap();
 
 
     //add new player state
