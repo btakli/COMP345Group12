@@ -79,13 +79,17 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-   // _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+   //A1 _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
 
     player = nullptr;
     targetTerritory = nullptr;
     armiesToDeploy = 0;
 }
 
+Deploy::Deploy(Player* p, Territory* target) : Order("deploy"){
+    player = p;
+    this->targetTerritory = target;
+}
 
 Deploy::~Deploy(){ //Destructor
 }
@@ -135,7 +139,17 @@ void Deploy::execute(){
  */
 
 Advance::Advance() : Order("advance"){ //Constructor
-    _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    //A1 _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    player = nullptr;
+    sourceTerritory = nullptr;
+    targetTerritory = nullptr;
+    armiesToAdvance = 0;
+}
+
+Advance::Advance(Player* p, Territory* source, Territory* target) : Order("advance"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
 }
 
 Advance::~Advance(){ //Destructor
@@ -190,6 +204,7 @@ void Advance::execute(){
             targetTerritory->claim(*player);
 
             // player needs to draw a card
+            
            
                 
             }
@@ -207,7 +222,16 @@ void Advance::execute(){
  */
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
-    _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+   //A1 _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+    player = nullptr;
+    sourceTerritory = nullptr;
+    targetTerritory = nullptr;
+}
+
+Bomb::Bomb(Player* p, Territory* source, Territory* target) : Order("bomb"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
 }
 
 Bomb::~Bomb(){ //Destructor
@@ -261,7 +285,14 @@ void Bomb::execute(){
  */
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
-    _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   //A1 _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   player = nullptr;
+   targetTerritory = nullptr;
+}
+
+Blockade::Blockade(Player* p, Territory* target) : Order("blockade"){ 
+    player = p;
+    this->targetTerritory = target;
 }
 
 Blockade::~Blockade(){ //Destructor
@@ -312,8 +343,19 @@ void Blockade::execute(){
  */
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
-    _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   //A1 _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   player = nullptr;
+   sourceTerritory = nullptr;
+   targetTerritory = nullptr;
+   armiesToAirlift = 0;
 }
+
+Airlift::Airlift(Player* p, Territory* source, Territory* target) : Order("airlift"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
+}
+
 
 Airlift::~Airlift(){ //Destructor
 }
@@ -363,8 +405,16 @@ void Airlift::execute(){
  */
 
 Negotiate::Negotiate() : Order("negotiate"){ //Constructor
-    _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    //A1 _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    player = nullptr;
+    targetPlayer = nullptr;
 }
+
+Negotiate::Negotiate(Player* p, Player* target) : Order("negotiate"){ 
+    player = p;
+    targetPlayer = target;
+}
+
 
 Negotiate::~Negotiate(){ //Destructor
 }
