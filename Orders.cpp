@@ -1,8 +1,13 @@
 #include "Orders.h"
 #include <vector>
 #include <iostream>
+#include "Map.h"
+#include "GameEngine.h"
+#include "Player.h"
+#include "Cards.h"
 using namespace std;
 
+//GameEngine *Order::game = new GameEngine();
 
 /**
  * Order implementation
@@ -74,7 +79,16 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-    _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+   //A1 _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+
+    player = nullptr;
+    targetTerritory = nullptr;
+    armiesToDeploy = 0;
+}
+
+Deploy::Deploy(Player* p, Territory* target) : Order("deploy"){
+    player = p;
+    this->targetTerritory = target;
 }
 
 Deploy::~Deploy(){ //Destructor
@@ -95,12 +109,23 @@ Deploy* Deploy::clone() const
 }
 
 bool Deploy::validate(){
-    return true;
+    //New Implementation
+     // Check if territory belongs to player
+    if (targetTerritory->get_claimant() == player){
+        cout << "valid order" << endl;
+        return true;
+    }else{
+        cout << "invalid order" << endl;
+        return false;
+    }
+
 }
 
 void Deploy::execute(){
     if (validate()) {
-        cout << "Deploy: place some armies on one of the current player's territories." << endl;
+        //cout << "Deploy: place some armies on one of the current player's territories." << endl;
+        //New Implementation
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToDeploy));
         notify(this); //Call notify to notify observers
     }
    else
@@ -114,7 +139,17 @@ void Deploy::execute(){
  */
 
 Advance::Advance() : Order("advance"){ //Constructor
-    _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    //A1 _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    player = nullptr;
+    sourceTerritory = nullptr;
+    targetTerritory = nullptr;
+    armiesToAdvance = 0;
+}
+
+Advance::Advance(Player* p, Territory* source, Territory* target) : Order("advance"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
 }
 
 Advance::~Advance(){ //Destructor
@@ -135,13 +170,46 @@ Advance* Advance::clone() const
 }
 
 bool Advance::validate(){
-    return true;
+    //New Implementation
+    for (Territory* ter: targetTerritory->get_neighbors()){
+        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
+               cout << "invalid order, the territories are not adjacent"<< endl;
+               return false;
+        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
+            cout << "invalid order, don't own territory" << endl;
+            return false;
+        }else{
+            return true;
+        }
 }
+}
+
 
 void Advance::execute(){
     if (validate()) {
         cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
         notify(this); //Call notify to notify observers
+    //new implementation
+    if(targetTerritory->get_claimant() == player){ //advance 
+        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAdvance));
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAdvance));
+    }else if(targetTerritory->get_claimant() != player){ //attack
+        int attackingChances = sourceTerritory->get_stationed_army()*0.6;
+        int defendingChances = targetTerritory->get_stationed_army()*0.7;
+        if (attackingChances == defendingChances) {
+                targetTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army()));
+            } 
+        else if (attackingChances > defendingChances){
+            targetTerritory->set_stationed_army(*new int((attackingChances - defendingChances)/0.6));
+            targetTerritory->claim(player, false);
+
+            // player needs to draw a card
+            
+           
+                
+            }
+    }
+
     }
    else
       cout << "INVALID ORDER" << endl;
@@ -154,7 +222,16 @@ void Advance::execute(){
  */
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
-    _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+   //A1 _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+    player = nullptr;
+    sourceTerritory = nullptr;
+    targetTerritory = nullptr;
+}
+
+Bomb::Bomb(Player* p, Territory* source, Territory* target) : Order("bomb"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
 }
 
 Bomb::~Bomb(){ //Destructor
@@ -175,12 +252,26 @@ Bomb* Bomb::clone() const
 }
 
 bool Bomb::validate(){
-    return true;
+    //New Implementation
+    for (Territory* ter: targetTerritory->get_neighbors()){
+        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
+               cout << "invalid order, the territories are not adjacent"<< endl;
+               return false;
+        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
+            cout << "invalid order, don't own territory" << endl;
+            return false;
+        }else{
+            return true;
+        }
 }
+}
+
 
 void Bomb::execute(){
     if (validate()) {
         cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
+        int bombedArmies = (targetTerritory->get_stationed_army()) / 2;
+        targetTerritory->set_stationed_army(bombedArmies);
         notify(this); //Call notify to notify observers
     }
    else
@@ -194,7 +285,14 @@ void Bomb::execute(){
  */
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
-    _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   //A1 _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   player = nullptr;
+   targetTerritory = nullptr;
+}
+
+Blockade::Blockade(Player* p, Territory* target) : Order("blockade"){ 
+    player = p;
+    this->targetTerritory = target;
 }
 
 Blockade::~Blockade(){ //Destructor
@@ -215,18 +313,29 @@ Blockade* Blockade::clone() const
 }
 
 bool Blockade::validate(){
-    return true;
+   //New Implementation
+    // Check if territory belongs to player
+    if (targetTerritory->get_claimant() == player) {
+        cout << "valid order, owned territory" << endl;
+        return true;
+    }else
+    return false;
 }
 
 void Blockade::execute(){
-    if (validate()) {
-        cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
-        notify(this); //Call notify to notify observers
+    if (!validate()) {
+        //cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
+        cout << "Invalid order\n" << endl;
+    } else {
+        int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
+        targetTerritory->set_stationed_army(doubleArmies);
+        //player->setNeutral(targetTerritory);
+        cout << "Valid order\n" << endl;
     }
-   else
-      cout << "INVALID ORDER" << endl;
+        notify(this); //Call notify to notify observers
 
 }
+
 
 /**
  * Airlift implementation
@@ -234,8 +343,19 @@ void Blockade::execute(){
  */
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
-    _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   //A1 _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   player = nullptr;
+   sourceTerritory = nullptr;
+   targetTerritory = nullptr;
+   armiesToAirlift = 0;
 }
+
+Airlift::Airlift(Player* p, Territory* source, Territory* target) : Order("airlift"){
+    player = p;
+    this->sourceTerritory = source;
+    this->targetTerritory = target;
+}
+
 
 Airlift::~Airlift(){ //Destructor
 }
@@ -255,12 +375,23 @@ Airlift* Airlift::clone() const
 }
 
 bool Airlift::validate(){
-    return true;
+    //New Implementation
+    //Check if both territories belong to player
+    if (targetTerritory->get_claimant() == player && sourceTerritory->get_claimant() == player){
+        cout << "valid order" << endl;
+        return true;
+    } else {
+        cout << "invalid order, don't own both territories" << endl;
+        return false;
+    }
 }
 
 void Airlift::execute(){
     if (validate()) {
         cout << "Airlift: advance some armies from one of the current player's territories to any another territory." << endl;
+        //new implementation
+        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAirlift));
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAirlift));
         notify(this); //Call notify to notify observers
     }
    else
@@ -274,8 +405,16 @@ void Airlift::execute(){
  */
 
 Negotiate::Negotiate() : Order("negotiate"){ //Constructor
-    _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    //A1 _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    player = nullptr;
+    targetPlayer = nullptr;
 }
+
+Negotiate::Negotiate(Player* p, Player* target) : Order("negotiate"){ 
+    player = p;
+    targetPlayer = target;
+}
+
 
 Negotiate::~Negotiate(){ //Destructor
 }
@@ -295,12 +434,19 @@ Negotiate* Negotiate::clone() const
 }
 
 bool Negotiate::validate(){
-    return true;
+    //New Implementation
+    //Check if the player issuing the negotiation is the same as the target player
+    if (player == targetPlayer) {
+        return false;
+        cout << "invalid order : negotiation must be done with a different player\n";
+    } else
+        return true;
 }
 
 void Negotiate::execute(){
     if (validate()) {
         cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
+
         notify(this); //Call notify to notify observers
     }
    else
@@ -315,6 +461,7 @@ void Negotiate::execute(){
 
 OrdersList::OrdersList() { //Constructor
     _orderlist = new vector <Order*>();
+    _currentState = new string("NO ORDERS CURRENTLY");
 }
 
 OrdersList::~OrdersList() { //Destructor 
@@ -323,10 +470,6 @@ OrdersList::~OrdersList() { //Destructor
 	}
 	_orderlist->clear();
     delete(_orderlist);
-}
-
-std::vector<Order*>& OrdersList::get_order_list() {
-    return *_orderlist;
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
@@ -347,6 +490,7 @@ OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
     for (int i = 0; i < ol._orderlist->size(); i++) {
         this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
     }
+    _currentState = new string(*ol._currentState);
 
 }
 
@@ -361,7 +505,9 @@ Order* OrdersList::getOrder(int index)
 
 
 void OrdersList::addOrder(Order* order) { 
+    _currentState->assign(order->getType());
    this->_orderlist->push_back(order);
+   notify(this);
 }
 
 void OrdersList::move(int from, int to) { 
@@ -371,6 +517,16 @@ void OrdersList::move(int from, int to) {
 
 void OrdersList::remove(int index) { 
     this->_orderlist->erase(this->_orderlist->begin() + index);
+}
+
+std::string OrdersList::stringToLog()
+{
+    return "Order Issued: " + *_currentState;
+}
+
+std::vector<Order*>& OrdersList::get_order_list()
+{
+    return *this->_orderlist;
 }
 
 std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist)

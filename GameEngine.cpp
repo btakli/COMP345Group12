@@ -26,13 +26,6 @@ using std::end;
 //************GameState****************
 GameState::~GameState(){} //destructor
 
-string GameState::stringToLog() {
-    return "Order Executed: " + *_currentState;
-}
-void GameState::transition(GameEngine* GameEngine, string input) {
-    notify(this);
-}
-
 
 //*********************friends with ostream:*********************************
 
@@ -80,7 +73,7 @@ Start::~Start(){
 }
 
 void Start::transition(GameEngine* engine, string input){
- 
+
     if(input == *_command){
         engine->map_picker();
         GameState* newState = new MapLoaded();
@@ -138,7 +131,6 @@ MapLoaded::~MapLoaded(){
 }
 
 void MapLoaded::transition(GameEngine* engine, string input){
-
 
     if(input == *_command1){ // Load a new map
         
@@ -198,6 +190,7 @@ MapValidated::~MapValidated(){
 }
 
 void MapValidated::transition(GameEngine* engine, string input){
+
 
     if(input == *_command){
         GameState* newState = new PlayersAdded();
@@ -470,7 +463,7 @@ ExcecuteOrders::~ExcecuteOrders(){
 }
 
 void ExcecuteOrders::transition(GameEngine* engine, string input){
- 
+
     if(input == *_command1){
         cout << "Executing orders..." << endl;
     }else if(input == *_command2){
@@ -1016,7 +1009,36 @@ void GameEngine::validateMap() {
     }
     else std::cout << "WARNING: No map loaded." << endl;
 }
+void GameEngine::advanceHelper(Player& player) {
+    string choice;
+    bool owns = false;
+    bool nextTo = false;
+    try {
+        std::cout << "You have signaled to deploy. Which territory do you want to deploy to?";
+        cin >> choice;
+        for (Territory* t : player.get_territories()) {
+            if (t->get_name() == choice) {
+                player.toDefend(t);
+                bool owns = true;
+                break;
+            }
+            for (Territory* neighbor : t->get_neighbors()) {
+                if (neighbor->get_name() == choice) {
+                    player.toAttack(t);
+                    bool nextTo = true;
 
+                }
+            }
+            
+        }
+        if (!owns && !nextTo){
+            cout << "You have no relation to that territory";
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+    }
+}
 void GameEngine::ordersPicker(Player& player) {
 
     int option;
@@ -1082,11 +1104,13 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
+            advanceHelper(player);
             player.issueOrder(new Advance());
             break;
 
         case 6:
             player.issueOrder(new Deploy());
+    
             break;
 
         case 7:
@@ -1107,7 +1131,6 @@ void GameEngine::ordersPicker(Player& player) {
     }
     catch (std::runtime_error e) {
         std::cout << "ERROR: " << e.what() << std::endl;
-        Map::get_instance()->unload();
     }
 
 }

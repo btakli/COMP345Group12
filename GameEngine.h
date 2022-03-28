@@ -17,12 +17,12 @@ class CommandProcessor;
 class GameEngine; 
 
 //An abstract class:
-class GameState : public ILoggable, public Subject
+class GameState 
 {
     public:
     //pure virtual function
     //needs to be overridden
-    virtual void transition(GameEngine* GameEngine, string command); 
+    virtual void transition(GameEngine* GameEngine, string command)=0; 
     virtual ~GameState(); //destructor
     virtual bool validate(string command) = 0;
     virtual string getName() = 0;
@@ -36,7 +36,7 @@ class GameState : public ILoggable, public Subject
     virtual GameState* clone() const = 0;
 
     virtual void commandMessage() = 0;
-    string stringToLog();
+
 };
 
 ostream& operator<<(ostream& os, const GameState& s);
@@ -403,8 +403,6 @@ public:
     CommandProcessor* getCommandProcessor();
     //startup phase
     void startupPhase();
-
-
     //add new player state
     void add_new_player();
     //map picker state
@@ -417,16 +415,24 @@ public:
     void give_initial_armies();
     //Checks if an interval in army pool of 0 
     bool has_army(int i);
+    //draw 2 cards per player
     void draw_initial_cards();
+    //goes to reinforcement phase
     void reinforcementPhase();
+    //goes to issue order phase
     void issueOrdersPhase();
+    //goes to execute order phase
     void excecuteOrdersPhase();
+    //goes to orders picker phase
     void ordersPicker(Player&);
+    //pick a card for each player
     void cardPicker(Player&);
+    //pick a card type for a player
     void cardPicker2(Player& player, string type);
+    //validate a loaded map
     void validateMap();
-   
-
+    //Deploy helper
+    void advanceHelper(Player& player);
     private:
     GameState* _currentState; //current state
     bool _continue; 
