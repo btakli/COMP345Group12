@@ -201,7 +201,7 @@ void Advance::execute(){
             } 
         else if (attackingChances > defendingChances){
             targetTerritory->set_stationed_army(*new int((attackingChances - defendingChances)/0.6));
-            targetTerritory->claim(*player);
+            targetTerritory->claim(player, false);
 
             // player needs to draw a card
             
@@ -461,6 +461,7 @@ void Negotiate::execute(){
 
 OrdersList::OrdersList() { //Constructor
     _orderlist = new vector <Order*>();
+    _currentState = new string("NO ORDERS CURRENTLY");
 }
 
 OrdersList::~OrdersList() { //Destructor 
@@ -489,6 +490,7 @@ OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
     for (int i = 0; i < ol._orderlist->size(); i++) {
         this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
     }
+    _currentState = new string(*ol._currentState);
 
 }
 
@@ -503,7 +505,9 @@ Order* OrdersList::getOrder(int index)
 
 
 void OrdersList::addOrder(Order* order) { 
+    _currentState->assign(order->getType());
    this->_orderlist->push_back(order);
+   notify(this);
 }
 
 void OrdersList::move(int from, int to) { 
@@ -513,6 +517,16 @@ void OrdersList::move(int from, int to) {
 
 void OrdersList::remove(int index) { 
     this->_orderlist->erase(this->_orderlist->begin() + index);
+}
+
+std::string OrdersList::stringToLog()
+{
+    return "Order Issued: " + *_currentState;
+}
+
+std::vector<Order*>& OrdersList::get_order_list()
+{
+    return *this->_orderlist;
 }
 
 std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist)

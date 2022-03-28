@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "Cards.h"
 #include "Orders.h"
+#include "LoggingObserver.h"
 using std::string;
 using std::vector;
 
@@ -24,6 +25,8 @@ public:
 
     //Constructor for practical use later
     Player(string name, vector<Territory*> collection);
+    //Constructor with logging observer which will be passed to list of orders
+    Player(string name, vector<Territory*> collection, LogObserver* lo);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //Add a territory to defend

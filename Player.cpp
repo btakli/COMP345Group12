@@ -40,6 +40,11 @@ Player::Player(string name, vector<Territory*> collection) {
     this->_listOfOrders = new OrdersList();
 }
 
+Player::Player(string name, vector<Territory*> collection, LogObserver* lo): Player(name,collection)
+{
+    _listOfOrders->attach(lo);
+}
+
 Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
     this->_index = new int(s_index++);
     this->_name = new string(name);
