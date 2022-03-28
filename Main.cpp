@@ -137,7 +137,7 @@ void cardsDriver() {
 	player = NULL;
 	ordersList = NULL;
 }
-
+/*
 void playerDriver() {
 	cout << "Demonstration of Player class:" << endl;
 
@@ -325,4 +325,4 @@ void test_assignment() {
 	std::cout << "Territory:\t" << territory_assign << std::endl;
 	std::cout << "Landmass:\t" << landMass_assign << std::endl;
 	std::cout << "Continent:\t" << continent_assign << std::endl;
-}
+} */
