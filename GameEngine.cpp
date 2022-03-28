@@ -80,7 +80,7 @@ Start::~Start(){
 }
 
 void Start::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+ 
     if(input == *_command){
         engine->map_picker();
         GameState* newState = new MapLoaded();
@@ -138,7 +138,7 @@ MapLoaded::~MapLoaded(){
 }
 
 void MapLoaded::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+
 
     if(input == *_command1){ // Load a new map
         
@@ -199,7 +199,6 @@ MapValidated::~MapValidated(){
 
 void MapValidated::transition(GameEngine* engine, string input){
 
-    GameState::transition(engine, input);
     if(input == *_command){
         engine->add_new_player();
 
@@ -260,7 +259,7 @@ PlayersAdded::~PlayersAdded(){
 
 void PlayersAdded::transition(GameEngine* engine, string input){
 
-    GameState::transition(engine, input);
+
     if(input == *_command1){
 
         engine->add_new_player();
@@ -334,7 +333,7 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
-    GameState::transition(engine, input);
+
     if(input == *_command){
 
         // Add new reinforcements
@@ -409,7 +408,7 @@ IssueOrders::~IssueOrders(){
 }
 
 void IssueOrders::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+
 
     if(input == *_command1){
 
@@ -470,7 +469,7 @@ ExcecuteOrders::~ExcecuteOrders(){
 }
 
 void ExcecuteOrders::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+ 
     if(input == *_command1){
         cout << "Executing orders..." << endl;
     }else if(input == *_command2){
@@ -536,7 +535,7 @@ Win::~Win(){
 }
 
 void Win::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+
     if(input == *_command2){
         GameState* newState_end = new End();
         delete engine->getCurrentState();
@@ -596,7 +595,7 @@ End::End(){}
 End::~End(){}
 
 void End::transition(GameEngine* engine, string input){
-    GameState::transition(engine, input);
+
     delete engine->getCurrentState(); //delete the last object to prevent memeory leak
 }
 
@@ -774,21 +773,10 @@ void GameEngine::map_picker() {
 #define UPPERLIMIT 8
 
     Map::get_instance()->unload();
-
+ 
     int option;
     try {
         do {
-            std::cout << "Please enter a number between 1 to " << UPPERLIMIT << "."
-                "\n 1. " << BERLIN
-                "\n 2. " << CANADA
-                "\n 3. " << COW
-                "\n 4. " << ESTONIA
-                "\n 5. " << FORTERESS
-                "\n 6. " << INVALID1
-                "\n 7. " << INVALID2
-                "\n 8. " << INVALID3
-                "\n> ";
-
             std::cin >> option;
 
             if (std::cin.fail()) {
