@@ -2,9 +2,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Player.h"
-#include "Map.h"
 #include "LoggingObserver.h"
+class Player;
+class Territory;
 
 using namespace std;
 
@@ -33,6 +33,9 @@ public:
 
     std::string stringToLog();
 
+    // static GameEngine* getGameEngine();
+    // static GameEngine* game;
+
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Order& order);
@@ -45,6 +48,8 @@ class Deploy : public Order {
 public:
     //default constructor
     Deploy();
+    Deploy(Player* p); // parameterized Constructor
+    Deploy(Player* p, Territory* target);
     //destructor
     virtual ~Deploy();
     //copy constructor
