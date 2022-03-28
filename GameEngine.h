@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "CommandProcessing.h"
 #include "LoggingObserver.h"
+#include <set>
 
 using std::cout;
 using std::endl;
@@ -395,6 +396,7 @@ public:
     GameEngine& operator = (const GameEngine& e);
     //get orders
     queue<Order*>& get_orders();
+    set<string> already;
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const GameEngine& g);
     //return the command processor:

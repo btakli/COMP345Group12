@@ -24,7 +24,7 @@ ostream& operator<<(ostream& os, const FileCommandProcessorAdapter& fcpa){
  ******************Command****************
 ******************************************/
 Command::Command(){
-
+    _currentState = new string("ASDf");
 }  
 
 //set a deefault effect to avoid segmentation fault:
@@ -42,7 +42,7 @@ Command::~Command(){
 
 void Command::saveEffect(string nextState){
     _effect = new string(nextState);
-    ILoggable::_currentState = _effect;
+    ILoggable::_currentState = new string(*_effect);
     notify(this);
 }
 
@@ -117,16 +117,16 @@ void CommandProcessor::saveCommand(){
                 if(prev_command == "loadmap"){
                     (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
                     string newStateMap = "loadmap "+ oneCommand;
-                    ILoggable::_currentState->assign(newStateMap);
+                    ILoggable::_currentState = new string(newStateMap);
                     notify(this); 
                 }else if(prev_command == "addplayer"){
                     (*commands_ptr).push_back(Command(("addplayer " + oneCommand)));
                     string newStatePlayer = "addplayer "+ oneCommand;
-                    ILoggable::_currentState->assign(newStatePlayer);
+                    ILoggable::_currentState = new string(newStatePlayer);
                     notify(this); 
                 }else{
                     (*commands_ptr).push_back(Command(oneCommand));
-                    ILoggable::_currentState->assign(oneCommand);
+                    ILoggable::_currentState = new string(oneCommand);
                     notify(this); 
                 }
              }

@@ -1,7 +1,7 @@
 #include "GameEngine.h"
 #include <iostream>
 #include <random>
-
+#include <set>
 /*********************/
 
 //                loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
@@ -200,8 +200,6 @@ MapValidated::~MapValidated(){
 void MapValidated::transition(GameEngine* engine, string input){
 
     if(input == *_command){
-        engine->add_new_player();
-
         GameState* newState = new PlayersAdded();
         delete engine->getCurrentState();
         engine->setState(newState);
@@ -377,6 +375,7 @@ void AssignedReinforcement::commandMessage(){
 }
 
 bool AssignedReinforcement::validate(string command){
+    if (command == *_command) return true;
     return false;
 }
 
@@ -448,6 +447,8 @@ void IssueOrders::commandMessage(){
 }
 
 bool IssueOrders::validate(string command){
+    if (command == *_command1 || command == *_command2) return true;
+        
     return false;
 }
 string IssueOrders::getName(){
@@ -515,6 +516,9 @@ void ExcecuteOrders::commandMessage(){
 }
 
 bool ExcecuteOrders::validate(string command){
+    if (command == *_command1 || command == *_command2 || command == *_command3) {
+        return true;
+    }
     return false;
 }
 
@@ -773,70 +777,45 @@ void GameEngine::map_picker() {
 #define UPPERLIMIT 8
 
     Map::get_instance()->unload();
- 
-    int option;
-    try {
-        do {
-            std::cin >> option;
 
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-                option = -1;
-            }
-        } while (option > UPPERLIMIT || option < 1);
+    for (Command c : *(this->getCommandProcessor())->getCommandList()) {
 
-        switch (option)
-        {
-        case 1:
-            MapLoader::get_instance()->load_map(BERLIN);
-            break;
+        size_t space = c.getCommandName().find(" ") + 1;
+        string mapName = c.getCommandName().substr(space);
 
-        case 2:
-            MapLoader::get_instance()->load_map(CANADA);
-            break;
-
-        case 3:
-            MapLoader::get_instance()->load_map(COW);
-            break;
-
-        case 4:
-            MapLoader::get_instance()->load_map(ESTONIA);
-            break;
-
-        case 5:
-            MapLoader::get_instance()->load_map(FORTERESS);
-            break;
-
-        case 6:
-            MapLoader::get_instance()->load_map(INVALID1);
-            break;
-
-        case 7:
-            MapLoader::get_instance()->load_map(INVALID2);
-            break;
-
-        case 8:
-            MapLoader::get_instance()->load_map(INVALID3);
-            break;
-        }
-    }
-    catch (std::runtime_error e) {
-        std::cout << "ERROR: " << e.what() << std::endl;
-        Map::get_instance()->unload();
+        if (mapName == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
+        else if (mapName == CANADA) MapLoader::get_instance()->load_map(CANADA);
+        else if (mapName == COW) MapLoader::get_instance()->load_map(COW);
+        else if (mapName == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
+        else if (mapName == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
+        else if (mapName == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
+        else if (mapName == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
+        else if (mapName == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
     }
 }
 
 // Add a new player
 void GameEngine::add_new_player() {
-    if (this->get_players().size() + 1 > 6) std::cout << "WARNING: Maximum of players reached: 6" << std::endl;
-    else {
-        std::string player_name;
-        std::cout << "New Player Name: ";
-        cin >> player_name;
-        this->get_players().push_back(new Player(player_name));
 
-        std::cout << "Current player count: " << this->get_players().size();
+    list<Command>* commands = this->getCommandProcessor()->getCommandList();
+
+    for (Command c : *commands) {
+
+        size_t pos1 = (c.getCommandName()).find(" ");
+        size_t pos2 = 0;
+        int length = pos1 - pos2;
+        string commandprefix = (c.getCommandName()).substr(0, length);
+
+        if (commandprefix == "addplayer") {
+            size_t space = c.getCommandName().find(" ") + 1;
+            string playerName = c.getCommandName().substr(space);
+            cout << "\nASDF " << playerName;
+            if (!already.contains(playerName)) {
+                already.insert(playerName);
+                this->get_players().push_back(new Player(playerName));
+                std::cout << "Current player count: " << this->get_players().size();
+            }
+        }
     }
 }
 
@@ -866,12 +845,12 @@ void GameEngine::assign_territories() {
 }
 
 void GameEngine::order_of_play() {
-
-    random_shuffle(begin(this->get_players()), end(this->get_players()));         //not true random
+    auto rng = std::default_random_engine{};
+    shuffle(begin(this->get_players()), end(this->get_players()), rng);         //not true random
     cout << "The order of play is the following: " << endl;     
     int i = 0; 
     for (Player* player : this->get_players()) {
-        cout << "Player " << i++ << ": \t" << *player->getName() << endl;
+        cout << ++i << ": \t" << *player->getName() << endl;
     }
 }
 
@@ -1013,8 +992,6 @@ void GameEngine::cardPicker2(Player& player, string type) {
         if (c->getType() == type) {
             player.issueOrder(player.getHand()->playAndReturnToDeck(card, this->getDeck()));
             break;
-
-           
         }
         card++;
     }
