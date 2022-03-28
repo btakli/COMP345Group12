@@ -1048,7 +1048,7 @@ void GameEngine::advanceHelper(Player& player) {
     bool owns = false;
     bool nextTo = false;
     try {
-        std::cout << "You have signaled to deploy. Which territory do you want to deploy to?";
+        std::cout << "You have signaled to advance. Which territory do you want to advance to?";
         cin >> choice;
         for (Territory* t : player.get_territories()) {
             if (t->get_name() == choice) {
