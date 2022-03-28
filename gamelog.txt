@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Sun Mar 27 19:55:15 2022
+~~~~ Gamelog for game starting on: Sun Mar 27 20:39:14 2022
 
 Command: loadmap canada
 Command: loadmap invalid2
@@ -13,3 +13,23 @@ Command: issueordersend
 Command: win
 Command: quit
 Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: Assignedreinforcement
+Command's Effect: Transitioning to state Assignedreinforcement
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
