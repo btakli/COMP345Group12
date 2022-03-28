@@ -201,7 +201,7 @@ void Advance::execute(){
             } 
         else if (attackingChances > defendingChances){
             targetTerritory->set_stationed_army(*new int((attackingChances - defendingChances)/0.6));
-            targetTerritory->claim(*player);
+            targetTerritory->claim(player, false);
 
             // player needs to draw a card
             
@@ -522,6 +522,11 @@ void OrdersList::remove(int index) {
 std::string OrdersList::stringToLog()
 {
     return "Order Issued: " + *_currentState;
+}
+
+std::vector<Order*>& OrdersList::get_order_list()
+{
+    return *this->_orderlist;
 }
 
 std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist)

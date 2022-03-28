@@ -249,6 +249,8 @@ public:
 	void remove(int index);
     //Method responsible for writing a specific string based on the type of order added to the list. Abstract method from ILoggable.
     std::string stringToLog();
+    //get order list
+    std::vector<Order*>& get_order_list();
 
 private:
     //The vector of Order pointers

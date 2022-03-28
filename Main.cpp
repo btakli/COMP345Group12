@@ -41,8 +41,6 @@ void loggableDriver() {
 
 	OrdersList* ol = p1->getOrdersList();
 	ol->addOrder(order);
-	ol->addOrder(deploy);
-	ol->addOrder(negotiate);
 
 	for (int i = 0; i < ol->size(); i++)
 	{
