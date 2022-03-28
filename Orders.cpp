@@ -2,8 +2,12 @@
 #include <vector>
 #include <iostream>
 #include "Map.h"
+#include "GameEngine.h"
+#include "Player.h"
+#include "Cards.h"
 using namespace std;
 
+//GameEngine *Order::game = new GameEngine();
 
 /**
  * Order implementation
@@ -75,8 +79,13 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-    _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+   // _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+
+    player = nullptr;
+    targetTerritory = nullptr;
+    armiesToDeploy = 0;
 }
+
 
 Deploy::~Deploy(){ //Destructor
 }
@@ -112,9 +121,7 @@ void Deploy::execute(){
     if (validate()) {
         //cout << "Deploy: place some armies on one of the current player's territories." << endl;
         //New Implementation
-        targetTerritory->get_stationed_army();
-        //targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + armiesToDeploy);
-        //error with the variable armiesToDeploy because not a const?
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToDeploy));
         notify(this); //Call notify to notify observers
     }
    else
@@ -150,26 +157,44 @@ Advance* Advance::clone() const
 
 bool Advance::validate(){
     //New Implementation
-    // Check if territory belongs to player
-    if (sourceTerritory->get_claimant() != player) {
-        cout << "invalid order, don't own territory" << endl;
-        return false;
-    } 
-    // Check if 2 Territories are adjacent
-    // does not work need to find a way to check adjancency
-    //  else if(sourceTerritory->get_neighbors() != targetTerritory){
-    //      cout << "invalid order, two territories are not adjacent" << endl;
-    //      return false;
-    //  }else
-    //      return true;
-     }
-    
+    for (Territory* ter: targetTerritory->get_neighbors()){
+        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
+               cout << "invalid order, the territories are not adjacent"<< endl;
+               return false;
+        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
+            cout << "invalid order, don't own territory" << endl;
+            return false;
+        }else{
+            return true;
+        }
+}
+}
 
 
 void Advance::execute(){
     if (validate()) {
         cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
         notify(this); //Call notify to notify observers
+    //new implementation
+    if(targetTerritory->get_claimant() == player){ //advance 
+        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAdvance));
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAdvance));
+    }else if(targetTerritory->get_claimant() != player){ //attack
+        int attackingChances = sourceTerritory->get_stationed_army()*0.6;
+        int defendingChances = targetTerritory->get_stationed_army()*0.7;
+        if (attackingChances == defendingChances) {
+                targetTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army()));
+            } 
+        else if (attackingChances > defendingChances){
+            targetTerritory->set_stationed_army(*new int((attackingChances - defendingChances)/0.6));
+            targetTerritory->claim(*player);
+
+            // player needs to draw a card
+           
+                
+            }
+    }
+
     }
    else
       cout << "INVALID ORDER" << endl;
@@ -204,14 +229,19 @@ Bomb* Bomb::clone() const
 
 bool Bomb::validate(){
     //New Implementation
-    // Check if territory belongs to player
-    if (sourceTerritory->get_claimant() != player) {
-        cout << "invalid order, don't own territory" << endl;
-        return false;
-    }else
-    //need to check if territories are adjacent, same problem as for advance
-    return true;
+    for (Territory* ter: targetTerritory->get_neighbors()){
+        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
+               cout << "invalid order, the territories are not adjacent"<< endl;
+               return false;
+        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
+            cout << "invalid order, don't own territory" << endl;
+            return false;
+        }else{
+            return true;
+        }
 }
+}
+
 
 void Bomb::execute(){
     if (validate()) {
@@ -262,14 +292,19 @@ bool Blockade::validate(){
 }
 
 void Blockade::execute(){
-    if (validate()) {
-        cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
-        notify(this); //Call notify to notify observers
+    if (!validate()) {
+        //cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
+        cout << "Invalid order\n" << endl;
+    } else {
+        int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
+        targetTerritory->set_stationed_army(doubleArmies);
+        player->setNeutral(targetTerritory);
+        cout << "Execution successful!\n" << endl;
     }
-   else
-      cout << "INVALID ORDER" << endl;
+        notify(this); //Call notify to notify observers
 
 }
+
 
 /**
  * Airlift implementation
@@ -313,8 +348,8 @@ void Airlift::execute(){
     if (validate()) {
         cout << "Airlift: advance some armies from one of the current player's territories to any another territory." << endl;
         //new implementation
-        sourceTerritory->set_stationed_army(sourceTerritory->get_stationed_army());
-
+        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAirlift));
+        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAirlift));
         notify(this); //Call notify to notify observers
     }
    else
@@ -361,6 +396,7 @@ bool Negotiate::validate(){
 void Negotiate::execute(){
     if (validate()) {
         cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
+
         notify(this); //Call notify to notify observers
     }
    else
