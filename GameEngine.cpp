@@ -1043,7 +1043,7 @@ void GameEngine::validateMap() {
     }
     else std::cout << "WARNING: No map loaded." << endl;
 }
-void GameEngine::deployHelper(Player& player) {
+void GameEngine::advanceHelper(Player& player) {
     string choice;
     bool owns = false;
     bool nextTo = false;
@@ -1138,12 +1138,13 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
+            advanceHelper(player);
             player.issueOrder(new Advance());
             break;
 
         case 6:
             player.issueOrder(new Deploy());
-            deployHelper(player);
+    
             break;
 
         case 7:

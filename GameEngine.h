@@ -430,7 +430,7 @@ public:
     //validate a loaded map
     void validateMap();
     //Deploy helper
-    void deployHelper(Player& player);
+    void advanceHelper(Player& player);
     private:
     GameState* _currentState; //current state
     bool _continue; 
