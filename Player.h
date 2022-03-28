@@ -29,10 +29,14 @@ public:
     Player(string name, vector<Territory*> collection, LogObserver* lo);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
-    //prints and returns a list of territories to defend
-    vector<Territory*>* toDefend();
-    //prints and returns a list of territories to attack
-    vector<Territory*>* toAttack();
+    //Add a territory to defend
+    void toDefend(Territory *t);
+    //ad a territory to attack
+    void toAttack(Territory *t);
+    //returns a list of territories to defend
+    vector<Territory*>& getDefend();
+    //returns a list of territories to attack
+    vector<Territory*>& getAttack();
     //Creates new order and adds it to _listOfOrders
     void issueOrder();
     //Copy constructor
@@ -49,7 +53,22 @@ public:
     Hand* getHand();
     //Returns player's OrdersList
     OrdersList* getOrdersList();
+    //Returns player's _name
+    string* getName();
+    
+    //Returns player index.
+    int& getIndex();
+
+    vector<Territory*>& get_territories();
+    
+    void setNeutral(Territory* ter);
+
 private:
+
+    //static index
+    static int s_index;
+    //player index
+    int* _index;
     //player name
     string* _name;
     //collection of territories
@@ -58,6 +77,10 @@ private:
     Hand* _hand;
     //OrdersList object holds orders
     OrdersList* _listOfOrders;
+    //collection of territories to attack
+    vector<Territory*>* _attack;
+    //collection of territories to defend
+    vector<Territory*>* _defend;
 };
 
 

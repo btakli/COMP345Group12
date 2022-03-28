@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include "LoggingObserver.h"
+class Player;
+class Territory;
 
 using namespace std;
 
@@ -31,6 +33,9 @@ public:
     //Method responsible for writing a specific string based on the type of order. Abstract method from ILoggable.
     std::string stringToLog();
 
+    // static GameEngine* getGameEngine();
+    // static GameEngine* game;
+
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Order& order);
@@ -43,6 +48,8 @@ class Deploy : public Order {
 public:
     //default constructor
     Deploy();
+    Deploy(Player* p); // parameterized Constructor
+    Deploy(Player* p, Territory* target);
     //destructor
     virtual ~Deploy();
     //copy constructor
@@ -60,6 +67,10 @@ private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Deploy& deploy);
 
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    int armiesToDeploy;
 };
 
 class Advance : public Order{
@@ -67,6 +78,8 @@ class Advance : public Order{
 public:
     //default constructor
     Advance();
+    Advance(Player* p);  // Parameterized Constructor
+    Advance(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Advance();
     //copy constructor
@@ -83,6 +96,12 @@ public:
   private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Advance& advance);
+
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
+    int armiesToAdvance;
 };
 
 class Bomb : public Order{
@@ -90,6 +109,8 @@ class Bomb : public Order{
 public:
     //default constructor
     Bomb();
+    Bomb(Player* p); // Parameterized Constructor
+    Bomb(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Bomb();
     //copy constructor
@@ -107,6 +128,11 @@ private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);
 
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
+
 };
 
 class Blockade : public Order{
@@ -114,6 +140,8 @@ class Blockade : public Order{
 public:
     //default constructor
     Blockade();
+    Blockade(Player* p); // Parameterized Constructor
+    Blockade(Player* p, Territory* target);
     //destructor
     virtual ~Blockade();
     //copy constructor
@@ -131,6 +159,10 @@ private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);
 
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+
 };
 
 class Airlift : public Order{
@@ -138,6 +170,8 @@ class Airlift : public Order{
 public:
     //default constructor
     Airlift();
+    Airlift(Player* p); // Parameterized Constructor
+    Airlift(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Airlift();
     //copy constructor
@@ -154,6 +188,12 @@ public:
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);
+
+    //New Implementation
+    Player* player;
+    Territory* targetTerritory;
+    Territory* sourceTerritory;
+    int armiesToAirlift;
 };
 
 class Negotiate : public Order{
@@ -161,6 +201,8 @@ class Negotiate : public Order{
 public:
     //default constructor
     Negotiate();
+    Negotiate(Player* p); // Parameterized Constructor
+    Negotiate(Player* p, Player* target);
     //destructor
     virtual ~Negotiate();
     //copy constructor
@@ -177,6 +219,10 @@ public:
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Negotiate& negotiate);
+
+    //New Implementation
+    Player* player;
+    Player* targetPlayer;
 
 };
 
