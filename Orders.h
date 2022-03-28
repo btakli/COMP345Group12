@@ -28,7 +28,7 @@ public:
     virtual bool validate();
     //execute method to execute the action of the order and display its description
     virtual void execute();
-    //Method responsible for writing a specific string based on the type of order. Abstract method from .
+    //Method responsible for writing a specific string based on the type of order. Abstract method from ILoggable.
     std::string stringToLog();
 
 private:
@@ -180,7 +180,7 @@ private:
 
 };
 
-class OrdersList {
+class OrdersList : public ILoggable, public Subject {
 
 public:
     //default constructor
@@ -201,6 +201,8 @@ public:
 	void move(int from, int to);
     //remove method to delete a specific order from the list using its index inside the orderslist
 	void remove(int index);
+    //Method responsible for writing a specific string based on the type of order added to the list. Abstract method from ILoggable.
+    std::string stringToLog();
 
 private:
     //The vector of Order pointers

@@ -15,32 +15,42 @@ void cardsDriver();
 void mapDriver();
 void gameEngineDriver();
 void mapDriver();
+void loggableDriver();
 
 int main()
 {
+	
+	loggableDriver();
+	
+	return 0;
+}
+
+void loggableDriver() {
 	LogObserver* lo = new LogObserver();
 	//EXAMPLE FOR HOW YOU'D USE LOGOBSERVER
-	/*Order order = Order();
-	Deploy deploy = Deploy();
-	Negotiate negotiate = Negotiate();
+	Order* order = new Order();
+	Deploy* deploy = new Deploy();
+	Negotiate* negotiate = new Negotiate();
 
-	order.attach(lo);
-	deploy.attach(lo);
-	negotiate.attach(lo);*/
+	order->attach(lo);
+	deploy->attach(lo);
+	negotiate->attach(lo);
 
+	cout << *lo << endl; //Print the status of the log observer
+	Player* p1 = new Player("Tom", vector<Territory*>(), lo);
 
-	cout << *lo <<endl; //Print the status of the log observer
-	
-	//THESE ARE WRITTEN TO THE GAMELOG USING notify(this)
-	/*order.execute();
-	deploy.execute();
-	negotiate.execute();*/
+	OrdersList* ol = p1->getOrdersList();
+	ol->addOrder(order);
+	ol->addOrder(deploy);
+	ol->addOrder(negotiate);
 
-	
-	gameEngineDriver();
+	for (int i = 0; i < ol->size(); i++)
+	{
+		ol->getOrder(i)->execute();
+	}
 
 	delete lo;
-	return 0;
+	delete p1;
 }
 
 void cardsDriver() {
