@@ -158,3 +158,7 @@ std::ostream& operator<<(std::ostream& out, const Player& player) {
     out << *player._listOfOrders;
     return out;
 }
+
+void Player::setNeutral(Territory* ter) {
+    // change ownership
+}
