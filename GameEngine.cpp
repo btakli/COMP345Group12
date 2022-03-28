@@ -1043,7 +1043,36 @@ void GameEngine::validateMap() {
     }
     else std::cout << "WARNING: No map loaded." << endl;
 }
+void GameEngine::deployHelper(Player& player) {
+    string choice;
+    bool owns = false;
+    bool nextTo = false;
+    try {
+        std::cout << "You have signaled to deploy. Which territory do you want to deploy to?";
+        cin >> choice;
+        for (Territory* t : player.get_territories()) {
+            if (t->get_name() == choice) {
+                player.toDefend(t);
+                bool owns = true;
+                break;
+            }
+            for (Territory* neighbor : t->get_neighbors()) {
+                if (neighbor->get_name() == choice) {
+                    player.toAttack(t);
+                    bool nextTo = true;
 
+                }
+            }
+            
+        }
+        if (!owns && !nextTo){
+            cout << "You have no relation to that territory";
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+    }
+}
 void GameEngine::ordersPicker(Player& player) {
 
     int option;
@@ -1114,6 +1143,7 @@ void GameEngine::ordersPicker(Player& player) {
 
         case 6:
             player.issueOrder(new Deploy());
+            deployHelper(player);
             break;
 
         case 7:
@@ -1134,7 +1164,6 @@ void GameEngine::ordersPicker(Player& player) {
     }
     catch (std::runtime_error e) {
         std::cout << "ERROR: " << e.what() << std::endl;
-        Map::get_instance()->unload();
     }
 
 }

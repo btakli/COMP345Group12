@@ -429,7 +429,8 @@ public:
     void cardPicker2(Player& player, string type);
     //validate a loaded map
     void validateMap();
-   
+    //Deploy helper
+    void deployHelper(Player& player);
     private:
     GameState* _currentState; //current state
     bool _continue; 
