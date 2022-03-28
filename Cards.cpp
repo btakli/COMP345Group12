@@ -201,6 +201,34 @@ DiplomacyCard* DiplomacyCard::clone() const
 Deck::Deck()
 {
 	_cards = new vector<Card*>();
+
+	// Populates Deck with 100 cards
+	for (size_t i = 0; i < 100; i++) {
+
+		int num = rand() % 4;
+
+		switch (num)
+		{
+		case 0:
+			_cards->push_back(new BombCard());
+			break;
+
+		case 1:
+			_cards->push_back(new DiplomacyCard());
+			break;
+
+		case 2:
+			_cards->push_back(new AirliftCard());
+			break;
+
+		case 3:
+			_cards->push_back(new BlockadeCard());
+			break;
+		default:
+			cout << "Something went wrong. The programmer must have been drunk" << endl;
+			break;
+		}
+	}
 }
 
 Deck::Deck(vector<Card*> listOfCards)

@@ -47,6 +47,7 @@ void Map::set_territory(int& continent_index, Territory& new_territory) {
 				found = true;
 				get_territories().push_back(&new_territory);
 				continent->add_territory(new_territory);
+				new_territory.set_parent(*continent);
 			}
 		}
 		if (!found) throw std::runtime_error(" Fail to find territory: " + continent_index);
@@ -490,6 +491,29 @@ std::string Continent::to_string() const {
 		+ tmp;
 }
 
+void Continent::verify_claims() {
+	Player* tmp = get_territories().front()->get_claimant();
+
+	if (tmp == nullptr) return; // No one claimed territory
+
+	bool first = true;
+
+	for (Territory* terr : get_territories()) {
+		if (first) {
+			first = false;
+			continue;
+		}
+
+		if (tmp->getName() != terr->get_claimant()->getName()) {
+			claim(nullptr);
+			return;
+		}
+	}
+
+	// Player successful conquered the entire continent
+	claim(tmp);
+}
+
 void Continent::add_territory(Territory& new_territory) {
 	get_territories().push_back(&new_territory);
 }
@@ -509,7 +533,7 @@ Continent& Continent::operator=(const Continent& other)
 
 		set_index(*new int(other.get_index()));
 		set_name(*new std::string(other.get_name()));
-		claim(*other.get_claimant());
+		claim(other.get_claimant());
 	}
 
 	return *this;
@@ -542,6 +566,7 @@ std::ostream& operator<<(std::ostream& stream, const Continent& continent) {
 /*********** Territory **********/     // aka a country(file)
 
 Territory::Territory() : LandMass() {
+	_continent_ptr = nullptr;
 	_visited_ptr = nullptr;
 	_neighbor_territories_ptr = nullptr;
 	_stationed_army_ptr = nullptr;
@@ -549,6 +574,7 @@ Territory::Territory() : LandMass() {
 
 Territory::Territory(const Territory& to_copy) : LandMass(to_copy) {
 
+	_continent_ptr = nullptr;
 	_visited_ptr = new bool(to_copy.get_visited());
 	_neighbor_territories_ptr = &copy(to_copy.get_neighbors());
 	_stationed_army_ptr = new int(to_copy.get_stationed_army());
@@ -556,6 +582,7 @@ Territory::Territory(const Territory& to_copy) : LandMass(to_copy) {
 
 Territory::Territory(int& index, std::string& continent_name) : LandMass(index, continent_name) {
 
+	_continent_ptr = nullptr;
 	_visited_ptr = new bool(false);
 	_neighbor_territories_ptr = new std::list<Territory*>();
 	_stationed_army_ptr = new int(0);
@@ -572,9 +599,9 @@ void Territory::set_neighbor(Territory& bordered_territory) {
 std::string Territory::to_string() const {
 	std::string tmp = "";
 
-	for (Territory* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name() + "\n";
-
-	return LandMass::to_string() + "\n" + tmp;
+	for (Territory* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name()+ "\n";
+	
+	return LandMass::to_string() + "Parent: " + get_parent().get_name() + "\n" + tmp;
 }
 
 bool& Territory::get_visited() const {
@@ -595,6 +622,21 @@ void Territory::set_stationed_army(int& army) {
 	_stationed_army_ptr = &army;
 }
 
+void Territory::claim(Player* player, bool verify) {
+
+	LandMass::claim(player);
+	if(verify) get_parent().verify_claims();
+}
+
+// Set parent obj which is a continent
+void Territory::set_parent(Continent& parent) {
+	_continent_ptr = &parent;
+}
+
+Continent& Territory::get_parent() const{
+	return *_continent_ptr;
+}
+
 Territory& Territory::operator=(const Territory& other) {
 
 	if (this != &other) {
@@ -609,7 +651,7 @@ Territory& Territory::operator=(const Territory& other) {
 		_visited_ptr = new bool(other.get_visited());
 		_neighbor_territories_ptr = &copy(other.get_neighbors());
 		_stationed_army_ptr = new int(other.get_stationed_army());
-		claim(*other.get_claimant());
+		claim(other.get_claimant(), false);
 	}
 
 	return *this;
@@ -653,8 +695,8 @@ LandMass::LandMass(int& index, std::string& landMass_name) {
 	_name_ptr = &landMass_name;
 }
 
-void LandMass::claim(Player& player) {
-	_claimant_ptr = &player;
+void LandMass::claim(Player* player) {
+	_claimant_ptr = player;
 }
 
 Player* LandMass::get_claimant() const {
@@ -679,7 +721,7 @@ int& LandMass::get_index() const {
 }
 
 std::string LandMass::to_string() const {
-	return "[" + std::to_string(get_index()) + "] " + get_name() + " << " + ((_claimant_ptr == nullptr)? "NOT" : "") + " CLAIMED >> ";
+	return "[" + std::to_string(get_index()) + "] " + this->get_name() + " << CLAIMED BY: " + ((_claimant_ptr == nullptr) ? "N/A" : *_claimant_ptr->getName()) + " >> ";
 }
 
 LandMass& LandMass::operator=(const LandMass& other) {

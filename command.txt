@@ -1,0 +1,12 @@
+loadmap canada
+loadmap invalid2
+validatemap
+addplayer player1
+addplayer player2
+addplayer player3
+addplayer player4
+gamestart
+issueorder
+issueordersend
+win
+quit

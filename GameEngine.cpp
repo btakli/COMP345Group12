@@ -1,18 +1,31 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <random>
 
+/*********************/
+
+//                loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
+//                loadmap 1 validatemap addplayer A addplayer B addplayer C addplayer D addplayer E gamestart
+/*********************/
+
+
+using std::vector;
+using std::shuffle;
+using std::begin;
+using std::end; 
 #define LOADMAP "loadmap"
 #define VALIDATE_MAP "validatemap"
 #define ADD_PLAYER "addplayer"
+#define GAME_START "gamestart"
 #define ISSUE_ORDER "issueorder"
-#define ASSIGN_COUNTRIES "assigncountries"
 
-//Prototypes
-void add_new_player(GameEngine&);
-void map_picker();
-void assign_territories(GameEngine&);
+#define ASSIGN_COUNTRIES "assigncountries"
+#define GAME_START "gamestart"
+
+
 //************GameState****************
 GameState::~GameState(){} //destructor
+
 
 //*********************friends with ostream:*********************************
 
@@ -59,12 +72,13 @@ Start::~Start(){
     delete _command;
 }
 
-void Start::transition(GameEngine* GameEngine, string input){  
+void Start::transition(GameEngine* engine, string input){
+
     if(input == *_command){
-        map_picker();
+        engine->map_picker();
         GameState* newState = new MapLoaded();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
+        delete engine->getCurrentState();
+        engine->setState(newState);
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }  
@@ -92,6 +106,17 @@ void Start::commandMessage(){
     cout << s;
 }
 
+bool Start::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string Start::getName(){
+    return "Start";
+}
+
 /**********************************************************************
 ********************MapLoaded State:***********************************
 ***********************************************************************/
@@ -105,26 +130,15 @@ MapLoaded::~MapLoaded(){
     delete _command2;
 }
 
-void MapLoaded::transition(GameEngine* GameEngine, string input){
+void MapLoaded::transition(GameEngine* engine, string input){
+
     if(input == *_command1){ // Load a new map
         
-        map_picker();
+        engine->map_picker();
 
     }else if(input == *_command2){ // Validate Map
 
-        if (Map::get_instance()->exist()) 
-        {
-            bool valid = Map::get_instance()->validate();
-
-            cout << "> Map is " << (valid ? "VALID" : "INVALID") << endl;
-
-            if (valid) {
-                GameState* newState = new MapValidated();
-                delete GameEngine->getCurrentState();
-                GameEngine->setState(newState);
-            }
-        }
-        else std::cout << "WARNING: No map loaded." << endl;
+        engine->validateMap();
             
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;;
@@ -154,6 +168,16 @@ void MapLoaded::commandMessage(){
     cout << m;
 }
 
+bool MapLoaded::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+        return false;
+}
+
+string MapLoaded::getName(){
+    return "MapLoaded";
+}
 /**********************************************************************
 ********************MapValidated State:********************************
 ***********************************************************************/
@@ -165,14 +189,15 @@ MapValidated::~MapValidated(){
     delete _command;
 }
 
-void MapValidated::transition(GameEngine* GameEngine, string input){
+void MapValidated::transition(GameEngine* engine, string input){
+
+
     if(input == *_command){
-        
-        add_new_player(*GameEngine);
+        engine->add_new_player();
 
         GameState* newState = new PlayersAdded();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
+        delete engine->getCurrentState();
+        engine->setState(newState);
 
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -199,36 +224,55 @@ void MapValidated::commandMessage(){
     cout << mv;
 }
 
+bool MapValidated::validate(string command){
+    if(command == *_command){
+        return true;
+    }
+    return false;
+}
+
+string MapValidated::getName(){
+    return "MapValidated";
+}
+
 /**********************************************************************
 ********************PlayersAdded State:********************************
 ***********************************************************************/
 PlayersAdded::PlayersAdded(){
     _command1 = new string(ADD_PLAYER);
     _command2 = new string(ASSIGN_COUNTRIES);
+    _commandGame = new string (GAME_START);
 }
 
 PlayersAdded::~PlayersAdded(){
     delete _command1;
     delete _command2;
+    delete _commandGame;
 }
 
-void PlayersAdded::transition(GameEngine* GameEngine, string input){
+void PlayersAdded::transition(GameEngine* engine, string input){
+
+
     if(input == *_command1){
-        
-        add_new_player(*GameEngine);
+
+        engine->add_new_player();
 
 
-    }else if(input == *_command2){
+    }else if(input == *_command2 || input == *_commandGame){
 
-        if (GameEngine->get_players().size() < 2) {
+        if (engine->get_players().size() < 2) {
             std::cout << "ERROR: Need at least 2 players to play." << endl;
         }
         else {
             GameState* newState = new AssignedReinforcement();
-            delete GameEngine->getCurrentState();
-            GameEngine->setState(newState);
+            delete engine->getCurrentState();
+            engine->setState(newState);
             
-            assign_territories(*GameEngine);
+            engine->assign_territories();
+            engine->order_of_play();
+            engine->give_initial_armies();
+            engine->draw_initial_cards();
+            
 
         }
     }else{
@@ -258,6 +302,17 @@ void PlayersAdded::commandMessage(){
     PlayersAdded p;
     cout << p;
 }
+
+bool PlayersAdded::validate(string command){
+    if(command == *_command1 || command == *_commandGame){
+        return true;
+    }
+        return false;
+}
+
+string PlayersAdded::getName(){
+    return "PlayersAdded";
+}
 /**********************************************************************
 ****************AssignedReinforcement State:***************************
 ***********************************************************************/
@@ -269,16 +324,29 @@ AssignedReinforcement::~AssignedReinforcement(){
     delete _command;
 }
 
-void AssignedReinforcement::transition(GameEngine* GameEngine, string input){
+void AssignedReinforcement::transition(GameEngine* engine, string input){
+
+
     if(input == *_command){
+
+        // Add new reinforcements
+        engine->reinforcementPhase(); 
+        engine->issueOrdersPhase();
+
         GameState* newState = new IssueOrders();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
+        delete engine->getCurrentState();
+        engine->setState(newState);
+
         cout << "Issuing orders..." << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }
 }
+
+
+
+
+
 
 AssignedReinforcement::AssignedReinforcement(const AssignedReinforcement& other){
     this->_command = new string(*(other._command));
@@ -300,6 +368,25 @@ void AssignedReinforcement::commandMessage(){
     AssignedReinforcement a;
     cout << a;
 }
+
+bool AssignedReinforcement::validate(string command){
+    return false;
+}
+
+string AssignedReinforcement::getName(){
+    return "Assignedreinforcement";
+}
+/**********************************************************************
+****************Play :***************************
+***********************************************************************/
+
+/**********************************************************************
+****************Reinforcement State:***************************
+***********************************************************************/
+//ReinforcementPhase::ReinforcementPhase() {
+//    _command1 = new string(REINFORCEMENT_PHASE)
+//}
+
 /**********************************************************************
 ******************Issue Orders State:**********************************
 ***********************************************************************/
@@ -313,13 +400,17 @@ IssueOrders::~IssueOrders(){
     delete _command2;
 }
 
-void IssueOrders::transition(GameEngine* GameEngine, string input){
+void IssueOrders::transition(GameEngine* engine, string input){
+
+
     if(input == *_command1){
+
         cout << "Issuing orders..." << endl;
+
     }else if(input == "endissueorders"){
         GameState* newState = new ExcecuteOrders();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState);
+        delete engine->getCurrentState();
+        engine->setState(newState);
         cout << "Orders Issued!!" << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -348,6 +439,13 @@ void IssueOrders::commandMessage(){
     IssueOrders i;
     cout << i;
 }
+
+bool IssueOrders::validate(string command){
+    return false;
+}
+string IssueOrders::getName(){
+    return "IssueOrders";
+}
 /**********************************************************************
 ******************Execute Orders State:********************************
 ***********************************************************************/
@@ -363,18 +461,19 @@ ExcecuteOrders::~ExcecuteOrders(){
     delete _command3;
 }
 
-void ExcecuteOrders::transition(GameEngine* GameEngine, string input){
+void ExcecuteOrders::transition(GameEngine* engine, string input){
+
     if(input == *_command1){
         cout << "Executing orders..." << endl;
     }else if(input == *_command2){
         GameState* newState_assign = new AssignedReinforcement();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState_assign);
+        delete engine->getCurrentState();
+        engine->setState(newState_assign);
         cout << "Orders executed!!" << endl;
     }else if(input == *_command3){
         GameState* newState_win = new Win();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState_win);
+        delete engine->getCurrentState();
+        engine->setState(newState_win);
         cout << "CONGRATES!! You won the game!!" << endl;
     }
     else{
@@ -407,12 +506,20 @@ void ExcecuteOrders::commandMessage(){
     ExcecuteOrders e;
     cout << e;
 }
+
+bool ExcecuteOrders::validate(string command){
+    return false;
+}
+
+string ExcecuteOrders::getName(){
+    return "ExcecuteOrders";
+}
 /**********************************************************************
 *************************Win State:************************************
 ***********************************************************************/
 Win::Win(){
-    _command1 = new string("play");
-    _command2 = new string("end");
+    _command1 = new string("replay");
+    _command2 = new string("quit");
 }
 
 Win::~Win(){
@@ -420,19 +527,20 @@ Win::~Win(){
     delete _command2;
 }
 
-void Win::transition(GameEngine* GameEngine, string input){
+void Win::transition(GameEngine* engine, string input){
+
     if(input == *_command2){
         GameState* newState_end = new End();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState_end);
+        delete engine->getCurrentState();
+        engine->setState(newState_end);
         std::cout << "**************************" << endl;
         std::cout << "*********Game Ends********" << endl;
         std::cout << "**************************" << endl;
-        GameEngine->setStatus(false); //set the _continue to false
+        engine->setStatus(false); //set the _continue to false
     }else if(input == *_command1){
         GameState* newState_start = new Start();
-        delete GameEngine->getCurrentState();
-        GameEngine->setState(newState_start);
+        delete engine->getCurrentState();
+        engine->setState(newState_start);
         cout << "**********Game restarted!!**********" << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -461,6 +569,17 @@ void Win::commandMessage(){
     Win w;
     cout << w;
 }
+
+bool Win::validate(string command){
+    if(command == *_command1 || command == *_command2){
+        return true;
+    }
+    return false;
+}
+
+string Win::getName(){
+    return "Win";
+}
 /**********************************************************************
 *************************End State:************************************
 ***********************************************************************/
@@ -468,8 +587,9 @@ End::End(){}
 
 End::~End(){}
 
-void End::transition(GameEngine* GameEngine, string input){
-    delete GameEngine->getCurrentState(); //delete the last object to prevent memeory leak
+void End::transition(GameEngine* engine, string input){
+
+    delete engine->getCurrentState(); //delete the last object to prevent memeory leak
 }
 
 End::End(const End& other){};
@@ -486,6 +606,13 @@ void End::toString(){
 void End::commandMessage(){
     cout << "NO COMMANDS ACCEPTED ANYMORE!!";
 }
+
+bool End::validate(string command){
+    return false;
+}
+string End::getName(){
+    return "End";
+}
 /**********************************************************************
 *************************GameEngine Class:*****************************
 ***********************************************************************/
@@ -494,16 +621,65 @@ GameEngine::GameEngine(){
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
+    _armyPool = new std::vector<int*>();
+    _deck = new Deck();
+
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
+
+    //logger:
+    // special case for Start state:
+    ILoggable::_currentState =  new string("Start");
+
+    // By implementing the CommandProcessor and FileCommandAdaptor, when a
+    //game is initialized (or STARTED) it will ask for commands from the 
+    //command processor using the getCommand() funcction
+    //--> In this case, command processor has all the command for this game
+    //--> Later, Game engine would validate the command everytime before transit
+    //    to next state using the validate() function provided by the Commandprocessor
+    string input_option;
+    bool pass = true;
+    do{
+        cout << endl;
+        cout << "How would you like to input commands?" << endl;
+        cout << "Please choose from the following:" << endl;
+        cout << "1. -console" << endl;
+        cout << "2. -file <filename>" <<endl;
+        getline(cin, input_option);
+    //input_option = "-console";
+    //input_option = "-file <command.txt>";
+        string option_prefix = input_option.substr(0, 5);
+        if(input_option == "-console"){
+            pass = true;
+            _myProcessor = new CommandProcessor();
+        }else if(option_prefix == "-file"){
+            pass = true;
+            size_t pos = input_option.find(" ");
+        //size_t pos2 = input_option.find(">");
+        //int length = pos2 - pos - 1;
+            string pathIn = input_option.substr(pos+1);
+            cout << "path name is:" << pathIn << endl;
+            _myProcessor = new FileCommandProcessorAdapter(pathIn);
+    }else{
+        cout << "Please enter a correct option." << endl;
+        pass = false;
+    }
+    }
+    while(!pass);
+    
 }
 
 GameEngine::~GameEngine(){
     delete _currentState;
-
+    delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
+    for (int* i : *_armyPool) delete i;
+    delete _deck;
+}
 
+std::string GameEngine::stringToLog(){
+    return "Game Engine new state: " + *ILoggable::_currentState;
 }
 
 std::vector<Player*>& GameEngine::get_players() {
@@ -522,6 +698,24 @@ bool GameEngine::getStatus(){
     return _continue;
 }
 
+
+Deck * GameEngine::getDeck() {
+    return _deck;
+}
+
+vector<int*>& GameEngine::get_ArmyPools()
+{
+    return *_armyPool;
+}
+
+int* GameEngine::get_ArmyPoolAt(int index) {
+    return (*_armyPool)[index];
+}
+
+CommandProcessor* GameEngine::getCommandProcessor(){
+    return _myProcessor;
+}
+
 //function setState receives a pointer to the current state
 //and assign the new state to the current state
 void GameEngine::setState(GameState* newState){
@@ -531,7 +725,13 @@ void GameEngine::setState(GameState* newState){
 //function transit receives a string (the user input)
 //then triggers the transition() funtion of the current state
 void GameEngine::transit(string input){
+    // print out the Start State:
+    if(this->getCurrentState()->getName() == "Start"){
+        notify(this);
+    }
     _currentState->transition(this, input); //transit to next state
+    ILoggable::_currentState->assign(this->getCurrentState()->getName());
+    notify(this);
 }
 
 //Copy Constructor of GameEngine:
@@ -539,6 +739,7 @@ GameEngine::GameEngine(const GameEngine& other){
     //called the virtual function clone to perform deep copy:
     this->_currentState = other._currentState->clone(); 
     this->setStatus(other._continue);
+
 }
 
 GameEngine& GameEngine::operator = (const GameEngine& e){
@@ -551,7 +752,7 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
 
 
 // MapDriver
-void map_picker() {
+void GameEngine::map_picker() {
 
 #define BERLIN "berlin"
 #define CANADA "canada"
@@ -631,29 +832,29 @@ void map_picker() {
 }
 
 // Add a new player
-void add_new_player(GameEngine& engine) {
-    if (engine.get_players().size() + 1 > 6) std::cout << "WARNING: Maximum of players reached: 6" << std::endl;
+void GameEngine::add_new_player() {
+    if (this->get_players().size() + 1 > 6) std::cout << "WARNING: Maximum of players reached: 6" << std::endl;
     else {
         std::string player_name;
         std::cout << "New Player Name: ";
         cin >> player_name;
-        engine.get_players().push_back(new Player(player_name));
+        this->get_players().push_back(new Player(player_name));
 
-        std::cout << "Current player count: " << engine.get_players().size();
+        std::cout << "Current player count: " << this->get_players().size();
     }
 }
 
 // Assign territory to players
-void assign_territories(GameEngine& engine) {
+void GameEngine::assign_territories() {
 
     Map* map = Map::get_instance();
     
     int territories_count = map->get_territories().size();
-    int territories_per_player = territories_count / engine.get_players().size();
+    int territories_per_player = territories_count / this->get_players().size();
     int num; // Territories index starts at 1
     Territory* territory;
 
-    for (Player* player : engine.get_players()) {
+    for (Player* player : this->get_players()) {
 
         for (int claimed_count = 0; claimed_count < territories_per_player; claimed_count++) {
             do
@@ -661,9 +862,309 @@ void assign_territories(GameEngine& engine) {
                 num = rand() % map->get_territories().size() + 1;
                 territory = map->get_territory(num);
             } while (territory->get_claimant() != nullptr); // RNG pick territory
-            territory->claim(*player);
+            territory->claim(player, false);
         }
     }
 
     cout << *Map::get_instance(); // DEBUG LINE
+}
+
+void GameEngine::order_of_play() {
+
+    random_shuffle(begin(this->get_players()), end(this->get_players()));         //not true random
+    cout << "The order of play is the following: " << endl;     
+    int i = 0; 
+    for (Player* player : this->get_players()) {
+        cout << "Player " << i++ << ": \t" << *player->getName() << endl;
+    }
+}
+
+void GameEngine::give_initial_armies() {
+    int size = this->get_players().size();
+    int i = 0;
+    for (i; i < size; i++) {
+        this->get_ArmyPools().push_back(new int(50));
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: this->get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
+    }
+}
+
+bool GameEngine::has_army(int i) {
+    if (this->get_ArmyPoolAt(i) == 0) { return false; }
+    return true;
+    
+}
+
+void GameEngine::draw_initial_cards() {
+    
+    for (Player* player : this->get_players()) {
+        player->getHand()->addCard(this->getDeck()->draw());
+        player->getHand()->addCard(this->getDeck()->draw());
+        cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
+    }
+}
+
+queue<Order*>& GameEngine::get_orders() {
+    return *_orders;
+}
+
+// Add new reinforcements
+void GameEngine::reinforcementPhase() {
+
+    // # Territories / 3 to floor added to army pool 
+    for (Player* player : this->get_players()) {
+        *(this->get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
+    }
+
+    // Bonus Army
+    for (Continent* c : Map::get_instance()->get_continents()) {
+        if (c->get_claimant() != nullptr) {
+            *(this->get_ArmyPools()[c->get_claimant()->getIndex()]) += c->get_army_bonus_value(); //current army += bonus
+        }
+    }
+
+    // 3 min army points per round
+    for (int* army : this->get_ArmyPools()) *army += 3; 
+}
+
+void GameEngine::issueOrdersPhase() {
+    for (Player* p : this->get_players()) {
+        ordersPicker(*p);
+    }
+}
+
+void GameEngine::excecuteOrdersPhase() {
+
+    int count = 0;
+
+    // Requeue round-robin orders
+    while (count != this->get_players().size()) {
+        for (Player* p : this->get_players()) {
+            if (p->getOrdersList()->size() > 0) {
+                this->get_orders().push(p->getOrdersList()->getOrder(0));
+                p->getOrdersList()->remove(0);
+                p->getOrdersList()->get_order_list().shrink_to_fit();
+            }
+            else {
+                count++;
+            }
+        }
+        count = 0;
+    }
+
+    // Execute orders round-robin way
+    for (size_t i = 0; i < this->get_orders().size(); i++) {
+        Order* order = this->get_orders().front();
+        order->execute();
+        this->get_orders().pop();
+        delete order;
+    }
+}
+
+void GameEngine::startupPhase() {
+    CommandProcessor* processor = getCommandProcessor();
+    list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
+    //For all the command it has:
+    // validate each of them in current state
+    // if it is valide, execute and save the effect
+    // else, reject and save "INVALID COMMAND" 
+    for (Command& command : *commandList) {
+        processor->validate(this, & command);
+    }
+}
+
+
+void GameEngine::cardPicker(Player& player) {
+
+    while (true) {
+
+        int option;
+
+        do {
+            std::cout << "Please enter a number between 1 to " << player.getHand()->size() << "." << endl;
+
+            int count = 1;
+            for (Card* c : player.getHand()->getCards()) {
+                cout << count << ". " << c << endl;
+            }
+
+            cout << "> " << endl;
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > player.getHand()->size() || option < 1);
+
+        if (option == player.getHand()->size()) return;
+
+        player.issueOrder(player.getHand()->playAndReturnToDeck(option, this->getDeck()));
+    }
+}
+
+void GameEngine::cardPicker2(Player& player, string type) {
+    int card = 0;
+    bool hasCard = false;
+    for (Card* c : player.getHand()->getCards()) {
+        if (c->getType() == type) {
+            player.issueOrder(player.getHand()->playAndReturnToDeck(card, this->getDeck()));
+            break;
+
+           
+        }
+        card++;
+    }
+    if (!hasCard) {
+        cout << "Player " << player.getName() << " does not have " << type<<  " card" << endl;
+    }
+
+}
+
+void GameEngine::validateMap() {
+    if (Map::get_instance()->exist())
+    {
+        bool valid = Map::get_instance()->validate();
+
+        cout << "> Map is " << (valid ? "VALID" : "INVALID") << endl;
+
+        if (valid) {
+            GameState* newState = new MapValidated();
+            delete this->getCurrentState();
+            this->setState(newState);
+        }
+    }
+    else std::cout << "WARNING: No map loaded." << endl;
+}
+void GameEngine::advanceHelper(Player& player) {
+    string choice;
+    bool owns = false;
+    bool nextTo = false;
+    try {
+        std::cout << "You have signaled to deploy. Which territory do you want to deploy to?";
+        cin >> choice;
+        for (Territory* t : player.get_territories()) {
+            if (t->get_name() == choice) {
+                player.toDefend(t);
+                bool owns = true;
+                break;
+            }
+            for (Territory* neighbor : t->get_neighbors()) {
+                if (neighbor->get_name() == choice) {
+                    player.toAttack(t);
+                    bool nextTo = true;
+
+                }
+            }
+            
+        }
+        if (!owns && !nextTo){
+            cout << "You have no relation to that territory";
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+    }
+}
+void GameEngine::ordersPicker(Player& player) {
+
+    int option;
+    try {
+                            //TODO: the players army pool needs to be depleted before anything but deploy can be used.
+        do {
+            std::cout << "Please enter a number between 1 to 8."
+                "\n 1. Negotiate"
+                "\n 2. Airlift"
+                "\n 3. Blockade"
+                "\n 4. Bomb"
+                "\n 5. Advance"
+                "\n 6. Deploy"
+                "\n 7. Play Card"
+                "\n 8. Finish"
+                "\n> ";
+
+            std::cin >> option;
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option = -1;
+            }
+        } while (option > UPPERLIMIT || option < 1);
+        bool HasArmy = has_army(player.getIndex());
+        switch (option)
+        {
+        case 1:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            cardPicker2(player, "Negotiate");
+            break;
+
+        case 2:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            cardPicker2(player, "Airlift");
+            break;
+
+        case 3:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            cardPicker2(player, "Blockade");
+            break;
+
+        case 4:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            cardPicker2(player, "Bomb");
+            break;
+
+        case 5:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            advanceHelper(player);
+            player.issueOrder(new Advance());
+            break;
+
+        case 6:
+            player.issueOrder(new Deploy());
+    
+            break;
+
+        case 7:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            cardPicker(player);
+            break;
+
+        case 8:
+            if (HasArmy) {
+                cout << "You must deploy all your armies before any other order" << endl;
+                break;
+            }
+            break;
+        }
+    }
+    catch (std::runtime_error e) {
+        std::cout << "ERROR: " << e.what() << std::endl;
+    }
+
 }
