@@ -329,8 +329,8 @@ void Blockade::execute(){
     } else {
         int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
         targetTerritory->set_stationed_army(doubleArmies);
-        player->setNeutral(targetTerritory);
-        cout << "Execution successful!\n" << endl;
+        //player->setNeutral(targetTerritory);
+        cout << "Valid order\n" << endl;
     }
         notify(this); //Call notify to notify observers
 
