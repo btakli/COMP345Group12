@@ -78,6 +78,8 @@ class Advance : public Order{
 public:
     //default constructor
     Advance();
+    Advance(Player* p);  // Parameterized Constructor
+    Advance(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Advance();
     //copy constructor
@@ -107,6 +109,8 @@ class Bomb : public Order{
 public:
     //default constructor
     Bomb();
+    Bomb(Player* p); // Parameterized Constructor
+    Bomb(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Bomb();
     //copy constructor
@@ -136,6 +140,8 @@ class Blockade : public Order{
 public:
     //default constructor
     Blockade();
+    Blockade(Player* p); // Parameterized Constructor
+    Blockade(Player* p, Territory* target);
     //destructor
     virtual ~Blockade();
     //copy constructor
@@ -164,6 +170,8 @@ class Airlift : public Order{
 public:
     //default constructor
     Airlift();
+    Airlift(Player* p); // Parameterized Constructor
+    Airlift(Player* p, Territory* source, Territory* target);
     //destructor
     virtual ~Airlift();
     //copy constructor
@@ -193,6 +201,8 @@ class Negotiate : public Order{
 public:
     //default constructor
     Negotiate();
+    Negotiate(Player* p); // Parameterized Constructor
+    Negotiate(Player* p, Player* target);
     //destructor
     virtual ~Negotiate();
     //copy constructor
