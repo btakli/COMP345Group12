@@ -631,6 +631,7 @@ string End::getName(){
 ***********************************************************************/
 GameEngine::GameEngine(){
 
+    _orders = new queue<Order*>();
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
@@ -929,29 +930,37 @@ void GameEngine::issueOrdersPhase() {
 
 void GameEngine::excecuteOrdersPhase() {
 
-    int count = 0;
+    set<Player*> done;
 
     // Requeue round-robin orders
-    while (count != this->get_players().size()) {
+    while (true) {
         for (Player* p : this->get_players()) {
+
+            if (done.contains(p)) continue;
+
             if (p->getOrdersList()->size() > 0) {
+
                 this->get_orders().push(p->getOrdersList()->getOrder(0));
-                cout << "ASDFPQWERI#)$%* " << p->getOrdersList()->getOrder(0) << endl;
                 p->getOrdersList()->remove(0);
                 p->getOrdersList()->get_order_list().shrink_to_fit();
-            }
-            else {
-                count++;
+
+                if (p->getOrdersList()->size() < 1) {
+                    cout << "done " << endl;
+                    done.insert(p);
+
+                }
             }
         }
-        count = 0;
+
+        if (done.size() == get_players().size()) break;
+
     }
 
     // Execute orders round-robin way
     for (size_t i = 0; i < this->get_orders().size(); i++) {
         Order* order = this->get_orders().front();
         order->execute();
-        cout << *order << endl;
+        cout << "Executing: " << *order << endl;
         this->get_orders().pop();
         delete order;
     }
@@ -1124,7 +1133,8 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
-            cardPicker2(player, "Negotiate");
+            player.getOrdersList()->addOrder(new Negotiate());
+            //cardPicker2(player, "Negotiate");
             break;
 
         case 2:
@@ -1132,7 +1142,9 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
-            cardPicker2(player, "Airlift");
+            player.getOrdersList()->addOrder(new Airlift());
+
+            //cardPicker2(player, "Airlift");
             break;
 
         case 3:
@@ -1140,7 +1152,9 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
-            cardPicker2(player, "Blockade");
+            player.getOrdersList()->addOrder(new Blockade());
+
+            //cardPicker2(player, "Blockade");
             break;
 
         case 4:
@@ -1148,7 +1162,9 @@ void GameEngine::ordersPicker(Player& player) {
                 cout << "You must deploy all your armies before any other order" << endl;
                 break;
             }
-            cardPicker2(player, "Bomb");
+            player.getOrdersList()->addOrder(new Bomb());
+
+            //cardPicker2(player, "Bomb");
             break;
 
         case 5:
@@ -1157,12 +1173,11 @@ void GameEngine::ordersPicker(Player& player) {
                 break;
             }
             advanceHelper(player);
-            player.issueOrder(new Advance());
+            player.getOrdersList()->addOrder(new Advance());
             break;
 
         case 6:
-            player.issueOrder(new Deploy());
-    
+            player.getOrdersList()->addOrder(new Deploy());
             break;
 
         case 7:
@@ -1184,5 +1199,6 @@ void GameEngine::ordersPicker(Player& player) {
     catch (std::runtime_error e) {
         std::cout << "ERROR: " << e.what() << std::endl;
     }
+
     cin.ignore();
 }

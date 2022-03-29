@@ -625,6 +625,7 @@ void Territory::set_stationed_army(int& army) {
 void Territory::claim(Player* player, bool verify) {
 
 	LandMass::claim(player);
+	
 	if(verify) get_parent().verify_claims();
 }
 

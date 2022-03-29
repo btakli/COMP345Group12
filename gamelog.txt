@@ -1,14 +1,7 @@
-~~~~ Gamelog for game starting on: Tue Mar 29 17:43:45 2022
+~~~~ Gamelog for game starting on: Tue Mar 29 19:20:27 2022
 
 Command's Effect: Transitioning to state MapLoaded
-Command's Effect: Transitioning to state MapValidGame ECommand's Effect: TransitioningGame Engine new state: PCommand's EffGame Engine new state: PlayersAdded
-Game Engine new state: PlayersAdded
-Game Engine new state: PlayersAdded
-Game Engine new state: Assignedreinforcement
-Command's Effect: Transitioning to state INVALID COMMAND
-Command's Effect: Transitioning to state INVALID COMMAND
-Command's Effect: Transitioning to state INVALID COMMAND
-Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state MapValidGame ECommand's Effect: TransitioningGame Engine new state: PCommand's EffGame Engine new state: AssignedreinforcemeCommCommand's Effect: Transitioning to state INVALID COMMAND
 Command's Effect: Transitioning to state INVALID COMMAND
 Command's Effect: Transitioning to state INVALID COMMAND
 Command's Effect: Transitioning to state INVALID COMMAND
