@@ -5,7 +5,7 @@
 
 ILoggable::~ILoggable()
 {
-	delete _currentState;
+	//delete _currentState;
 }
 
 ILoggable::ILoggable()

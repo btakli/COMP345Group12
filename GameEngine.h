@@ -385,6 +385,7 @@ public:
     void setStatus(bool b);
     //getter is used to get the current status of the game
     bool getStatus();
+    bool fileReader;
     //retunrs the _armyPool
     vector<int*>& get_ArmyPools();
     //return amount in army pool at index

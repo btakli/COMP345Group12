@@ -36,8 +36,8 @@ Command::Command(string command){
 }
 
 Command::~Command(){
-    delete this->_command;
-    delete this->_effect;
+    //delete this->_command;
+    //delete this->_effect;
 }
 
 void Command::saveEffect(string nextState){
@@ -90,6 +90,10 @@ CommandProcessor::CommandProcessor(){
 CommandProcessor::~CommandProcessor(){
     delete this->commands_ptr; //avoid memory leak
     delete this->command_in;
+}
+
+void CommandProcessor::setPath(string newPath){
+    //placeholder
 }
 
 void CommandProcessor::readCommand(){
@@ -230,6 +234,9 @@ FileCommandProcessorAdapter::~FileCommandProcessorAdapter(){
     delete this->_pathIn;
 }
 
+void FileCommandProcessorAdapter::setPath(string newPath){
+    this->_pathIn = new string(newPath);
+}
 void FileCommandProcessorAdapter::readCommand(){
     string str_path = *_pathIn;
     flr = new FileLineReader(str_path);

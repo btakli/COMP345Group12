@@ -1,0 +1,4 @@
+addplayer p1
+addplayer p2
+addplayer p3
+gamestart

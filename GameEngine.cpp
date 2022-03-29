@@ -257,7 +257,7 @@ void PlayersAdded::transition(GameEngine* engine, string input){
 
 
     }else if(input == *_command2 || input == *_commandGame){
-
+        cout << engine->get_players().size() <<endl;
         if (engine->get_players().size() < 2) {
             std::cout << "ERROR: Need at least 2 players to play." << endl;
         }
@@ -391,7 +391,7 @@ string AssignedReinforcement::getName(){
 ***********************************************************************/
 IssueOrders::IssueOrders(){
     _command1 = new string(ISSUE_ORDER);
-    _command2 = new string("endissueorders");
+    _command2 = new string("issueordersend");
 }
 
 IssueOrders::~IssueOrders(){
@@ -406,7 +406,7 @@ void IssueOrders::transition(GameEngine* engine, string input){
 
         cout << "Issuing orders..." << endl;
 
-    }else if(input == "endissueorders"){
+    }else if(input == *_command2){
         GameState* newState = new ExcecuteOrders();
         delete engine->getCurrentState();
         engine->setState(newState);
@@ -541,6 +541,7 @@ void Win::transition(GameEngine* engine, string input){
         std::cout << "*********Game Ends********" << endl;
         std::cout << "**************************" << endl;
         engine->setStatus(false); //set the _continue to false
+        engine->fileReader = false;
     }else if(input == *_command1){
         GameState* newState_start = new Start();
         delete engine->getCurrentState();
@@ -625,6 +626,7 @@ GameEngine::GameEngine(){
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
     _continue = true;
+    fileReader = false;
     _armyPool = new std::vector<int*>();
     _deck = new Deck();
 
@@ -651,17 +653,15 @@ GameEngine::GameEngine(){
         cout << "1. -console" << endl;
         cout << "2. -file <filename>" <<endl;
         getline(cin, input_option);
-    //input_option = "-console";
-    //input_option = "-file <command.txt>";
         string option_prefix = input_option.substr(0, 5);
         if(input_option == "-console"){
             pass = true;
+            fileReader = false;
             _myProcessor = new CommandProcessor();
         }else if(option_prefix == "-file"){
             pass = true;
+            fileReader = true;
             size_t pos = input_option.find(" ");
-        //size_t pos2 = input_option.find(">");
-        //int length = pos2 - pos - 1;
             string pathIn = input_option.substr(pos+1);
             cout << "path name is:" << pathIn << endl;
             _myProcessor = new FileCommandProcessorAdapter(pathIn);
@@ -802,7 +802,6 @@ void GameEngine::add_new_player() {
         if (commandprefix == "addplayer") {
             size_t space = c.getCommandName().find(" ") + 1;
             string playerName = c.getCommandName().substr(space);
-            cout << "\nASDF " << playerName;
             if (!already.contains(playerName)) {
                 already.insert(playerName);
                 this->get_players().push_back(new Player(playerName));
