@@ -966,20 +966,18 @@ void GameEngine::excecuteOrdersPhase() {
     }
 }
 
-void GameEngine::startupPhase() {
-    LogObserver* lo = new LogObserver();
+void GameEngine::startupPhase(Observer* observer) {
     CommandProcessor* processor = getCommandProcessor();
+    processor->attach(observer);
     list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
     bool valid = false;
-
-    processor->attach(lo);
     //For all the command it has:
     // validate each of them in current state
     // if it is valide, execute and save the effect
     // else, reject and save "INVALID COMMAND" 
     do {
         for (Command& command : *commandList) {
-            command.attach(lo);
+            command.attach(observer);
             processor->validate(this, &command); // Goes through all states prior to gamestart(game startup state)
             if (getCurrentState()->getName() == "Assignedreinforcement") {
                 //when it gets to the play phase, stop reading

@@ -6,6 +6,7 @@ using namespace std;
 
 int main(){
     LogObserver* lo = new LogObserver();
+    cout << "log observer" << *lo << endl;
     //string input_option;
     GameEngine* myGame; // create a new game
     myGame = new GameEngine(); // initialize the game
@@ -13,10 +14,12 @@ int main(){
     CommandProcessor* processor = myGame->getCommandProcessor();
     
     list<Command>* commandList = processor->getCommandList(); // get the command of gameengine from its commandprocessor object
-    myGame->startupPhase();
+    
+    //start up:
+    myGame->startupPhase(lo);
 
     //play phase:
-     while(myGame->getStatus() == true){
+    while(myGame->getStatus() == true){
     commandList->clear();
     if(myGame->fileReader){
         
