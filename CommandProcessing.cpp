@@ -269,17 +269,34 @@ FileLineReader::~FileLineReader(){
 }
 
 string FileLineReader::readLineFromFile(){
-    ifstream fileIn(*_path);
     string command;
     string line;
-    if(fileIn.is_open()){
-        while(getline(fileIn,line)){
-            command = command + " " + line;
+
+    bool valid;
+
+    do {
+
+        ifstream fileIn(*_path);
+
+        cout << *_path  << " | " << fileIn.is_open() << endl;
+        valid = fileIn.is_open();
+
+        if (fileIn.is_open()) {
+            while (getline(fileIn, line)) {
+                command = command + " " + line;
+            }
+            fileIn.close();
         }
-        fileIn.close();
-    }else{
-        cout << "The file you entered does not exist!!" << endl;
-    }
+        else {
+            cout << "The file you entered does not exist!!" << endl;
+            cout << "please enter a new file name:" << endl;
+
+            string newPath;
+            getline(cin, newPath);
+            this->_path = new string(newPath);
+        }
+    } while (!valid);
+    
     return command;
 }
 

@@ -1,19 +1,19 @@
-~~~~ Gamelog for game starting on: Tue Mar 29 15:44:13 2022
+~~~~ Gamelog for game starting on: Tue Mar 29 17:43:45 2022
 
-Game Engine new state: Start
-Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded
-Game Engine new state: MapValidated
-Command's Effect: Transitioning to state MapValidated
+Command's Effect: Transitioning to state MapValidGame ECommand's Effect: TransitioningGame Engine new state: PCommand's EffGame Engine new state: PlayersAdded
 Game Engine new state: PlayersAdded
-Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
-Command's Effect: Transitioning to state PlayersAdded
-Game Engine new state: PlayersAdded
-Command's Effect: Transitioning to state PlayersAdded
-Game Engine new state: PlayersAdded
-Command's Effect: Transitioning to state PlayersAdded
-Game Engine new state: PlayersAdded
-Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: Assignedreinforcement
-Command's Effect: Transitioning to state Assignedreinforcement
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Game Engine new state: IssueOrders
+Command's Effect: Transitioning to state IssueOrders
+Game Engine new state: ExcecuteOrders
+Command's Effect: Transitioning to state ExcecuteOrders

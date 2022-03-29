@@ -257,9 +257,14 @@ void PlayersAdded::transition(GameEngine* engine, string input){
 
 
     }else if(input == *_command2 || input == *_commandGame){
-        cout << engine->get_players().size() <<endl;
-        if (engine->get_players().size() < 2) {
+
+        int player_size = engine->get_players().size();
+
+        if (player_size < 2) {
             std::cout << "ERROR: Need at least 2 players to play." << endl;
+        }
+        else if (player_size > 6) {
+            std::cout << "ERROR: Max 6 players. Currently at " << player_size << " players." << endl;
         }
         else {
             GameState* newState = new AssignedReinforcement();
@@ -466,6 +471,9 @@ void ExcecuteOrders::transition(GameEngine* engine, string input){
 
     if(input == *_command1){
         cout << "Executing orders..." << endl;
+
+        engine->excecuteOrdersPhase();
+
     }else if(input == *_command2){
         GameState* newState_assign = new AssignedReinforcement();
         delete engine->getCurrentState();
@@ -813,6 +821,7 @@ void GameEngine::add_new_player() {
 
 // Assign territory to players
 void GameEngine::assign_territories() {
+    cout << "DEBUG: Assign Territories" << endl; // DEBUG LINE
 
     Map* map = Map::get_instance();
     
@@ -830,7 +839,13 @@ void GameEngine::assign_territories() {
                 territory = map->get_territory(num);
             } while (territory->get_claimant() != nullptr); // RNG pick territory
             territory->claim(player, false);
+            player->get_territories().push_back(territory);
         }
+    }
+
+    // DEBUG LINE
+    for (Player* player : this->get_players()) {
+        cout << *(player->getName()) << " has " << player->get_territories().size() << endl;
     }
 
     cout << *Map::get_instance(); // DEBUG LINE
@@ -883,6 +898,10 @@ queue<Order*>& GameEngine::get_orders() {
 // Add new reinforcements
 void GameEngine::reinforcementPhase() {
 
+    cout << "After previous army" << endl;
+    for (int* army : this->get_ArmyPools()) cout << *army << endl;
+
+
     // # Territories / 3 to floor added to army pool 
     for (Player* player : this->get_players()) {
         *(this->get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
@@ -897,6 +916,9 @@ void GameEngine::reinforcementPhase() {
 
     // 3 min army points per round
     for (int* army : this->get_ArmyPools()) *army += 3; 
+
+    cout << "After new army" << endl;
+    for (int* army : this->get_ArmyPools()) cout << *army << endl;
 }
 
 void GameEngine::issueOrdersPhase() {
@@ -914,6 +936,7 @@ void GameEngine::excecuteOrdersPhase() {
         for (Player* p : this->get_players()) {
             if (p->getOrdersList()->size() > 0) {
                 this->get_orders().push(p->getOrdersList()->getOrder(0));
+                cout << "ASDFPQWERI#)$%* " << p->getOrdersList()->getOrder(0) << endl;
                 p->getOrdersList()->remove(0);
                 p->getOrdersList()->get_order_list().shrink_to_fit();
             }
@@ -928,6 +951,7 @@ void GameEngine::excecuteOrdersPhase() {
     for (size_t i = 0; i < this->get_orders().size(); i++) {
         Order* order = this->get_orders().front();
         order->execute();
+        cout << *order << endl;
         this->get_orders().pop();
         delete order;
     }
@@ -937,35 +961,40 @@ void GameEngine::startupPhase() {
     LogObserver* lo = new LogObserver();
     CommandProcessor* processor = getCommandProcessor();
     list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
-    bool valid = true;
+    bool valid = false;
 
     processor->attach(lo);
     //For all the command it has:
     // validate each of them in current state
     // if it is valide, execute and save the effect
     // else, reject and save "INVALID COMMAND" 
-    do{
+    do {
         for (Command& command : *commandList) {
-        command.attach(lo);
-        processor->validate(this, & command);
-        if(getCurrentState()->getName() == "Assignedreinforcement"){
-            //when it gets to the play phase, stop reading
-            cout << "Start up pahse ended!!" << endl;
-            break;
+            command.attach(lo);
+            processor->validate(this, &command); // Goes through all states prior to gamestart(game startup state)
+            if (getCurrentState()->getName() == "Assignedreinforcement") {
+                //when it gets to the play phase, stop reading
+                valid = true;
+                cout << "Start up pahse ended!!" << endl;
+                break;
+            }
         }
+
+        if (valid) break;
+
         valid = false;
         commandList->clear();
-        if(this->fileReader){
-        cout << "Start up phase failed!!" << endl;
-        cout << "please enter a new file name:" << endl;
-        string newPath;
-        getline(cin, newPath);
-        processor->setPath(newPath);
-    }
-    //get a new command list try to finish the start-up phase:
-    commandList = processor->getCommand();
-    }
-    }while(!valid);
+        if (this->fileReader) {
+            cout << "Start up phase failed!!" << endl;
+            cout << "please enter a new file name:" << endl;
+            string newPath;
+            getline(cin, newPath);
+            processor->setPath(newPath);
+        }
+        //get a new command list try to finish the start-up phase:
+        commandList = processor->getCommand();
+
+    } while (!valid);
 }
 
 
@@ -1065,7 +1094,7 @@ void GameEngine::ordersPicker(Player& player) {
 
     int option;
     try {
-                            //TODO: the players army pool needs to be depleted before anything but deploy can be used.
+                           
         do {
             std::cout << "Please enter a number between 1 to 8."
                 "\n 1. Negotiate"
