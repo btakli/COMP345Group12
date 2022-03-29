@@ -403,7 +403,7 @@ public:
     //return the command processor:
     CommandProcessor* getCommandProcessor();
     //startup phase
-    void startupPhase();
+    void startupPhase(Observer* observer);
     //add new player state
     void add_new_player();
     //map picker state

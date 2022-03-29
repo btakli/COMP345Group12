@@ -8,6 +8,5 @@ addplayer player5
 gamestart
 issueorder
 issueordersend
-execorder
 win
 quit
