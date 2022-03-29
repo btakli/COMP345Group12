@@ -934,15 +934,38 @@ void GameEngine::excecuteOrdersPhase() {
 }
 
 void GameEngine::startupPhase() {
+    LogObserver* lo = new LogObserver();
     CommandProcessor* processor = getCommandProcessor();
     list<Command>* commandList = processor->getCommand(); // get the command of gameengine from its commandprocessor object
+    bool valid = true;
+
+    processor->attach(lo);
     //For all the command it has:
     // validate each of them in current state
     // if it is valide, execute and save the effect
     // else, reject and save "INVALID COMMAND" 
-    for (Command& command : *commandList) {
+    do{
+        for (Command& command : *commandList) {
+        command.attach(lo);
         processor->validate(this, & command);
+        if(getCurrentState()->getName() == "Assignedreinforcement"){
+            //when it gets to the play phase, stop reading
+            cout << "Start up pahse ended!!" << endl;
+            break;
+        }
+        valid = false;
+        commandList->clear();
+        if(this->fileReader){
+        cout << "Start up phase failed!!" << endl;
+        cout << "please enter a new file name:" << endl;
+        string newPath;
+        getline(cin, newPath);
+        processor->setPath(newPath);
     }
+    //get a new command list try to finish the start-up phase:
+    commandList = processor->getCommand();
+    }
+    }while(!valid);
 }
 
 
@@ -1063,6 +1086,7 @@ void GameEngine::ordersPicker(Player& player) {
                 option = -1;
             }
         } while (option > UPPERLIMIT || option < 1);
+        cout << endl;
         bool HasArmy = has_army(player.getIndex());
         switch (option)
         {
@@ -1131,5 +1155,5 @@ void GameEngine::ordersPicker(Player& player) {
     catch (std::runtime_error e) {
         std::cout << "ERROR: " << e.what() << std::endl;
     }
-
+    cin.ignore();
 }
