@@ -329,7 +329,13 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
+    if (engine->checkWin(*engine)) {
+        GameState* newState = new Win();
+        delete engine->getCurrentState();
+        engine->setState(newState);
 
+        cout << "Going to Win state" << endl;
+    }
     if(input == *_command){
 
         // Add new reinforcements
@@ -982,7 +988,7 @@ void GameEngine::startupPhase(Observer* observer) {
             if (getCurrentState()->getName() == "Assignedreinforcement") {
                 //when it gets to the play phase, stop reading
                 valid = true;
-                cout << "Start up pahse ended!!" << endl;
+                cout << "Start up phase ended!!" << endl;
                 break;
             }
         }
@@ -1199,4 +1205,24 @@ void GameEngine::ordersPicker(Player& player) {
     }
 
     cin.ignore();
+}
+
+bool GameEngine::checkWin(GameEngine& engine) {
+    string temp;
+
+    Player* tempP = (Map::get_instance()->get_territories()[0])->get_claimant();
+    for (auto ter : Map::get_instance()->get_territories()) {
+        
+        if (ter->get_claimant() == nullptr) {
+            return false;
+        }
+        if (!(ter->get_claimant() == tempP)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool GameEngine::checkConq(GameEngine& engine, int i) {
+    return false;
 }

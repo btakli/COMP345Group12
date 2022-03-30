@@ -363,6 +363,7 @@ class GameEngine : public ILoggable, public Subject{
 
     std::vector<Player*>* _players_ptr;
     vector<int*>* _armyPool;
+    vector<bool*>* _conqBool;
     Deck * _deck;
     queue<Order*>* _orders;
 
@@ -434,6 +435,11 @@ public:
     void validateMap();
     //Deploy helper
     void advanceHelper(Player& player);
+
+    bool checkWin(GameEngine& engine);
+
+    bool checkConq(GameEngine& engine, int i);
+
     private:
     GameState* _currentState; //current state
     bool _continue; 
