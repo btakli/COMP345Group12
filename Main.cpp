@@ -18,13 +18,13 @@ void gameEngineDriver();
 void mapDriver();
 void loggableDriver();
 
-int main()
-{
+//int main()
+//{
 	
-	loggableDriver();
+//	loggableDriver();
 	
-	return 0;
-}
+//	return 0;
+//}
 
 void loggableDriver() {
 	LogObserver* lo = new LogObserver();
