@@ -6,6 +6,7 @@
 #include "GameEngine.h"
 #include "Orders.h"
 #include "Map.h"
+#include "CommandProcessing.h"
 
 using std::cout;
 using std::endl;
@@ -41,6 +42,8 @@ void loggableDriver() {
 
 	OrdersList* ol = p1->getOrdersList();
 	ol->addOrder(order);
+	ol->addOrder(deploy);
+	ol->addOrder(negotiate);
 
 	for (int i = 0; i < ol->size(); i++)
 	{

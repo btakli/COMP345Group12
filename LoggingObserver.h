@@ -13,6 +13,8 @@ public:
 	virtual ~ILoggable();
 	//Creates and returns a string to be output to the log file
 	virtual string stringToLog() = 0;
+	friend std::ostream& operator<<(std::ostream& strm, const ILoggable& loggable);
+private:
 protected:
 	//Constructor, protected.
 	ILoggable();
@@ -64,6 +66,10 @@ class Subject {
 public:
 	//Constructor
 	Subject();
+	//Copy Constructor
+	Subject(const Subject& other);
+	//Assignment operator
+	Subject& operator=(const Subject& rhs);
 	//Destructor (does not destroy Observers, just the list)
 	virtual ~Subject();
 	//Add an Observer to the list of Observers
@@ -75,6 +81,8 @@ public:
 	///<summary>Notifies all attached Observers, calling their update() method.</summary>
 	///<param name='ILoggable* thisObj'>pass in 'this' as a Subject in order for your stringToLog() method to be called properly (notify(this);)</param>
 	virtual void notify(ILoggable* thisObj);
+	//Stream insertion operator overload
+	friend std::ostream& operator<<(std::ostream& strm, const Subject& subject);
 private:
 	//List of Observers
 	vector<Observer*>* _observers;
