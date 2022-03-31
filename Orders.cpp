@@ -15,7 +15,7 @@ using namespace std;
  */
 
 Order::Order() : _type(new string("Default Order")){
-    _currentState = new string("Order: Default Order"); //State doesn't change for an order.
+    _currentState->assign("Order: Default Order"); //State doesn't change for an order.
 }
 
 Order::Order(string type)
@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-   //A1 _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+   _currentState->assign("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
 
     player = nullptr;
     targetTerritory = nullptr;
@@ -139,7 +139,7 @@ void Deploy::execute(){
  */
 
 Advance::Advance() : Order("advance"){ //Constructor
-    //A1 _currentState = new string("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    _currentState->assign("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
     player = nullptr;
     sourceTerritory = nullptr;
     targetTerritory = nullptr;
@@ -222,7 +222,7 @@ void Advance::execute(){
  */
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
-   //A1 _currentState = new string("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+    _currentState->assign("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
     player = nullptr;
     sourceTerritory = nullptr;
     targetTerritory = nullptr;
@@ -285,7 +285,7 @@ void Bomb::execute(){
  */
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
-   //A1 _currentState = new string("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   _currentState->assign("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
    player = nullptr;
    targetTerritory = nullptr;
 }
@@ -343,7 +343,7 @@ void Blockade::execute(){
  */
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
-   //A1 _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   _currentState->assign("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
    player = nullptr;
    sourceTerritory = nullptr;
    targetTerritory = nullptr;
@@ -405,7 +405,7 @@ void Airlift::execute(){
  */
 
 Negotiate::Negotiate() : Order("negotiate"){ //Constructor
-    //A1 _currentState = new string("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    _currentState->assign("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
     player = nullptr;
     targetPlayer = nullptr;
 }
@@ -461,7 +461,7 @@ void Negotiate::execute(){
 
 OrdersList::OrdersList() { //Constructor
     _orderlist = new vector <Order*>();
-    _currentState = new string("NO ORDERS CURRENTLY");
+    _currentState->assign("NO ORDERS CURRENTLY");
 }
 
 OrdersList::~OrdersList() { //Destructor 
@@ -490,7 +490,7 @@ OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
     for (int i = 0; i < ol._orderlist->size(); i++) {
         this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
     }
-    _currentState = new string(*ol._currentState);
+    _currentState->assign(*ol._currentState);
 
 }
 

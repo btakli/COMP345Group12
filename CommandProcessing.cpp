@@ -32,7 +32,7 @@ Command::Command(string command){
     _command = new string(command);
     string* defaultEffect = new string("no effect yet");
     _effect = defaultEffect;
-     ILoggable::_currentState = new string(*_effect);
+     ILoggable::_currentState->assign(*_effect);
 }
 
 Command::~Command(){
@@ -42,7 +42,7 @@ Command::~Command(){
 
 void Command::saveEffect(string nextState){
     _effect = new string(nextState);
-    ILoggable::_currentState = new string(*_effect);
+    ILoggable::_currentState->assign(*_effect);
     notify(this);
 }
 
@@ -84,7 +84,7 @@ Command& Command::operator = (const Command& c){
 CommandProcessor::CommandProcessor(){
     command_in = new string("ASDFADSF");
     this->commands_ptr = new list<Command>();
-    ILoggable::_currentState = new string("Initial");
+    ILoggable::_currentState->assign("Initial");
 }
 
 CommandProcessor::~CommandProcessor(){
@@ -117,16 +117,16 @@ void CommandProcessor::saveCommand(){
                 if(prev_command == "loadmap"){
                     (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
                     string newStateMap = "loadmap "+ oneCommand;
-                    ILoggable::_currentState = new string(newStateMap);
+                    ILoggable::_currentState->assign(newStateMap);
                     notify(this); 
                 }else if(prev_command == "addplayer"){
                     (*commands_ptr).push_back(Command(("addplayer " + oneCommand)));
                     string newStatePlayer = "addplayer "+ oneCommand;
-                    ILoggable::_currentState = new string(newStatePlayer);
+                    ILoggable::_currentState->assign(newStatePlayer);
                     notify(this); 
                 }else{
                     (*commands_ptr).push_back(Command(oneCommand));
-                    ILoggable::_currentState = new string(oneCommand);
+                    ILoggable::_currentState->assign(oneCommand);
                     notify(this); 
                 }
              }

@@ -10,7 +10,7 @@ ILoggable::~ILoggable()
 
 ILoggable::ILoggable()
 {
-
+	_currentState = new string("ILoggable: State not set");
 }
 
 Observer::~Observer()

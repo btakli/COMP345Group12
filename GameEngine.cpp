@@ -634,7 +634,7 @@ GameEngine::GameEngine(){
 
     //logger:
     // special case for Start state:
-    ILoggable::_currentState =  new string("Start");
+    ILoggable::_currentState->assign("Start");
 
     // By implementing the CommandProcessor and FileCommandAdaptor, when a
     //game is initialized (or STARTED) it will ask for commands from the 
