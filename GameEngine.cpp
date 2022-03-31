@@ -946,9 +946,8 @@ void GameEngine::excecuteOrdersPhase() {
 
             if (p->getOrdersList()->size() > 0) {
 
-                this->get_orders().push(p->getOrdersList()->getOrder(0));
-                p->getOrdersList()->remove(0);
-                p->getOrdersList()->get_order_list().shrink_to_fit();
+                this->get_orders().push(p->getOrdersList()->get_order_list().front());
+                p->getOrdersList()->remove();
 
                 if (p->getOrdersList()->size() < 1) {
                     cout << "done " << endl;
