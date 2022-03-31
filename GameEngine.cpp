@@ -1240,8 +1240,9 @@ vector<bool*>& GameEngine::getConq() {
 }
 
 void GameEngine::setConq(int i) {
-    _conqBool[i];
+    *(this->getConq()[i]) = true;
 }
+
 
 void GameEngine::resetAllConq() {
     for (auto tracker : getConq()) {
