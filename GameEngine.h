@@ -360,11 +360,15 @@ class End: public GameState{
 the current state of the game, and transit between states when 
 received a command from the console.*/
 class GameEngine : public ILoggable, public Subject{
-
+    //vector pointing to players
     std::vector<Player*>* _players_ptr;
+    //vector showing each players army pool. ordered by player index
     vector<int*>* _armyPool;
+    //vector to track if a player conquered a territory this round
     vector<bool*>* _conqBool;
+    //The deck for the game
     Deck * _deck;
+    
     queue<Order*>* _orders;
 
 public:
@@ -435,11 +439,16 @@ public:
     void validateMap();
     //Deploy helper
     void advanceHelper(Player& player);
-
+    //Checks to see if the territories are all owned by the same player
     bool checkWin(GameEngine& engine);
+    //Initializes the _conqBool
+    void popConqBool();
+    //Get the vector remembering if a player has conquered this round
+    vector<bool*>& getConq();
 
-    bool checkConq(GameEngine& engine, int i);
+    void setConq(int i);
 
+    void resetAllConq();
     private:
     GameState* _currentState; //current state
     bool _continue; 
