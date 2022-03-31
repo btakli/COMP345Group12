@@ -440,6 +440,8 @@ public:
 
     bool checkConq(GameEngine& engine, int i);
 
+    void ordersPicker_Bot(Player& player, int option);
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

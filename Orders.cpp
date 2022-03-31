@@ -462,63 +462,59 @@ void Negotiate::execute(){
  */
 
 OrdersList::OrdersList() { //Constructor
-    _orderlist = new vector <Order*>();
+    _orderlist = new queue<Order*>();
     _currentState = new string("NO ORDERS CURRENTLY");
 }
 
 OrdersList::~OrdersList() { //Destructor 
-    for (int i=0; i < _orderlist->size(); i++) {
-		delete(_orderlist->at(i));
-	}
-	_orderlist->clear();
-    delete(_orderlist);
+
+    delete _orderlist;
 }
 
 OrdersList& OrdersList::operator=(const OrdersList& ol){ //Assignment Operator
     //Wipe out all old orders
     for (int i = 0; i < _orderlist->size(); i++) {
-        delete(_orderlist->at(i));
+        _orderlist->pop();
     }
-    _orderlist->clear();
+
     //Clone orders from ol
     for (int i = 0; i < ol._orderlist->size(); i++) {
-        this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
+
+        Order* o = ol._orderlist->front();
+        ol._orderlist->pop();
+        ol._orderlist->push(o);
+        this->_orderlist->push(o); //Clone all the orders from ol into this list.
     }
     return *this;
 }
 
 OrdersList::OrdersList(const OrdersList& ol){ //Copy constructor
-    this->_orderlist = new vector<Order*>();
-    for (int i = 0; i < ol._orderlist->size(); i++) {
-        this->_orderlist->push_back(ol._orderlist->at(i)->clone()); //Clone all the orders from ol into this list.
-    }
-    _currentState = new string(*ol._currentState);
+    this->_orderlist = new queue<Order*>();
 
+    //Clone orders from ol
+    for (int i = 0; i < ol._orderlist->size(); i++) {
+
+        Order* o = ol._orderlist->front();
+        ol._orderlist->pop();
+        ol._orderlist->push(o);
+        this->_orderlist->push(o); //Clone all the orders from ol into this list.
+    }
+
+    _currentState = new string(*ol._currentState);
 }
 
 int OrdersList::size(){
 	return _orderlist->size();
 }
 
-Order* OrdersList::getOrder(int index)
-{
-	return _orderlist->at(index);
-}
-
-
 void OrdersList::addOrder(Order* order) { 
     _currentState->assign(order->getType());
-   this->_orderlist->push_back(order);
-   notify(this);
+    this->_orderlist->push(order);
+    notify(this);
 }
 
-void OrdersList::move(int from, int to) { 
-     swap(_orderlist->at(from),_orderlist->at(to));
-}
-
-
-void OrdersList::remove(int index) { 
-    this->_orderlist->erase(this->_orderlist->begin() + index);
+void OrdersList::remove() { 
+    _orderlist->pop();
 }
 
 std::string OrdersList::stringToLog()
@@ -526,16 +522,22 @@ std::string OrdersList::stringToLog()
     return "Order Issued: " + *_currentState;
 }
 
-std::vector<Order*>& OrdersList::get_order_list()
+std::queue<Order*>& OrdersList::get_order_list()
 {
     return *this->_orderlist;
 }
 
 std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist)
 {
-    strm << "OrdersList contents:" << endl;
-    for (int i = 0; i < orderslist._orderlist->size(); i++)
-        strm << orderslist._orderlist->at(i) << endl;
+    strm << "OrdersList contents: " << endl;
+
+    for (int i = 0; i < orderslist._orderlist->size(); i++) {
+
+        Order* o = orderslist._orderlist->front();
+        strm << *o << endl;
+        orderslist._orderlist->pop();
+        orderslist._orderlist->push(o);
+    }
    
     return strm;
 }

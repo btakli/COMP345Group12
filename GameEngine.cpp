@@ -1130,6 +1130,7 @@ void GameEngine::ordersPicker(Player& player) {
         } while (option > UPPERLIMIT || option < 1);
         cout << endl;
         bool HasArmy = has_army(player.getIndex());
+
         switch (option)
         {
         case 1:
@@ -1206,6 +1207,81 @@ void GameEngine::ordersPicker(Player& player) {
 
     cin.ignore();
 }
+
+void GameEngine::ordersPicker_Bot(Player& player, int option) {
+
+    bool HasArmy = has_army(player.getIndex());
+    switch (option)
+    {
+    case 1:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        player.getOrdersList()->addOrder(new Negotiate());
+        //cardPicker2(player, "Negotiate");
+        break;
+
+    case 2:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        player.getOrdersList()->addOrder(new Airlift());
+
+        //cardPicker2(player, "Airlift");
+        break;
+
+    case 3:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        player.getOrdersList()->addOrder(new Blockade());
+
+        //cardPicker2(player, "Blockade");
+        break;
+
+    case 4:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        player.getOrdersList()->addOrder(new Bomb());
+
+        //cardPicker2(player, "Bomb");
+        break;
+
+    case 5:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        advanceHelper(player);
+        player.getOrdersList()->addOrder(new Advance());
+        break;
+
+    case 6:
+        player.getOrdersList()->addOrder(new Deploy());
+        break;
+
+    case 7:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        cardPicker(player);
+        break;
+
+    case 8:
+        if (HasArmy) {
+            cout << "You must deploy all your armies before any other order" << endl;
+            break;
+        }
+        break;
+    }
+}
+
 
 bool GameEngine::checkWin(GameEngine& engine) {
     string temp;

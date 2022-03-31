@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
 #include "LoggingObserver.h"
 class Player;
 class Territory;
@@ -239,22 +240,18 @@ public:
     OrdersList& operator=(const OrdersList& ol);
     //return the size of the orderslist
     int size();
-    //get an order at a specific index
-	Order* getOrder(int index);
     //addOrder method to add all kind of orders in the orderslist
     void addOrder(Order* order);
-    //move method to move orders inside the list, takes two ints as input and swaps the orders at these indices
-	void move(int from, int to);
     //remove method to delete a specific order from the list using its index inside the orderslist
-	void remove(int index);
+	void remove();
     //Method responsible for writing a specific string based on the type of order added to the list. Abstract method from ILoggable.
     std::string stringToLog();
     //get order list
-    std::vector<Order*>& get_order_list();
+    std::queue<Order*>& get_order_list();
 
 private:
     //The vector of Order pointers
-    std::vector<Order*>* _orderlist;
+    std::queue<Order*>* _orderlist;
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& strm, const OrdersList& orderslist);
 
