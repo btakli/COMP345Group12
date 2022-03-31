@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream> 
 #include "Player.h"
+#include "PlayerStrategies.h"
 using std::string;
 using std::vector;
 using std::cout;
@@ -15,6 +16,7 @@ Player::Player() {
     this->_attack = new vector<Territory*>{};
     this->_hand  = new Hand();
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name) {
@@ -25,6 +27,7 @@ Player::Player(string name) {
     this->_attack = new vector<Territory*>;
     this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name, vector<Territory*> collection) {
@@ -38,11 +41,17 @@ Player::Player(string name, vector<Territory*> collection) {
     this->_attack = new vector<Territory*>;
     this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name, vector<Territory*> collection, LogObserver* lo): Player(name,collection)
 {
     _listOfOrders->attach(lo);
+}
+
+Player::Player(string name, vector<Territory*> collection, LogObserver* lo, PlayerStrategy* ps): Player(name, collection, lo)
+{
+    this->_ps = ps;
 }
 
 Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
@@ -56,6 +65,8 @@ Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersLis
     this->_attack = new vector<Territory*>;
     this->_hand = new Hand(*hand);                         
     this->_listOfOrders = new OrdersList(*listOfOrders);
+
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::~Player() {
@@ -66,14 +77,24 @@ Player::~Player() {
     delete _index;
     delete _attack;
     delete _defend;
+
+    delete _ps; //Player will be responsible for deleting the strategy
 }
 
 void Player::toDefend(Territory* t) {
-    this->_defend->push_back(t);
+    if (_ps)
+        _ps->toDefend(t);
+    else
+        std::cout << "No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?" << std::endl;
+    //this->_defend->push_back(t); //Old way of doing it
 }
 
 void Player::toAttack(Territory* t) {
-    this->_attack->push_back(t);
+    if (_ps)
+        _ps->toAttack(t);
+    else
+        std::cout << "No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?" << std::endl;
+    //this->_attack->push_back(t); //Old way of doing it
 }
 
 vector<Territory*>& Player::getDefend() {
@@ -92,7 +113,11 @@ void Player::issueOrder() {
 }
 
 void Player::issueOrder(Order *pOrder) {
-    this->_listOfOrders->addOrder(pOrder);
+    if (_ps)
+        _ps->issueOrder(pOrder);
+    else
+        std::cout << "No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?" << std::endl;
+    //this->_listOfOrders->addOrder(pOrder); //Old way of doing it
 }
 
 Hand* Player::getHand() {
@@ -116,6 +141,13 @@ vector<Territory*>& Player::get_territories() {
 Player::Player( const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
+    this->_collection = new vector<Territory*>();
+    this->_defend = new vector<Territory*>();
+    this->_attack = new vector<Territory*>();
+
+    this->_ps = p._ps->clone();
+    this->_ps->setPlayer(this);
+
     for (auto territory : *p._collection) {
         this->_collection->push_back(territory); //Shallow copy because the territory should not be recreated
     }
@@ -127,6 +159,7 @@ Player::Player( const Player &p){
     }
     this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
     this->_listOfOrders = new OrdersList(*p._listOfOrders);
+
 }
 
 
@@ -145,6 +178,10 @@ Player& Player::operator=(const Player& p) {
     }
     this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
     this->_listOfOrders = new OrdersList(*p._listOfOrders);
+
+    this->_ps = p._ps->clone();
+    this->_ps->setPlayer(this);
+
     return *this;
 }
 
