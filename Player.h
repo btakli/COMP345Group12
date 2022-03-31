@@ -10,10 +10,10 @@
 using std::string;
 using std::vector;
 
-class Territory;
-
 //Forward declaration
-class Player;
+class Territory;
+class PlayerStrategy;
+
 //Class for players
 class Player {
 public:
@@ -23,15 +23,17 @@ public:
     //Constructor with player name
     Player(string name);
 
-    //Constructor for practical use later
+    //Legacy constructor without observer or strategy
     Player(string name, vector<Territory*> collection);
     //Constructor with logging observer which will be passed to list of orders
     Player(string name, vector<Territory*> collection, LogObserver* lo);
+    //Constructor with logging observer which will be passed to list of orders. Takes in Player Strategy too which is necessary.
+    Player(string name, vector<Territory*> collection, LogObserver* lo, PlayerStrategy* ps);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //Add a territory to defend
     void toDefend(Territory *t);
-    //ad a territory to attack
+    //add a territory to attack
     void toAttack(Territory *t);
     //returns a list of territories to defend
     vector<Territory*>& getDefend();
@@ -63,7 +65,6 @@ public:
     
 
 private:
-
     //static index
     static int s_index;
     //player index
@@ -80,6 +81,8 @@ private:
     vector<Territory*>* _attack;
     //collection of territories to defend
     vector<Territory*>* _defend;
+    //Player Strategy, this pointer to the player strategy is what will actually dictate the moves being done by the player.
+    PlayerStrategy* _ps;
 };
 
 
