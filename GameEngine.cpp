@@ -340,7 +340,7 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
         cout << "Going to Win state" << endl;
     }
     if(input == *_command){
-
+        engine->resetAllConq();
         // Add new reinforcements
         engine->reinforcementPhase(); 
         engine->issueOrdersPhase();
@@ -483,12 +483,32 @@ void ExcecuteOrders::transition(GameEngine* engine, string input){
 
         engine->excecuteOrdersPhase();
 
-    }else if(input == *_command2){
+    }
+    else if(input == *_command2){
         GameState* newState_assign = new AssignedReinforcement();
         delete engine->getCurrentState();
         engine->setState(newState_assign);
         cout << "Orders executed!!" << endl;
-    }else if(input == *_command3){
+
+        
+        //Checking
+        int i = 0;
+        for (auto* b : engine->getConq()) {
+            if (*b == true) {
+                break;
+            }
+            i++;
+        }
+        for (auto player: engine->get_players()) {
+            if (player->getIndex() = i){
+                engine->give_card(player);
+                break;
+            }
+        }
+
+    }
+    
+    else if(input == *_command3){
         GameState* newState_win = new Win();
         delete engine->getCurrentState();
         engine->setState(newState_win);
@@ -902,6 +922,11 @@ void GameEngine::draw_initial_cards() {
         cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
     }
 }
+
+void GameEngine::give_card(Player* player) {
+    player->getHand()->addCard(this->getDeck()->draw());
+}
+
 
 queue<Order*>& GameEngine::get_orders() {
     return *_orders;

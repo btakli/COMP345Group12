@@ -423,6 +423,8 @@ public:
     bool has_army(int i);
     //draw 2 cards per player
     void draw_initial_cards();
+    //Draws a card
+    void give_card(Player*);
     //goes to reinforcement phase
     void reinforcementPhase();
     //goes to issue order phase
