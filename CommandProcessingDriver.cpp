@@ -4,6 +4,8 @@
 
 using namespace std;
 
+void main_menu();
+
 int main(){
     LogObserver* lo = new LogObserver();
     cout << "log observer" << *lo << endl;
@@ -44,4 +46,8 @@ int main(){
     //delete myGame;  
     delete lo;                                                                                                                                                                                                                                                 
     return 0;
+}
+
+void main_menu() {
+
 }

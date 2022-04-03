@@ -49,6 +49,7 @@ class Deploy : public Order {
 public:
     //default constructor
     Deploy();
+    Deploy(int toDeploy);
     Deploy(Player* p); // parameterized Constructor
     Deploy(Player* p, Territory* target);
     //destructor

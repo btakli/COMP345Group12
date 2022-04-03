@@ -268,22 +268,22 @@ class IssueOrders : public GameState {
 /**********************************************************************
 ******************Execute Orders State:********************************
 ***********************************************************************/
-class ExcecuteOrders : public GameState {
+class ExecuteOrders : public GameState {
     public:
     //transition function:
     /*Takes two arguments, validate the input command and makes decision about
     whether stay in current ststate or transit to next state*/
     void transition(GameEngine* GameEngine, string command);
-    ExcecuteOrders(); //constructor
-    ~ExcecuteOrders(); //destructor
+    ExecuteOrders(); //constructor
+    ~ExecuteOrders(); //destructor
 
     bool validate(string command);
     string getName();
 
-    ExcecuteOrders(const ExcecuteOrders& other); //deep copy constructor
-    ExcecuteOrders& operator = (const ExcecuteOrders& e); //assignment operator
+    ExecuteOrders(const ExecuteOrders& other); //deep copy constructor
+    ExecuteOrders& operator = (const ExecuteOrders& e); //assignment operator
     //stream insertion operator:
-    friend ostream& operator<<(ostream& os, const ExcecuteOrders& e);
+    friend ostream& operator<<(ostream& os, const ExecuteOrders& e);
 
     GameState* clone() const; //clone() overridden
 
@@ -451,6 +451,9 @@ public:
     void ordersPicker_Bot(Player& player, int option);
 
     void resetAllConq();
+
+    void deploy_phase(Player& player);
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

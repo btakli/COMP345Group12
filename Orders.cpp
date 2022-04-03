@@ -86,6 +86,15 @@ Deploy::Deploy() : Order("deploy"){ //Constructor
     armiesToDeploy = 0;
 }
 
+Deploy::Deploy(int toDeploy) : Order("deploy") { //Constructor
+   //A1 _currentState = new string("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+
+    player = nullptr;
+    targetTerritory = nullptr;
+    armiesToDeploy = toDeploy;
+}
+
+
 Deploy::Deploy(Player* p, Territory* target) : Order("deploy"){
     player = p;
     this->targetTerritory = target;
