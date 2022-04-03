@@ -275,6 +275,7 @@ void PlayersAdded::transition(GameEngine* engine, string input){
             engine->order_of_play();
             engine->give_initial_armies();
             engine->draw_initial_cards();
+            engine->popConqBool();
             
 
         }
@@ -286,10 +287,12 @@ void PlayersAdded::transition(GameEngine* engine, string input){
 PlayersAdded::PlayersAdded(const PlayersAdded& other){
     this->_command1 = new string(*(other._command1));
     this->_command2 = new string(*(other._command2));
+    this->_commandGame = new string(*(other._commandGame));
 }
 PlayersAdded& PlayersAdded::operator = (const PlayersAdded& e){
     this->_command1 = new string(*(e._command1));
     this->_command2 = new string(*(e._command2));
+    this->_commandGame = new string(*(e._commandGame));
     return *this;
 }
 
@@ -644,7 +647,8 @@ GameEngine::GameEngine(){
     fileReader = false;
     _armyPool = new std::vector<int*>();
     _deck = new Deck();
-
+    _conqBool = new vector<bool*>();
+    _myProcessor = new CommandProcessor();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -694,6 +698,7 @@ GameEngine::~GameEngine(){
     delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
     for (int* i : *_armyPool) delete i;
+    for (bool* b : *_conqBool) delete b;
     delete _deck;
 }
 
@@ -1298,6 +1303,23 @@ bool GameEngine::checkWin(GameEngine& engine) {
     return true;
 }
 
-bool GameEngine::checkConq(GameEngine& engine, int i) {
-    return false;
+void GameEngine::popConqBool() {
+
+    for (int i = 0; i < get_players().size(); i++) {
+        this->getConq().push_back(new bool(false));
+    }
+}
+
+vector<bool*>& GameEngine::getConq() {
+    return *_conqBool;
+}
+
+void GameEngine::setConq(int i) {
+    _conqBool[i];
+}
+
+void GameEngine::resetAllConq() {
+    for (auto tracker : getConq()) {
+        *tracker = false;
+    }
 }
