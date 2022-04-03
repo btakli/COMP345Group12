@@ -111,6 +111,8 @@ Deploy* Deploy::clone() const
 bool Deploy::validate(){
     //New Implementation
      // Check if territory belongs to player
+    if (targetTerritory->get_claimant()) return false;
+
     if (targetTerritory->get_claimant() == player){
         cout << "valid order" << endl;
         return true;

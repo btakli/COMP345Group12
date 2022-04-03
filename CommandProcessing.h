@@ -51,6 +51,8 @@ class CommandProcessor: public ILoggable, public Subject
     CommandProcessor();
     //Destructor:
     virtual ~CommandProcessor();
+     //set a new file name:
+    virtual void setPath(string newPath);
     //getCommand function that read command and save them to the list
     //of command:
     std::list<Command>* getCommand();
@@ -128,6 +130,8 @@ class FileCommandProcessorAdapter : public CommandProcessor
     //Processes a specific file:
     FileCommandProcessorAdapter(std::string pathIn);
 
+    //set a new file name:
+    void setPath(string newPath);
     //copy constructor
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter &fcpa);
     //assignment operator:

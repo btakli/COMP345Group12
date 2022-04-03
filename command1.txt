@@ -1,0 +1,3 @@
+loadmap canada
+loadmap cow
+validatemap
