@@ -431,10 +431,8 @@ public:
     void excecuteOrdersPhase();
     //goes to orders picker phase
     void ordersPicker(Player&);
-    //pick a card for each player
-    void cardPicker(Player&);
     //pick a card type for a player
-    void cardPicker2(Player& player, string type);
+    void cardPicker(Player& player, string type);
     //validate a loaded map
     void validateMap();
     //Deploy helper

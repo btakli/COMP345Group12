@@ -2,11 +2,6 @@
 #include <iostream>
 #include <random>
 #include <set>
-/*********************/
-
-//                loadmap 1 validatemap addplayer 1 addplayer 2 addplayer 3 addplayer 4 addplayer 5 gamestart
-//                loadmap 1 validatemap addplayer A addplayer B addplayer C addplayer D addplayer E gamestart
-/*********************/
 
 
 using std::vector;
@@ -22,10 +17,41 @@ using std::end;
 #define ASSIGN_COUNTRIES "assigncountries"
 #define GAME_START "gamestart"
 
+#define LOG(str)  std::cout << "\n>> " << str << std::endl;
+#define INPUT() std::cout << "> " << std::endl;
 
 //************GameState****************
 GameState::~GameState(){} //destructor
 
+
+Territory* territory_picker(Player& player) {
+    int count = 0;
+    cout << "Please choose a territory to deploy troops to: " << endl;
+    for (Territory* t : player.get_territories()) {
+        cout << "\n" << to_string(count) << ": " << t->get_name() << "[" << t->get_stationed_army() << "]";
+        count++;
+    }
+
+    int option;
+
+    do {
+        INPUT()
+        std::cin >> option;
+
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            option = -1;
+        }
+
+        if (option > count - 1 || option < 0)
+            cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+    } while (option > count - 1 || option < 0);
+
+
+    return player.get_territories()[option];
+}
 
 //*********************friends with ostream:*********************************
 
@@ -191,7 +217,6 @@ MapValidated::~MapValidated(){
 
 void MapValidated::transition(GameEngine* engine, string input){
 
-
     if(input == *_command){
 
         engine->add_new_player();
@@ -342,6 +367,8 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
 
         cout << "Going to Win state" << endl;
     }
+
+
     if(input == *_command){
 
         // Add new reinforcements
@@ -427,6 +454,9 @@ void IssueOrders::transition(GameEngine* engine, string input){
         GameState* newState = new ExecuteOrders();
         delete engine->getCurrentState();
         engine->setState(newState);
+
+        engine->excecuteOrdersPhase();
+
         cout << "Orders Issued!!" << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -912,6 +942,8 @@ queue<Order*>& GameEngine::get_orders() {
 // Add new reinforcements
 void GameEngine::reinforcementPhase() {
 
+    LOG("Reinforcement Phase")
+
     cout << "After previous army" << endl;
     for (int* army : this->get_ArmyPools()) cout << *army << endl;
 
@@ -942,6 +974,8 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::excecuteOrdersPhase() {
+
+    LOG("Executing Orders")
 
     set<Player*> done;
 
@@ -1016,52 +1050,18 @@ void GameEngine::startupPhase(Observer* observer) {
     } while (!valid);
 }
 
-
-void GameEngine::cardPicker(Player& player) {
-
-    while (true) {
-
-        int option;
-
-        do {
-            std::cout << "Please enter a number between 1 to " << player.getHand()->size() << "." << endl;
-
-            int count = 1;
-            for (Card* c : player.getHand()->getCards()) {
-                cout << count << ". " << c << endl;
-            }
-
-            cout << "> " << endl;
-
-            std::cin >> option;
-
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-                option = -1;
-            }
-        } while (option > player.getHand()->size() || option < 1);
-
-        if (option == player.getHand()->size()) return;
-
-        player.issueOrder(player.getHand()->playAndReturnToDeck(option, this->getDeck()));
-    }
-}
-
-void GameEngine::cardPicker2(Player& player, string type) {
+void GameEngine::cardPicker(Player& player, string type) {
     int card = 0;
-    bool hasCard = false;
     for (Card* c : player.getHand()->getCards()) {
         if (c->getType() == type) {
             player.issueOrder(player.getHand()->playAndReturnToDeck(card, this->getDeck()));
-            break;
+            LOG(*player.getName() << " has played card " << type);
+            return;
         }
         card++;
     }
-    if (!hasCard) {
-        cout << "Player " << *player.getName() << " does not have " << type<<  " card" << endl;
-    }
 
+    cout << "Player " << *player.getName() << " does not have " << type << " card" << endl;
 }
 
 void GameEngine::validateMap() {
@@ -1085,6 +1085,8 @@ void GameEngine::advanceHelper(Player& player) {
     // Pick a territory from all the territories
     int count = 0;
 
+    cout << *player.getName() << endl;
+    cout << "Pick territory of choice: " << endl;
     for (Territory* t : player.get_territories()) {
          cout << "\n" + to_string(count) + ": " + t->get_name();
          count++;
@@ -1093,7 +1095,8 @@ void GameEngine::advanceHelper(Player& player) {
     int option;
 
     do {
-        std::cout << "Pick an option: " << endl;
+        INPUT()
+
         std::cin >> option;
 
         if (std::cin.fail()) {
@@ -1101,6 +1104,10 @@ void GameEngine::advanceHelper(Player& player) {
             std::cin.ignore(1000, '\n');
             option = -1;
         }
+
+        if (option > count - 1 || option < 0) 
+            cout << "Please enter a number between 0 and " << count - 1 << endl;
+
     } while (option > count - 1 || option < 0);
 
     count = 0;
@@ -1113,7 +1120,8 @@ void GameEngine::advanceHelper(Player& player) {
     int option2;
 
     do {
-        std::cout << "Pick an option: " << endl;
+        INPUT()
+
         std::cin >> option2;
 
         if (std::cin.fail()) {
@@ -1121,6 +1129,10 @@ void GameEngine::advanceHelper(Player& player) {
             std::cin.ignore(1000, '\n');
             option = -1;
         }
+
+        if (option2 > count - 1 || option2 < 0) 
+            cout << "Please enter a number between 0 and " << count - 1 << endl;
+
     } while (option2 > count - 1 || option2 < 0);
    
     auto it = player.get_territories()[option]->get_neighbors().front();
@@ -1130,6 +1142,9 @@ void GameEngine::advanceHelper(Player& player) {
 }
 
 void GameEngine::deploy_phase(Player& player) {
+
+    LOG("Deploy Phase")
+
 
     while (has_army(player.getIndex())) {
         
@@ -1148,7 +1163,8 @@ void GameEngine::deploy_phase(Player& player) {
                 cout << "ERROR: Number to big. " << endl;
             }
             else {
-                player.getOrdersList()->addOrder(new Deploy(army_to_deploy));
+
+                player.getOrdersList()->addOrder(new Deploy(&player, territory_picker(player), army_to_deploy));
                 *(*_armyPool)[player.getIndex()] -= army_to_deploy;
 
                 if (has_army(player.getIndex()))
@@ -1164,13 +1180,15 @@ void GameEngine::deploy_phase(Player& player) {
 
 void GameEngine::ordersPicker(Player& player) {
 
+    LOG("Order Picker")
+
     int option;
 
     while(true) {
         try {
             do {
                 std::cout << "Please enter a number between 1 to 6."
-                    "\n 1. Negotiate"
+                    "\n 1. Diplomacy"
                     "\n 2. Airlift"
                     "\n 3. Blockade"
                     "\n 4. Bomb"
@@ -1192,24 +1210,23 @@ void GameEngine::ordersPicker(Player& player) {
             switch (option)
             {
             case 1:
-                cardPicker2(player, "Negotiate");
+                cardPicker(player, "diplomacy");
                 break;
 
             case 2:
-                cardPicker2(player, "Airlift");
+                cardPicker(player, "airlift");
                 break;
 
             case 3:
-                cardPicker2(player, "Blockade");
+                cardPicker(player, "blockade");
                 break;
 
             case 4:
-                cardPicker2(player, "Bomb");
+                cardPicker(player, "bomb");
                 break;
 
             case 5:
                 advanceHelper(player);
-                
                 break;
             }
         }
@@ -1229,70 +1246,23 @@ void GameEngine::ordersPicker_Bot(Player& player, int option) {
     switch (option)
     {
     case 1:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
-        player.getOrdersList()->addOrder(new Negotiate());
-        //cardPicker2(player, "Negotiate");
+        cardPicker(player, "diplomacy");
         break;
 
     case 2:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
-        player.getOrdersList()->addOrder(new Airlift());
-
-        //cardPicker2(player, "Airlift");
+        cardPicker(player, "airlift");
         break;
 
     case 3:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
-        player.getOrdersList()->addOrder(new Blockade());
-
-        //cardPicker2(player, "Blockade");
+        cardPicker(player, "blockade");
         break;
 
     case 4:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
-        player.getOrdersList()->addOrder(new Bomb());
-
-        //cardPicker2(player, "Bomb");
+        cardPicker(player, "bomb");
         break;
 
     case 5:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
         advanceHelper(player);
-        player.getOrdersList()->addOrder(new Advance());
-        break;
-
-    case 6:
-        player.getOrdersList()->addOrder(new Deploy());
-        break;
-
-    case 7:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
-        cardPicker(player);
-        break;
-
-    case 8:
-        if (HasArmy) {
-            cout << "You must deploy all your armies before any other order" << endl;
-            break;
-        }
         break;
     }
 }
