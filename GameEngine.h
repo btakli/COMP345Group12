@@ -447,9 +447,9 @@ public:
     void popConqBool();
     //Get the vector remembering if a player has conquered this round
     vector<bool*>& getConq();
-
+    //Chance value to true
     void setConq(int i);
-
+    //Sets all values to false
     void resetAllConq();
     private:
     GameState* _currentState; //current state
