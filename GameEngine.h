@@ -452,6 +452,8 @@ public:
 
     void deploy_phase(Player& player);
 
+    void change_state(GameState*);
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

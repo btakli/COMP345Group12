@@ -98,13 +98,13 @@ Start::~Start(){
     delete _command;
 }
 
+
+
 void Start::transition(GameEngine* engine, string input){
 
     if(input == *_command){
         engine->map_picker();
-        GameState* newState = new MapLoaded();
-        delete engine->getCurrentState();
-        engine->setState(newState);
+        engine->change_state(new MapLoaded());
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
     }  
@@ -221,9 +221,7 @@ void MapValidated::transition(GameEngine* engine, string input){
 
         engine->add_new_player();
 
-        GameState* newState = new PlayersAdded();
-        delete engine->getCurrentState();
-        engine->setState(newState);
+        engine->change_state(new PlayersAdded());
 
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -295,16 +293,14 @@ void PlayersAdded::transition(GameEngine* engine, string input){
             std::cout << "ERROR: Max 6 players. Currently at " << player_size << " players." << endl;
         }
         else {
-            GameState* newState = new AssignedReinforcement();
-            delete engine->getCurrentState();
-            engine->setState(newState);
+
+            engine->change_state(new AssignedReinforcement());
             
             engine->assign_territories();
             engine->order_of_play();
             engine->give_initial_armies();
             engine->draw_initial_cards();
             engine->popConqBool();
-            
 
         }
     }else{
@@ -361,9 +357,7 @@ AssignedReinforcement::~AssignedReinforcement(){
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
     if (engine->checkWin(*engine)) {
-        GameState* newState = new Win();
-        delete engine->getCurrentState();
-        engine->setState(newState);
+        engine->change_state(new Win());
 
         cout << "Going to Win state" << endl;
     }
@@ -375,9 +369,7 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
         engine->reinforcementPhase(); 
         engine->issueOrdersPhase();
 
-        GameState* newState = new IssueOrders();
-        delete engine->getCurrentState();
-        engine->setState(newState);
+        engine->change_state(new IssueOrders());
 
         cout << "Issuing orders..." << endl;
     }else{
@@ -451,9 +443,8 @@ void IssueOrders::transition(GameEngine* engine, string input){
         cout << "Issuing orders..." << endl;
 
     }else if(input == *_command2){
-        GameState* newState = new ExecuteOrders();
-        delete engine->getCurrentState();
-        engine->setState(newState);
+        engine->change_state(new ExecuteOrders());
+
 
         engine->excecuteOrdersPhase();
 
@@ -517,14 +508,12 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
         engine->excecuteOrdersPhase();
 
     }else if(input == *_command2){
-        GameState* newState_assign = new AssignedReinforcement();
-        delete engine->getCurrentState();
-        engine->setState(newState_assign);
+        engine->change_state(new AssignedReinforcement());
+
         cout << "Orders executed!!" << endl;
     }else if(input == *_command3){
-        GameState* newState_win = new Win();
-        delete engine->getCurrentState();
-        engine->setState(newState_win);
+        engine->change_state(new Win());
+
         cout << "CONGRATES!! You won the game!!" << endl;
     }
     else{
@@ -584,18 +573,16 @@ Win::~Win(){
 void Win::transition(GameEngine* engine, string input){
 
     if(input == *_command2){
-        GameState* newState_end = new End();
-        delete engine->getCurrentState();
-        engine->setState(newState_end);
+        engine->change_state(new End());
+
         std::cout << "**************************" << endl;
         std::cout << "*********Game Ends********" << endl;
         std::cout << "**************************" << endl;
         engine->setStatus(false); //set the _continue to false
         engine->fileReader = false;
     }else if(input == *_command1){
-        GameState* newState_start = new Start();
-        delete engine->getCurrentState();
-        engine->setState(newState_start);
+        engine->change_state(new Start());
+
         cout << "**********Game restarted!!**********" << endl;
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -1071,11 +1058,9 @@ void GameEngine::validateMap() {
 
         cout << "> Map is " << (valid ? "VALID" : "INVALID") << endl;
 
-        if (valid) {
-            GameState* newState = new MapValidated();
-            delete this->getCurrentState();
-            this->setState(newState);
-        }
+        if (valid) 
+            this->change_state(new MapValidated());
+        
     }
     else std::cout << "WARNING: No map loaded." << endl;
 }
@@ -1303,4 +1288,9 @@ void GameEngine::resetAllConq() {
     for (auto tracker : getConq()) {
         *tracker = false;
     }
+}
+
+void GameEngine::change_state(GameState* newState) {
+    delete this->getCurrentState();
+    this->setState(newState);
 }

@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Sun Apr  3 18:52:30 2022
+~~~~ Gamelog for game starting on: Sun Apr  3 21:58:50 2022
 
 Command: loadmap canada
 Command: validatemap
@@ -36,9 +36,3 @@ Command's Effect: Transitioning to state INVALID COMMAND
 Command's Effect: Transitioning to state INVALID COMMAND
 Game Engine new state: IssueOrders
 Command's Effect: Transitioning to state IssueOrders
-Game Engine new state: ExcecuteOrders
-Command's Effect: Transitioning to state ExcecuteOrders
-Game Engine new state: Win
-Command's Effect: Transitioning to state Win
-Game Engine new state: End
-Command's Effect: Transitioning to state End
