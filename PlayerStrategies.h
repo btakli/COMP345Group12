@@ -32,7 +32,7 @@ protected:
 	Player* p;
 };
 //Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player.
-class Neutral : public PlayerStrategy {
+class NeutralPlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
@@ -41,18 +41,18 @@ public:
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
 	//Stream insertion operator overload
-	friend std::ostream& operator<<(std::ostream& out, const Neutral& neutral);
+	friend std::ostream& operator<<(std::ostream& out, const NeutralPlayerStrategy& neutral);
 	//Constructor
-	Neutral(Player* p);
+	NeutralPlayerStrategy(Player* p);
 	//Copy constructor
-	Neutral(const Neutral& other);
+	NeutralPlayerStrategy(const NeutralPlayerStrategy& other);
 	//Assignment operator
-	Neutral& operator=(const Neutral& rhs);
+	NeutralPlayerStrategy& operator=(const NeutralPlayerStrategy& rhs);
 	//clone method
-	virtual Neutral* clone();
+	virtual NeutralPlayerStrategy* clone();
 };
 //Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore).
-class Aggressive : public PlayerStrategy {
+class AggressivePlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
@@ -61,19 +61,19 @@ public:
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
 	//Stream insertion operator overload
-	friend std::ostream& operator<<(std::ostream& out, const Aggressive& aggressive);
+	friend std::ostream& operator<<(std::ostream& out, const AggressivePlayerStrategy& aggressive);
 	//Constructor
-	Aggressive(Player* p);
+	AggressivePlayerStrategy(Player* p);
 	//Copy constructor
-	Aggressive(const Aggressive& other);
+	AggressivePlayerStrategy(const AggressivePlayerStrategy& other);
 	//Assignment operator
-	Aggressive& operator=(const Aggressive& rhs);
+	AggressivePlayerStrategy& operator=(const AggressivePlayerStrategy& rhs);
 	//clone method
-	virtual Aggressive* clone();
+	virtual AggressivePlayerStrategy* clone();
 };
 
 //Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories).
-class Benevolent : public PlayerStrategy {
+class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
@@ -82,19 +82,19 @@ public:
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
 	//Stream insertion operator overload
-	friend std::ostream& operator<<(std::ostream& out, const Benevolent& benevolent);
+	friend std::ostream& operator<<(std::ostream& out, const BenevolentPlayerStrategy& benevolent);
 	//Constructor
-	Benevolent(Player* p);
+	BenevolentPlayerStrategy(Player* p);
 	//Copy constructor
-	Benevolent(const Benevolent& other);
+	BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other);
 	//Assignment operator
-	Benevolent& operator=(const Benevolent& rhs);
+	BenevolentPlayerStrategy& operator=(const BenevolentPlayerStrategy& rhs);
 	//clone method
-	virtual Benevolent* clone();
+	virtual BenevolentPlayerStrategy* clone();
 };
 
 //Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn).
-class Cheater : public PlayerStrategy {
+class CheaterPlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
@@ -103,19 +103,19 @@ public:
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
 	//Stream insertion operator overload
-	friend std::ostream& operator<<(std::ostream& out, const Cheater& cheater);
+	friend std::ostream& operator<<(std::ostream& out, const CheaterPlayerStrategy& cheater);
 	//Constructor
-	Cheater(Player* p);
+	CheaterPlayerStrategy(Player* p);
 	//Copy constructor
-	Cheater(const Cheater& other);
+	CheaterPlayerStrategy(const CheaterPlayerStrategy& other);
 	//Assignment operator
-	Cheater& operator=(const Cheater& rhs);
+	CheaterPlayerStrategy& operator=(const CheaterPlayerStrategy& rhs);
 	//clone method
-	virtual Cheater* clone();
+	virtual CheaterPlayerStrategy* clone();
 };
 
 //Human player: requires user interactions to make decisions.
-class Human : public PlayerStrategy {
+class HumanPlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
@@ -124,15 +124,15 @@ public:
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
 	//Stream insertion operator overload
-	friend std::ostream& operator<<(std::ostream& out, const Human& human);
+	friend std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human);
 	//Constructor
-	Human(Player* p);
+	HumanPlayerStrategy(Player* p);
 	//Copy constructor
-	Human(const Human& other);
+	HumanPlayerStrategy(const HumanPlayerStrategy& other);
 	//Assignment operator
-	Human& operator=(const Human& rhs);
+	HumanPlayerStrategy& operator=(const HumanPlayerStrategy& rhs);
 	//clone method
-	virtual Human* clone();
+	virtual HumanPlayerStrategy* clone();
 };
 
 

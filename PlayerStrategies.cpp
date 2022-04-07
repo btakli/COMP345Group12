@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& out, const PlayerStrategy& playerStrategy
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const Neutral& neutral)
+std::ostream& operator<<(std::ostream& out, const NeutralPlayerStrategy& neutral)
 {
 	out << "Neutral strategy: Computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player." << std::endl;
 	out << "Player info:" << std::endl;
@@ -36,7 +36,7 @@ std::ostream& operator<<(std::ostream& out, const Neutral& neutral)
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const Aggressive& aggressive)
+std::ostream& operator<<(std::ostream& out, const AggressivePlayerStrategy& aggressive)
 {
 	out << "Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore)." << std::endl;
 	out << "Player info:" << std::endl;
@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& out, const Aggressive& aggressive)
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const Benevolent& benevolent)
+std::ostream& operator<<(std::ostream& out, const BenevolentPlayerStrategy& benevolent)
 {
 	out << "Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories)." << std::endl;
 	out << "Player info:" << std::endl;
@@ -52,7 +52,7 @@ std::ostream& operator<<(std::ostream& out, const Benevolent& benevolent)
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const Cheater& cheater)
+std::ostream& operator<<(std::ostream& out, const CheaterPlayerStrategy& cheater)
 {
 	out << "Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn)." << std::endl;
 	out << "Player info:" << std::endl;
@@ -60,7 +60,7 @@ std::ostream& operator<<(std::ostream& out, const Cheater& cheater)
 	return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const Human& human)
+std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human)
 {
 	out << " Human player: requires user interactions to make decisions." << std::endl;
 	out << "Player info:" << std::endl;
@@ -68,157 +68,157 @@ std::ostream& operator<<(std::ostream& out, const Human& human)
 	return out;
 }
 
-void Neutral::issueOrder(Order* pOrder)
+void NeutralPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void Neutral::toAttack(Territory* t)
+void NeutralPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void Neutral::toDefend(Territory* t)
+void NeutralPlayerStrategy::toDefend(Territory* t)
 {
 }
 
-Neutral::Neutral(Player* p) : PlayerStrategy(p)
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 }
 
-Neutral::Neutral(const Neutral& other) : PlayerStrategy(other)
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& other) : PlayerStrategy(other)
 {
 }
 
-Neutral& Neutral::operator=(const Neutral& rhs)
+NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
 	return *this;
 }
 
-Neutral* Neutral::clone()
+NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 {
-	return new Neutral(*this);
+	return new NeutralPlayerStrategy(*this);
 }
 
-void Aggressive::issueOrder(Order* pOrder)
-{
-}
-
-void Aggressive::toAttack(Territory* t)
+void AggressivePlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void Aggressive::toDefend(Territory* t)
+void AggressivePlayerStrategy::toAttack(Territory* t)
 {
 }
 
-Aggressive::Aggressive(Player* p) : PlayerStrategy(p)
+void AggressivePlayerStrategy::toDefend(Territory* t)
 {
 }
 
-Aggressive::Aggressive(const Aggressive& other) : PlayerStrategy(other)
+AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 }
 
-Aggressive& Aggressive::operator=(const Aggressive& rhs)
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& other) : PlayerStrategy(other)
+{
+}
+
+AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& rhs)
 {
 	this->p = rhs.p;
 	return *this;
 }
 
-Aggressive* Aggressive::clone()
+AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 {
-	return new Aggressive(*this);
+	return new AggressivePlayerStrategy(*this);
 }
 
-void Benevolent::issueOrder(Order* pOrder)
-{
-}
-
-void Benevolent::toAttack(Territory* t)
+void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void Benevolent::toDefend(Territory* t)
+void BenevolentPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-Benevolent::Benevolent(Player* p) : PlayerStrategy(p)
+void BenevolentPlayerStrategy::toDefend(Territory* t)
 {
 }
 
-Benevolent::Benevolent(const Benevolent& other) : PlayerStrategy(other)
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 }
 
-Benevolent& Benevolent::operator=(const Benevolent& rhs)
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
+{
+}
+
+BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
 	return *this;
 }
 
-Benevolent* Benevolent::clone()
+BenevolentPlayerStrategy* BenevolentPlayerStrategy::clone()
 {
-	return new Benevolent(*this);
+	return new BenevolentPlayerStrategy(*this);
 }
 
-void Cheater::issueOrder(Order* pOrder)
-{
-}
-
-void Cheater::toAttack(Territory* t)
+void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void Cheater::toDefend(Territory* t)
+void CheaterPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-Cheater::Cheater(Player* p) : PlayerStrategy(p)
+void CheaterPlayerStrategy::toDefend(Territory* t)
 {
 }
 
-Cheater::Cheater(const Cheater& other) : PlayerStrategy(other)
+CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 }
 
-Cheater& Cheater::operator=(const Cheater& rhs)
+CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
+{
+}
+
+CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
 	return *this;
 }
 
-Cheater* Cheater::clone()
+CheaterPlayerStrategy* CheaterPlayerStrategy::clone()
 {
-	return new Cheater(*this);
+	return new CheaterPlayerStrategy(*this);
 }
 
-void Human::issueOrder(Order* pOrder)
-{
-}
-
-void Human::toAttack(Territory* t)
+void HumanPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void Human::toDefend(Territory* t)
+void HumanPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-Human::Human(Player* p) : PlayerStrategy(p)
+void HumanPlayerStrategy::toDefend(Territory* t)
 {
 }
 
-Human::Human(const Human& other) : PlayerStrategy(other)
+HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 }
 
-Human& Human::operator=(const Human& rhs)
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& other) : PlayerStrategy(other)
+{
+}
+
+HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
 	return *this;
 }
 
-Human* Human::clone()
+HumanPlayerStrategy* HumanPlayerStrategy::clone()
 {
-	return new Human(*this);
+	return new HumanPlayerStrategy(*this);
 }
