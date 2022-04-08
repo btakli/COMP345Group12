@@ -424,9 +424,9 @@ public:
     //draw 2 cards per player
     void draw_initial_cards();
     //goes to reinforcement phase
-    void reinforcementPhase();
+    void addReinforcementsPhase();
     //goes to issue order phase
-    void issueOrdersPhase();
+    void deployReinforcementPhase();
     //goes to execute order phase
     void excecuteOrdersPhase();
     //goes to orders picker phase

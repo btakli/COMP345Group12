@@ -3,7 +3,3 @@ validatemap
 addplayer player1
 addplayer player2
 gamestart
-issueorder
-issueordersend
-win
-quit

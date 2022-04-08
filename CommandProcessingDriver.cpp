@@ -19,28 +19,29 @@ int main(){
     
     //start up:
     myGame->startupPhase(lo);
+    myGame->transit("issueasdfafdsorder");
 
     //play phase:
-    while(myGame->getStatus() == true){
-    commandList->clear();
-    if(myGame->fileReader){
-        
-        cout << "please enter a new file name:" <<endl;
-        string newPath;
-        getline(cin, newPath);
-        processor->setPath(newPath);
-    }
-    //get a new command list:
-    commandList = processor->getCommand();
-    //For all the command it has:
-    // validate each of them in current state
-    // if it is valide, execute and save the effect
-    // else, reject and save "INVALID COMMAND" 
-    for(Command& command : *commandList){
-        command.attach(lo);
-        processor->validate(myGame, &command);
-    }
-    }
+    //while (myGame->getStatus() == true) {
+        //commandList->clear();
+        //if (myGame->fileReader) {
+
+        //    cout << "please enter a new file name:" << endl;
+        //    string newPath;
+        //    getline(cin, newPath);
+        //    processor->setPath(newPath);
+        //}
+        ////get a new command list:
+        //commandList = processor->getCommand();
+        //For all the command it has:
+        // validate each of them in current state
+        // if it is valide, execute and save the effect
+        // else, reject and save "INVALID COMMAND" 
+       /* for (Command& command : *commandList) {
+            command.attach(lo);
+            processor->validate(myGame, &command);
+        }*/
+    //}
     
     //prevent memory leak:
     //delete myGame;  

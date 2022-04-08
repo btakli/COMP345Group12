@@ -31,6 +31,7 @@ Territory* territory_picker(Player& player) {
         cout << "\n" << to_string(count) << ": " << t->get_name() << "[" << t->get_stationed_army() << "]";
         count++;
     }
+    cout << "> ";
 
     int option;
 
@@ -356,31 +357,22 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
-    if (engine->checkWin(*engine)) {
-        engine->change_state(new Win());
-
-        cout << "Going to Win state" << endl;
-    }
 
 
-    if(input == *_command){
+
+    //if(input == *_command){
 
         // Add new reinforcements
-        engine->reinforcementPhase(); 
-        engine->issueOrdersPhase();
+        engine->addReinforcementsPhase(); 
+        engine->deployReinforcementPhase();
 
         engine->change_state(new IssueOrders());
+        engine->getCurrentState() ->transition(engine, "");
 
-        cout << "Issuing orders..." << endl;
-    }else{
-        std::cout << "ERROR: Please enter a valid command." << endl;
-    }
+    //}else{
+       // std::cout << "ERROR: Please enter a valid command." << endl;
+    //}
 }
-
-
-
-
-
 
 AssignedReinforcement::AssignedReinforcement(const AssignedReinforcement& other){
     this->_command = new string(*(other._command));
@@ -437,21 +429,17 @@ IssueOrders::~IssueOrders(){
 
 void IssueOrders::transition(GameEngine* engine, string input){
 
+    //if(input == *_command1){ // TODO: Never called 
 
-    if(input == *_command1){
+        cout << "Issuing orders...2" << endl;
 
-        cout << "Issuing orders..." << endl;
-
-    }else if(input == *_command2){
+    //}else if(input == *_command2){
         engine->change_state(new ExecuteOrders());
+        engine->getCurrentState()->transition(engine, "");
 
-
-        engine->excecuteOrdersPhase();
-
-        cout << "Orders Issued!!" << endl;
-    }else{
-        std::cout << "ERROR: Please enter a valid command." << endl;
-    }
+    //}else{
+     //   std::cout << "ERROR: Please enter a valid command." << endl;
+   // }
 }
 
 IssueOrders::IssueOrders(const IssueOrders& other){
@@ -501,24 +489,37 @@ ExecuteOrders::~ExecuteOrders(){
 }
 
 void ExecuteOrders::transition(GameEngine* engine, string input){
-
-    if(input == *_command1){
-        cout << "Executing orders..." << endl;
-
-        engine->excecuteOrdersPhase();
-
-    }else if(input == *_command2){
-        engine->change_state(new AssignedReinforcement());
-
-        cout << "Orders executed!!" << endl;
-    }else if(input == *_command3){
+    //engine->checkWin(*engine)
+    if (true) {
         engine->change_state(new Win());
+        engine->getCurrentState()->transition(engine, "");
 
-        cout << "CONGRATES!! You won the game!!" << endl;
+        cout << "Going to Win state" << endl;
     }
     else{
-        std::cout << "ERROR: Please enter a valid command." << endl;
+        engine->excecuteOrdersPhase();
+        engine->change_state(new AssignedReinforcement());
+        engine->getCurrentState()->transition(engine, "");
     }
+
+
+ //   if(input == *_command1){
+
+        
+
+    //}
+    //    else if(input == *_command2){
+        
+
+       
+    //}else if(input == *_command3){
+    //    engine->change_state(new Win());
+
+    //    cout << "CONGRATES!! You won the game!!" << endl;
+    //}
+    //else{
+    //    std::cout << "ERROR: Please enter a valid command." << endl;
+    //}
 }
 
 ExecuteOrders::ExecuteOrders(const ExecuteOrders& other){
@@ -572,7 +573,7 @@ Win::~Win(){
 
 void Win::transition(GameEngine* engine, string input){
 
-    if(input == *_command2){
+    //if(input == *_command2){
         engine->change_state(new End());
 
         std::cout << "**************************" << endl;
@@ -580,13 +581,13 @@ void Win::transition(GameEngine* engine, string input){
         std::cout << "**************************" << endl;
         engine->setStatus(false); //set the _continue to false
         engine->fileReader = false;
-    }else if(input == *_command1){
+   // }else if(input == *_command1){
         engine->change_state(new Start());
 
         cout << "**********Game restarted!!**********" << endl;
-    }else{
-        std::cout << "ERROR: Please enter a valid command." << endl;
-    }
+    //}else{
+    //    std::cout << "ERROR: Please enter a valid command." << endl;
+   // }
 }
 
 Win::Win(const Win& other){
@@ -927,7 +928,7 @@ queue<Order*>& GameEngine::get_orders() {
 }
 
 // Add new reinforcements
-void GameEngine::reinforcementPhase() {
+void GameEngine::addReinforcementsPhase() {
 
     LOG("Reinforcement Phase")
 
@@ -954,7 +955,7 @@ void GameEngine::reinforcementPhase() {
     for (int* army : this->get_ArmyPools()) cout << *army << endl;
 }
 
-void GameEngine::issueOrdersPhase() {
+void GameEngine::deployReinforcementPhase() {
     for (Player* p : this->get_players()) {
         deploy_phase(*p);
     }
@@ -978,7 +979,6 @@ void GameEngine::excecuteOrdersPhase() {
                 p->getOrdersList()->remove();
 
                 if (p->getOrdersList()->size() < 1) {
-                    cout << "done " << endl;
                     done.insert(p);
 
                 }
@@ -997,6 +997,8 @@ void GameEngine::excecuteOrdersPhase() {
         this->get_orders().pop();
         delete order;
     }
+
+    cout << "Finished executing orders. " << endl;
 }
 
 void GameEngine::startupPhase(Observer* observer) {
@@ -1015,7 +1017,7 @@ void GameEngine::startupPhase(Observer* observer) {
             if (getCurrentState()->getName() == "Assignedreinforcement") {
                 //when it gets to the play phase, stop reading
                 valid = true;
-                cout << "Start up phase ended!!" << endl;
+                cout << ">>> STARTUP PHASE ENDED!!" << endl;
                 break;
             }
         }
@@ -1033,7 +1035,6 @@ void GameEngine::startupPhase(Observer* observer) {
         }
         //get a new command list try to finish the start-up phase:
         commandList = processor->getCommand();
-
     } while (!valid);
 }
 
@@ -1130,7 +1131,6 @@ void GameEngine::deploy_phase(Player& player) {
 
     LOG("Deploy Phase")
 
-
     while (has_army(player.getIndex())) {
         
         std::cout << "Please enter deploy army for player " << *player.getName() << endl;
@@ -1190,7 +1190,6 @@ void GameEngine::ordersPicker(Player& player) {
                 }
             } while (option > UPPERLIMIT || option < 1);
             cout << endl;
-            bool HasArmy = has_army(player.getIndex());
 
             switch (option)
             {
@@ -1227,7 +1226,6 @@ void GameEngine::ordersPicker(Player& player) {
 
 void GameEngine::ordersPicker_Bot(Player& player, int option) {
 
-    bool HasArmy = has_army(player.getIndex());
     switch (option)
     {
     case 1:
