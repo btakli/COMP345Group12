@@ -21,7 +21,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+      with:
+        fetch-depth: 0 # If you are using v2 We need to override the fetch-depth to fetch the entire codebase for code analysis.
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
@@ -30,3 +31,6 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+    
+    - name: Train Intellicode Model
+      uses: microsoft/vs-intellicode@v1
