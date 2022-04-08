@@ -432,7 +432,7 @@ public:
     //goes to orders picker phase
     void ordersPicker(Player&);
     //pick a card type for a player
-    void cardPicker(Player& player, string type);
+    bool cardValidator(Player& player, string type);
     //validate a loaded map
     void validateMap();
     //Deploy helper
@@ -453,6 +453,14 @@ public:
     void deploy_phase(Player& player);
 
     void change_state(GameState*);
+
+    void airliftHelper(Player& player);
+
+    void bombHelper(Player& player);
+
+    void blockadeHelper(Player& player);
+
+    void diplomacyHelper(Player& player);
 
     private:
     GameState* _currentState; //current state

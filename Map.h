@@ -83,7 +83,7 @@ class Continent : public LandMass
 
 	std::string* _color_ptr;
 	int* _bonus_army_value_ptr;
-	std::list<Territory*>* _territories_ptr;
+	std::vector<Territory*>* _territories_ptr;
 
 
 private:
@@ -114,7 +114,7 @@ public:
 	std::string to_string() const;
 
 	// Get territories. return an address to list of continent pointers
-	std::list<Territory*>& get_territories() const;
+	std::vector<Territory*>& get_territories() const;
 
 	// Add a territory
 	void add_territory(Territory& new_territory);
@@ -133,7 +133,7 @@ public:
 class Territory : public LandMass
 {
 	Continent* _continent_ptr; //parent obj
-	std::list<Territory*>* _neighbor_territories_ptr;
+	std::vector<Territory*>* _neighbor_territories_ptr;
 	bool* _visited_ptr; // Used for Map's validation check
 	int* _stationed_army_ptr;
 
@@ -160,7 +160,7 @@ public:
 	virtual ~Territory();
 
 	// Returns a reference to the list of neighbors
-	std::list<Territory*>& get_neighbors() const; 
+	std::vector<Territory*>& get_neighbors() const; 
 
 	// Add a new neighbor 
 	void set_neighbor(Territory& bordered_territory); 
@@ -169,7 +169,7 @@ public:
 	int& get_stationed_army() const;
 	
 	// Set new stationed army
-	void set_stationed_army(int& army);
+	void set_stationed_army(int army);
 
 	// Virtual claim a territory; bool verify, checks if continent's territories belongs to 1 player
 	void claim(Player* player, bool verify);

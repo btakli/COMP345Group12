@@ -174,19 +174,14 @@ Advance* Advance::clone() const
 	return new Advance(*this);
 }
 
+//Check if 2 Territories are adjacent
 bool Advance::validate(){
-    //New Implementation
-    for (Territory* ter: targetTerritory->get_neighbors()){
-        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
-               cout << "invalid order, the territories are not adjacent"<< endl;
-               return false;
-        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
-            cout << "invalid order, don't own territory" << endl;
-            return false;
-        }else{
+    
+    for (Territory* ter : targetTerritory->get_neighbors()) 
+        if (sourceTerritory == ter) 
             return true;
-        }
-}
+
+    return false;
 }
 
 
@@ -349,14 +344,12 @@ void Blockade::execute(){
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
    //A1 _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
-   player = nullptr;
    sourceTerritory = nullptr;
    targetTerritory = nullptr;
    armiesToAirlift = 0;
 }
 
-Airlift::Airlift(Player* p, Territory* source, Territory* target) : Order("airlift"){
-    player = p;
+Airlift::Airlift(Territory* source, Territory* target) : Order("airlift"){
     this->sourceTerritory = source;
     this->targetTerritory = target;
 }
@@ -382,7 +375,7 @@ Airlift* Airlift::clone() const
 bool Airlift::validate(){
     //New Implementation
     //Check if both territories belong to player
-    if (targetTerritory->get_claimant() == player && sourceTerritory->get_claimant() == player){
+    if (targetTerritory->get_claimant() == sourceTerritory->get_claimant()){
         cout << "valid order" << endl;
         return true;
     } else {
@@ -395,8 +388,8 @@ void Airlift::execute(){
     if (validate()) {
         cout << "Airlift: advance some armies from one of the current player's territories to any another territory." << endl;
         //new implementation
-        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAirlift));
-        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAirlift));
+        targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
+        sourceTerritory->set_stationed_army(0);
         notify(this); //Call notify to notify observers
     }
    else

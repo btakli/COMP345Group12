@@ -171,7 +171,7 @@ public:
     //default constructor
     Airlift();
     Airlift(Player* p); // Parameterized Constructor
-    Airlift(Player* p, Territory* source, Territory* target);
+    Airlift(Territory* source, Territory* target);
     //destructor
     virtual ~Airlift();
     //copy constructor
@@ -190,7 +190,6 @@ private:
     friend std::ostream& operator<<(std::ostream& description, const Airlift& airlift);
 
     //New Implementation
-    Player* player;
     Territory* targetTerritory;
     Territory* sourceTerritory;
     int armiesToAirlift;

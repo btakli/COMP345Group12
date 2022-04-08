@@ -431,8 +431,6 @@ void IssueOrders::transition(GameEngine* engine, string input){
 
     //if(input == *_command1){ // TODO: Never called 
 
-        cout << "Issuing orders...2" << endl;
-
     //}else if(input == *_command2){
         engine->change_state(new ExecuteOrders());
         engine->getCurrentState()->transition(engine, "");
@@ -489,8 +487,8 @@ ExecuteOrders::~ExecuteOrders(){
 }
 
 void ExecuteOrders::transition(GameEngine* engine, string input){
-    //engine->checkWin(*engine)
-    if (true) {
+
+    if (engine->checkWin(*engine)) {
         engine->change_state(new Win());
         engine->getCurrentState()->transition(engine, "");
 
@@ -794,8 +792,6 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
 }
 
 
-
-
 // MapDriver
 void GameEngine::map_picker() {
 
@@ -886,7 +882,7 @@ void GameEngine::assign_territories() {
 
 void GameEngine::order_of_play() {
     auto rng = std::default_random_engine{};
-    shuffle(begin(this->get_players()), end(this->get_players()), rng);         //not true random
+    shuffle(begin(this->get_players()), end(this->get_players()), rng);         
     cout << "The order of play is the following: " << endl;     
     int i = 0; 
     for (Player* player : this->get_players()) {
@@ -980,7 +976,6 @@ void GameEngine::excecuteOrdersPhase() {
 
                 if (p->getOrdersList()->size() < 1) {
                     done.insert(p);
-
                 }
             }
         }
@@ -989,8 +984,9 @@ void GameEngine::excecuteOrdersPhase() {
 
     }
 
+    int size = this->get_orders().size();
     // Execute orders round-robin way
-    for (size_t i = 0; i < this->get_orders().size(); i++) {
+    for (size_t i = 0; i < size; i++) {
         Order* order = this->get_orders().front();
         order->execute();
         cout << "Executing: " << *order << endl;
@@ -1038,19 +1034,22 @@ void GameEngine::startupPhase(Observer* observer) {
     } while (!valid);
 }
 
-void GameEngine::cardPicker(Player& player, string type) {
-    int card = 0;
+
+bool GameEngine::cardValidator(Player& player, string type) {
+    int cardIndex = 0;
     for (Card* c : player.getHand()->getCards()) {
         if (c->getType() == type) {
-            player.issueOrder(player.getHand()->playAndReturnToDeck(card, this->getDeck()));
+            player.getHand()->playAndReturnToDeck(cardIndex, this->getDeck());
             LOG(*player.getName() << " has played card " << type);
-            return;
+            return true;
         }
-        card++;
+        cardIndex++;
     }
-
     cout << "Player " << *player.getName() << " does not have " << type << " card" << endl;
+    return false;
 }
+
+
 
 void GameEngine::validateMap() {
     if (Map::get_instance()->exist())
@@ -1074,7 +1073,7 @@ void GameEngine::advanceHelper(Player& player) {
     cout << *player.getName() << endl;
     cout << "Pick territory of choice: " << endl;
     for (Territory* t : player.get_territories()) {
-         cout << "\n" + to_string(count) + ": " + t->get_name();
+         cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
          count++;
     }
 
@@ -1120,11 +1119,48 @@ void GameEngine::advanceHelper(Player& player) {
             cout << "Please enter a number between 0 and " << count - 1 << endl;
 
     } while (option2 > count - 1 || option2 < 0);
-   
-    auto it = player.get_territories()[option]->get_neighbors().front();
-    advance(it, option2);
+    
+    player.getOrdersList()->addOrder(new Advance(&player, player.get_territories()[option], player.get_territories()[option]->get_neighbors()[option2]));
+}
 
-    player.getOrdersList()->addOrder(new Advance(&player, player.get_territories()[option], it));
+void GameEngine::airliftHelper(Player& player) {
+
+    LOG("Airlift");
+
+    // Pick a territories from all the territories
+    int count = 0;
+    int option[2]; //option 0 is souce and 1 is destination
+    cout << *player.getName() << endl;
+
+    for (size_t i = 0; i < 2; i++) {
+
+        cout << "Select territory " << ((i==0)?"SOURCE":"DESTINATION") << " for airlift : " << endl;
+
+        for (Territory* t : player.get_territories()) {
+            cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
+            count++;
+        }
+
+        do {
+            INPUT();
+            
+            std::cin >> option[i]; 
+
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(1000, '\n');
+                option[i] = -1;
+            }
+
+            if (option[i] > count - 1 || option[i] < 0)
+                cout << "Please enter a number between 0 and " << count - 1 << endl;
+                
+        } while (option[i] > count - 1 || option[i] < 0);
+
+        count = 0;
+    }
+
+    player.getOrdersList()->addOrder(new Airlift(player.get_territories()[option[0]], player.get_territories()[option[1]]));
 }
 
 void GameEngine::deploy_phase(Player& player) {
@@ -1194,19 +1230,27 @@ void GameEngine::ordersPicker(Player& player) {
             switch (option)
             {
             case 1:
-                cardPicker(player, "diplomacy");
+                if (cardValidator(player, "diplomacy")) {
+
+                }
                 break;
 
             case 2:
-                cardPicker(player, "airlift");
+                if (cardValidator(player, "airlift")) {
+                    airliftHelper(player);
+                }
                 break;
 
             case 3:
-                cardPicker(player, "blockade");
+                if (cardValidator(player, "blockade")) {
+
+                }
                 break;
 
             case 4:
-                cardPicker(player, "bomb");
+                if (cardValidator(player, "bomb")) {
+
+                }
                 break;
 
             case 5:
@@ -1229,19 +1273,19 @@ void GameEngine::ordersPicker_Bot(Player& player, int option) {
     switch (option)
     {
     case 1:
-        cardPicker(player, "diplomacy");
+        cardValidator(player, "diplomacy");
         break;
 
     case 2:
-        cardPicker(player, "airlift");
+        cardValidator(player, "airlift");
         break;
 
     case 3:
-        cardPicker(player, "blockade");
+        cardValidator(player, "blockade");
         break;
 
     case 4:
-        cardPicker(player, "bomb");
+        cardValidator(player, "bomb");
         break;
 
     case 5:

@@ -124,7 +124,7 @@ bool Map::help_validate(std::queue<Territory*>& to_be_visited, Territory& prev, 
 		Territory* current = to_be_visited.front();
 		to_be_visited.pop();
 
-		std::list<Territory*>& neighbors = current->get_neighbors();
+		std::vector<Territory*>& neighbors = current->get_neighbors();
 
 		if (neighbors.size() <= 0) { // Dead end
 			return false;
@@ -474,7 +474,7 @@ Continent::Continent(std::string& territory_name, int& army_value, std::string& 
 
 	_bonus_army_value_ptr = &army_value;
 	_color_ptr = &color;
-	_territories_ptr = new std::list<Territory*>();
+	_territories_ptr = new std::vector<Territory*>();
 }
 
 int Continent::get_army_bonus_value() const {
@@ -540,7 +540,7 @@ Continent& Continent::operator=(const Continent& other)
 }
 
 
-std::list<Territory*>& Continent::get_territories() const {
+std::vector<Territory*>& Continent::get_territories() const {
 	return *_territories_ptr;
 }
 
@@ -584,11 +584,11 @@ Territory::Territory(int& index, std::string& continent_name) : LandMass(index, 
 
 	_continent_ptr = nullptr;
 	_visited_ptr = new bool(false);
-	_neighbor_territories_ptr = new std::list<Territory*>();
+	_neighbor_territories_ptr = new std::vector<Territory*>();
 	_stationed_army_ptr = new int(0);
 }
 
-std::list<Territory*>& Territory::get_neighbors() const {
+std::vector<Territory*>& Territory::get_neighbors() const {
 	return *_neighbor_territories_ptr;
 }
 
@@ -618,8 +618,8 @@ int& Territory::get_stationed_army() const {
 	return *_stationed_army_ptr;
 }
 
-void Territory::set_stationed_army(int& army) {
-	_stationed_army_ptr = &army;
+void Territory::set_stationed_army(int army) {
+	*_stationed_army_ptr = army;
 }
 
 void Territory::claim(Player* player, bool verify) {
