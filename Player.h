@@ -73,6 +73,8 @@ private:
     Hand* _hand;
     //OrdersList object holds orders
     OrdersList* _listOfOrders;
+
+    PlayerStrategy* _ps;
 };
 
 
