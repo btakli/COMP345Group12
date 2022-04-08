@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream> 
 #include "Player.h"
+#include "PlayerStrategies.h"
 using std::string;
 using std::vector;
 using std::cout;
@@ -13,6 +14,7 @@ Player::Player() {
     this->_collection = new vector<Territory*> {};
     this->_hand  = new Hand();
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name) {
@@ -21,6 +23,7 @@ Player::Player(string name) {
     this->_collection = new vector<Territory*>;
     this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name, vector<Territory*> collection) {
@@ -32,11 +35,17 @@ Player::Player(string name, vector<Territory*> collection) {
     }
     this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::Player(string name, vector<Territory*> collection, LogObserver* lo): Player(name,collection)
 {
     _listOfOrders->attach(lo);
+}
+
+Player::Player(string name, vector<Territory*> collection, LogObserver* lo, PlayerStrategy* ps): Player(name, collection, lo)
+{
+    this->_ps = ps;
 }
 
 Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
@@ -48,6 +57,8 @@ Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersLis
     }
     this->_hand = new Hand(*hand);                         
     this->_listOfOrders = new OrdersList(*listOfOrders);
+
+    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::~Player() {
@@ -91,7 +102,11 @@ void Player::issueOrder() {
 }
 
 void Player::issueOrder(Order *pOrder) {
-    this->_listOfOrders->addOrder(pOrder);
+    if (_ps)
+        _ps->issueOrder(pOrder);
+    else
+        std::cout << "No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?" << std::endl;
+    //this->_listOfOrders->addOrder(pOrder); //Old way of doing it
 }
 
 Hand* Player::getHand() {
@@ -115,11 +130,19 @@ vector<Territory*>& Player::get_territories() {
 Player::Player(const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
+    this->_collection = new vector<Territory*>();
+    this->_defend = new vector<Territory*>();
+    this->_attack = new vector<Territory*>();
+
+    this->_ps = p._ps->clone();
+    this->_ps->setPlayer(this);
+
     for (auto territory : *p._collection) {
         this->_collection->push_back(territory); //Shallow copy because the territory should not be recreated
     }
     this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
     this->_listOfOrders = new OrdersList(*p._listOfOrders);
+
 }
 
 
@@ -132,6 +155,10 @@ Player& Player::operator=(const Player& p) {
     }
     this->_hand = new Hand(*p._hand);                          //methods need to be implemented in Hand and OrdersList
     this->_listOfOrders = new OrdersList(*p._listOfOrders);
+
+    this->_ps = p._ps->clone();
+    this->_ps->setPlayer(this);
+
     return *this;
 }
 

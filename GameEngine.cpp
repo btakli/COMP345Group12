@@ -674,7 +674,7 @@ GameEngine::GameEngine(){
 
     //logger:
     // special case for Start state:
-    ILoggable::_currentState =  new string("Start");
+    ILoggable::_currentState->assign("Start");
 
     // By implementing the CommandProcessor and FileCommandAdaptor, when a
     //game is initialized (or STARTED) it will ask for commands from the 
@@ -918,6 +918,11 @@ void GameEngine::draw_initial_cards() {
         cout << *player->getName() << " card info: \n " << * player->getHand() << endl;
     }
 }
+
+void GameEngine::give_card(Player* player) {
+    player->getHand()->addCard(this->getDeck()->draw());
+}
+
 
 queue<Order*>& GameEngine::get_orders() {
     return *_orders;
@@ -1323,8 +1328,9 @@ vector<bool*>& GameEngine::getConq() {
 }
 
 void GameEngine::setConq(int i) {
-    _conqBool[i];
+    *(this->getConq()[i]) = true;
 }
+
 
 void GameEngine::resetAllConq() {
     for (auto tracker : getConq()) {

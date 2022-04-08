@@ -423,6 +423,8 @@ public:
     bool has_army(int i);
     //draw 2 cards per player
     void draw_initial_cards();
+    //Draws a card
+    void give_card(Player*);
     //goes to reinforcement phase
     void addReinforcementsPhase();
     //goes to issue order phase
@@ -443,7 +445,7 @@ public:
     void popConqBool();
     //Get the vector remembering if a player has conquered this round
     vector<bool*>& getConq();
-
+    //Chance value to true
     void setConq(int i);
 
     void ordersPicker_Bot(Player& player, int option);

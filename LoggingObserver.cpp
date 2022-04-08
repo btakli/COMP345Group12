@@ -10,7 +10,7 @@ ILoggable::~ILoggable()
 
 ILoggable::ILoggable()
 {
-
+	_currentState = new string("ILoggable: State not set");
 }
 
 Observer::~Observer()
@@ -88,6 +88,12 @@ void LogObserver::update(ILoggable* obj) {
 	*_stream << obj->stringToLog() << std::endl; //Write the log to the file.
 }
 
+std::ostream& operator<<(std::ostream& strm, const ILoggable& loggable)
+{
+	strm << "Current state: " << *loggable._currentState;
+	return strm;
+}
+
 std::ostream& operator<<(std::ostream& strm, const LogObserver& logObserver)
 {
 	strm << "logObserver writing to file: " << *logObserver._filename << std::endl;;
@@ -96,9 +102,39 @@ std::ostream& operator<<(std::ostream& strm, const LogObserver& logObserver)
 	return strm;
 }
 
+std::ostream& operator<<(std::ostream& strm, const Subject& subject)
+{
+	vector<Observer*>* list = subject._observers;
+	strm << "Subject has " << list->size() << " Observers attached, here are their details: " << std::endl;
+	for (int i = 0; i < list->size(); i++)
+		strm << list->at(i) << std::endl;
+	return strm;
+
+}
+
 Subject::Subject()
 {
 	_observers = new vector<Observer*>();
+}
+
+Subject::Subject(const Subject& other)
+{
+	_observers = new vector<Observer*>();
+	vector<Observer*>* otherList = other._observers;
+
+	for (int i = 0; i < otherList->size(); i++)
+		_observers->push_back(otherList->at(i));
+
+}
+
+Subject& Subject::operator=(const Subject& rhs)
+{
+	_observers->clear();
+	vector<Observer*>* otherList = rhs._observers;
+
+	for (int i = 0; i < otherList->size(); i++)
+		_observers->push_back(otherList->at(i));
+	return *this;
 }
 
 Subject::~Subject()
