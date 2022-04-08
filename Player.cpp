@@ -131,8 +131,6 @@ Player::Player(const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
     this->_collection = new vector<Territory*>();
-    this->_defend = new vector<Territory*>();
-    this->_attack = new vector<Territory*>();
 
     this->_ps = p._ps->clone();
     this->_ps->setPlayer(this);
