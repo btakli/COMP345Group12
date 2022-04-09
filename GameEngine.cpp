@@ -1439,7 +1439,7 @@ void GameEngine::diplomacyHelper(Player& player) {
     cout << "Select Player to Negotiate : " << endl;
 
     for (Player* p : this->get_players()) {
-        cout << "\n" << to_string(count) << ": " << p->getName();
+        cout << "\n" << to_string(count) << ": " << *p->getName();
         count++;
     }
 
