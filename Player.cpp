@@ -65,6 +65,7 @@ vector<Territory*> Player::toDefend(Territory* source) {
         return _ps->toDefend(source);
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
+    return vector<Territory*>();
 
     //This is what you had before
     /*vector<Territory*> neighbors;
@@ -83,7 +84,7 @@ vector<Territory*> Player::toAttack(Territory* source) {
         return _ps->toAttack(source);
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
-    
+    return vector<Territory*>();
     //This is what you had before
     /*vector<Territory*> neighbors;
 

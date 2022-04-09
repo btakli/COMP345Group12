@@ -1,10 +1,13 @@
 #pragma once
 #include <iostream>
-
+#include <vector>
 //Forward declaration
 class Player;
 class Order;
 class Territory;
+
+using std::vector;
+
 //PlayerStrategy abstract class, used to set the different player strategies (Neutral, Cheater, Human, Aggressive, Benevolent)
 class PlayerStrategy {
 public:

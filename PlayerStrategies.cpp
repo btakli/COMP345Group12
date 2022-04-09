@@ -101,10 +101,14 @@ void NeutralPlayerStrategy::issueOrder(Order* pOrder)
 
 vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -149,10 +153,14 @@ void AggressivePlayerStrategy::issueOrder(Order* pOrder)
 
 vector<Territory*> AggressivePlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 vector<Territory*> AggressivePlayerStrategy::toDefend(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -196,11 +204,14 @@ void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 
 vector<Territory*> BenevolentPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 {
-
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -284,10 +295,14 @@ void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 
 vector<Territory*> CheaterPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -331,10 +346,14 @@ void HumanPlayerStrategy::issueOrder(Order* pOrder)
 
 vector<Territory*> HumanPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 vector<Territory*> HumanPlayerStrategy::toDefend(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
