@@ -451,6 +451,7 @@ public:
     void setConq(int i);
     //Sets all values to false
     void resetAllConq();
+
     private:
     GameState* _currentState; //current state
     bool _continue; 

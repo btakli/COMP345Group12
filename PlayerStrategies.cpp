@@ -1,6 +1,7 @@
 #include "PlayerStrategies.h"
 #include "Player.h"
 #include "Orders.h"
+#include "GameEngine.h"
 
 void PlayerStrategy::setPlayer(Player* newPlayer)
 {
@@ -68,6 +69,13 @@ std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human)
 	return out;
 }
 
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Neutral Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
+
 void NeutralPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
@@ -98,6 +106,12 @@ NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 {
 	return new NeutralPlayerStrategy(*this);
 }
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Aggressive Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 
 
 void AggressivePlayerStrategy::issueOrder(Order* pOrder)
@@ -131,11 +145,19 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 	return new AggressivePlayerStrategy(*this);
 }
 
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Benevolent Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
 void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
+	setWeakest();
 	while (true)
 	{
-		bool check = GameEngine::_has_army(Player::getIndex());
+
+		bool check = GameEngine::GameEngine().has_army(p->getIndex());
 	}
 }
 
@@ -145,19 +167,23 @@ void BenevolentPlayerStrategy::toAttack(Territory* t)
 
 void BenevolentPlayerStrategy::toDefend(Territory* t)
 {
+
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
+	setWeakest();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
 {
+
 }
 
 BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
+	this->_weakest = rhs._weakest;
 	return *this;
 }
 
@@ -168,8 +194,33 @@ BenevolentPlayerStrategy* BenevolentPlayerStrategy::clone()
 
 Territory* BenevolentPlayerStrategy::getWeakest()
 {
-	return this._weakest;
+	return _weakest;
 }
+
+void BenevolentPlayerStrategy::setWeakest()
+{
+	int lowest = 0;
+
+	for (auto ter : p->get_territories()) {
+
+	}
+}
+
+void BenevolentPlayerStrategy::findWeakest()
+{
+}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+	delete _weakest;
+	delete p;
+}
+
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Cheater Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 
 void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 {
@@ -201,6 +252,12 @@ CheaterPlayerStrategy* CheaterPlayerStrategy::clone()
 {
 	return new CheaterPlayerStrategy(*this);
 }
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Human Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 
 void HumanPlayerStrategy::issueOrder(Order* pOrder)
 {

@@ -1,2 +1,44 @@
-~~~~ Gamelog for game starting on: Fri Apr  1 01:28:31 2022
+~~~~ Gamelog for game starting on: Sat Apr  9 12:27:38 2022
 
+Command: loadmap canada
+Command: validatemap
+Command: addplayer player1
+Command: addplayer player2
+Command: gamestart
+Command: issueorder
+Command: issueordersend
+Command: win
+Command: quit
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: Assignedreinforcement
+Command's Effect: Transitioning to state Assignedreinforcement
+Command: loadmap canada
+Command: validatemap
+Command: addplayer player1
+Command: addplayer player2
+Command: gamestart
+Command: issueorder
+Command: issueordersend
+Command: win
+Command: quit
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Command's Effect: Transitioning to state INVALID COMMAND
+Game Engine new state: IssueOrders
+Command's Effect: Transitioning to state IssueOrders
+Game Engine new state: ExcecuteOrders
+Command's Effect: Transitioning to state ExcecuteOrders
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: End
+Command's Effect: Transitioning to state End
