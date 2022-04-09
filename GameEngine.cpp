@@ -834,7 +834,7 @@ void GameEngine::add_new_player() {
     list<Command>* commands = this->getCommandProcessor()->getCommandList();
 
     for (Command c : *commands) {
-
+         
         size_t pos1 = (c.getCommandName()).find(" ");
         size_t pos2 = 0;
         int length = pos1 - pos2;

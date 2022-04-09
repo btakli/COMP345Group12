@@ -1,6 +1,7 @@
 #include "PlayerStrategies.h"
 #include "Player.h"
 #include "Orders.h"
+#include "GameEngine.h"
 
 void PlayerStrategy::setPlayer(Player* newPlayer)
 {
@@ -68,6 +69,13 @@ std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human)
 	return out;
 }
 
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Neutral Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
+
 void NeutralPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
@@ -86,6 +94,7 @@ NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& rhs)
@@ -98,6 +107,13 @@ NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 {
 	return new NeutralPlayerStrategy(*this);
 }
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Aggressive Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
 
 void AggressivePlayerStrategy::issueOrder(Order* pOrder)
 {
@@ -117,6 +133,7 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& rhs)
@@ -130,8 +147,19 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 	return new AggressivePlayerStrategy(*this);
 }
 
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Benevolent Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
 void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
+	findWeakest();
+	while (true)
+	{
+		break;		//deploy all armies to weakest, update weakest using findWeakest()
+	}				//Advance onto weakest territories
 }
 
 void BenevolentPlayerStrategy::toAttack(Territory* t)
@@ -140,19 +168,25 @@ void BenevolentPlayerStrategy::toAttack(Territory* t)
 
 void BenevolentPlayerStrategy::toDefend(Territory* t)
 {
+
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
+	_weakest = nullptr;
+	setWeakest();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
+	this->_weakest = other._weakest;
 }
 
 BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& rhs)
 {
 	this->p = rhs.p;
+	this->_weakest = rhs._weakest;
 	return *this;
 }
 
@@ -161,8 +195,51 @@ BenevolentPlayerStrategy* BenevolentPlayerStrategy::clone()
 	return new BenevolentPlayerStrategy(*this);
 }
 
-void CheaterPlayerStrategy::issueOrder(Order* pOrder)
+Territory* BenevolentPlayerStrategy::getWeakest()
 {
+	return _weakest;
+}
+
+void BenevolentPlayerStrategy::setWeakest()
+{
+	this->_weakest = p->get_territories()[0];
+	int lowest = p->get_territories()[0]->get_stationed_army();
+	for (auto ter : p->get_territories()) {
+		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
+			_weakest = ter;
+		}
+	}
+}
+
+void BenevolentPlayerStrategy::findWeakest()
+{
+	this->_weakest = p->get_territories()[0];
+	int lowest = p->get_territories()[0]->get_stationed_army();
+	for (auto ter : p->get_territories()) {
+		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
+			_weakest = ter;
+		}
+	}
+}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+	delete _weakest;
+	delete p;
+}
+
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Cheater Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
+void CheaterPlayerStrategy::issueOrder(Order* pOrder)
+{	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
+	for (auto ter : p->get_territories()) {
+		ter->claim(p, true);
+	}
+	//automatically switches ownership of neigbouring countries to their own
 }
 
 void CheaterPlayerStrategy::toAttack(Territory* t)
@@ -179,6 +256,7 @@ CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& rhs)
@@ -191,6 +269,12 @@ CheaterPlayerStrategy* CheaterPlayerStrategy::clone()
 {
 	return new CheaterPlayerStrategy(*this);
 }
+
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+//-----------------------------------Human Player Stategy-------------------------------
+//----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
 
 void HumanPlayerStrategy::issueOrder(Order* pOrder)
 {
@@ -210,6 +294,7 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& rhs)
