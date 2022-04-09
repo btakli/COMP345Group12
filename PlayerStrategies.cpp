@@ -94,6 +94,7 @@ NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& rhs)
@@ -132,6 +133,7 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& rhs)
@@ -156,8 +158,8 @@ void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 	findWeakest();
 	while (true)
 	{
-				
-	}
+		break;		//deploy all armies to weakest, update weakest using findWeakest()
+	}				//Advance onto weakest territories
 }
 
 void BenevolentPlayerStrategy::toAttack(Territory* t)
@@ -233,7 +235,10 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 //----------------------------------------------------------------------------------------
 
 void CheaterPlayerStrategy::issueOrder(Order* pOrder)
-{
+{	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
+	for (auto ter : p->get_territories()) {
+		ter->claim(p, true);
+	}
 	//automatically switches ownership of neigbouring countries to their own
 }
 
@@ -251,6 +256,7 @@ CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& rhs)
@@ -288,6 +294,7 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->p = other.p;
 }
 
 HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& rhs)
