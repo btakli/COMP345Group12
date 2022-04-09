@@ -223,14 +223,11 @@ void Advance::execute(){
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
     _currentState->assign("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
-    player = nullptr;
-    sourceTerritory = nullptr;
     targetTerritory = nullptr;
 }
 
-Bomb::Bomb(Player* p, Territory* source, Territory* target) : Order("bomb"){
-    player = p;
-    this->sourceTerritory = source;
+Bomb::Bomb(Territory* target) : Order("bomb"){
+
     this->targetTerritory = target;
 }
 
@@ -254,10 +251,10 @@ Bomb* Bomb::clone() const
 bool Bomb::validate(){
     //New Implementation
     for (Territory* ter: targetTerritory->get_neighbors()){
-        if(sourceTerritory != ter){ //Check if 2 Territories are adjacent
+        if(targetTerritory != ter){ //Check if 2 Territories are adjacent
                cout << "invalid order, the territories are not adjacent"<< endl;
                return false;
-        }else if(sourceTerritory->get_claimant() != player){ // Check if territory belongs to player
+        }else if(targetTerritory->get_claimant() != nullptr){ // Check if territory belongs to player
             cout << "invalid order, don't own territory" << endl;
             return false;
         }else{
@@ -266,17 +263,12 @@ bool Bomb::validate(){
 }
 }
 
-
 void Bomb::execute(){
-    if (validate()) {
-        cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
-        int bombedArmies = (targetTerritory->get_stationed_army()) / 2;
-        targetTerritory->set_stationed_army(bombedArmies);
-        notify(this); //Call notify to notify observers
-    }
-   else
-      cout << "INVALID ORDER" << endl;
-
+    
+    cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
+    int bombedArmies = (targetTerritory->get_stationed_army()) / 2;
+    targetTerritory->set_stationed_army(bombedArmies);
+    notify(this); //Call notify to notify observers
 }
 
 /**
@@ -286,12 +278,10 @@ void Bomb::execute(){
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
    _currentState->assign("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
-   player = nullptr;
    targetTerritory = nullptr;
 }
 
-Blockade::Blockade(Player* p, Territory* target) : Order("blockade"){ 
-    player = p;
+Blockade::Blockade(Territory* target) : Order("blockade"){ 
     this->targetTerritory = target;
 }
 
@@ -315,7 +305,7 @@ Blockade* Blockade::clone() const
 bool Blockade::validate(){
    //New Implementation
     // Check if territory belongs to player
-    if (targetTerritory->get_claimant() == player) {
+    if (targetTerritory->get_claimant() == nullptr) {
         cout << "valid order, owned territory" << endl;
         return true;
     }else
@@ -323,17 +313,12 @@ bool Blockade::validate(){
 }
 
 void Blockade::execute(){
-    if (!validate()) {
-        //cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
-        cout << "Invalid order\n" << endl;
-    } else {
-        int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
-        targetTerritory->set_stationed_army(doubleArmies);
-        //player->setNeutral(targetTerritory);
-        cout << "Valid order\n" << endl;
-    }
-        notify(this); //Call notify to notify observers
-
+    //cout << "Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory." << endl;
+    int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
+    targetTerritory->set_stationed_army(doubleArmies);
+    targetTerritory->claim(nullptr, false);
+    //player->setNeutral(targetTerritory);
+    notify(this); //Call notify to notify observers
 }
 
 

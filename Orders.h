@@ -109,8 +109,7 @@ class Bomb : public Order{
 public:
     //default constructor
     Bomb();
-    Bomb(Player* p); // Parameterized Constructor
-    Bomb(Player* p, Territory* source, Territory* target);
+    Bomb(Territory* target);
     //destructor
     virtual ~Bomb();
     //copy constructor
@@ -129,10 +128,7 @@ private:
     friend std::ostream& operator<<(std::ostream& description, const Bomb& bomb);
 
     //New Implementation
-    Player* player;
     Territory* targetTerritory;
-    Territory* sourceTerritory;
-
 };
 
 class Blockade : public Order{
@@ -140,8 +136,7 @@ class Blockade : public Order{
 public:
     //default constructor
     Blockade();
-    Blockade(Player* p); // Parameterized Constructor
-    Blockade(Player* p, Territory* target);
+    Blockade(Territory* target);
     //destructor
     virtual ~Blockade();
     //copy constructor
@@ -160,7 +155,6 @@ private:
     friend std::ostream& operator<<(std::ostream& description, const Blockade& blockade);
 
     //New Implementation
-    Player* player;
     Territory* targetTerritory;
 
 };
