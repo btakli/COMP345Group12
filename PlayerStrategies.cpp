@@ -153,11 +153,10 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 
 void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
-	setWeakest();
+	findWeakest();
 	while (true)
 	{
-
-		bool check = GameEngine::GameEngine().has_army(p->getIndex());
+				
 	}
 }
 
@@ -199,15 +198,25 @@ Territory* BenevolentPlayerStrategy::getWeakest()
 
 void BenevolentPlayerStrategy::setWeakest()
 {
-	int lowest = 0;
-
+	_weakest = new Territory;
+	this->_weakest = p->get_territories()[0];
+	int lowest = p->get_territories()[0]->get_stationed_army();
 	for (auto ter : p->get_territories()) {
-
+		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
+			_weakest = ter;
+		}
 	}
 }
 
 void BenevolentPlayerStrategy::findWeakest()
 {
+	this->_weakest = p->get_territories()[0];
+	int lowest = p->get_territories()[0]->get_stationed_army();
+	for (auto ter : p->get_territories()) {
+		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
+			_weakest = ter;
+		}
+	}
 }
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
