@@ -99,6 +99,7 @@ NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 	return new NeutralPlayerStrategy(*this);
 }
 
+
 void AggressivePlayerStrategy::issueOrder(Order* pOrder)
 {
 }
@@ -132,6 +133,10 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 
 void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
+	while (true)
+	{
+		bool check = GameEngine::_has_army(Player::getIndex());
+	}
 }
 
 void BenevolentPlayerStrategy::toAttack(Territory* t)
@@ -159,6 +164,11 @@ BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPl
 BenevolentPlayerStrategy* BenevolentPlayerStrategy::clone()
 {
 	return new BenevolentPlayerStrategy(*this);
+}
+
+Territory* BenevolentPlayerStrategy::getWeakest()
+{
+	return this._weakest;
 }
 
 void CheaterPlayerStrategy::issueOrder(Order* pOrder)

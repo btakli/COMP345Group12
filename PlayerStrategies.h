@@ -76,8 +76,10 @@ public:
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
 	//takes a pointer to an Order and adds it to the players list of orders
+	//used exclusively to deploy on the weakest territories, and then spread them onto remaining weakest countries using advance
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
+	//not needed for this strategy
 	virtual void toAttack(Territory* t);
 	//Add a territory to defend
 	virtual void toDefend(Territory* t);
@@ -91,6 +93,20 @@ public:
 	BenevolentPlayerStrategy& operator=(const BenevolentPlayerStrategy& rhs);
 	//clone method
 	virtual BenevolentPlayerStrategy* clone();
+
+	//---------
+	//Functions specific to Benevolent player strategy
+	//---------
+	// 
+
+	//returns a pointer weakest territory owned by player
+	Territory* getWeakest();
+
+
+private:
+	//points to players weakest territory
+	Territory* _weakest;
+
 };
 
 //Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn).
