@@ -21,7 +21,7 @@ public:
     Player();
 
     //Constructor with player name
-    Player(string name);
+    Player(string name, Deck* deck);
 
     //Legacy constructor without observer or strategy
     Player(string name, vector<Territory*> collection);
@@ -56,7 +56,7 @@ public:
     
     //Returns player index.
     int& getIndex();
-
+    void drawCard();
     vector<Territory*>& get_territories();
     
 
@@ -75,6 +75,8 @@ private:
     OrdersList* _listOfOrders;
 
     PlayerStrategy* _ps;
+
+    Deck* _deck;
 };
 
 

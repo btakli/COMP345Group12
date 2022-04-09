@@ -185,35 +185,34 @@ bool Advance::validate(){
 }
 
 
-void Advance::execute(){
-    if (validate()) {
-        cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
-        notify(this); //Call notify to notify observers
-    //new implementation
-    if(targetTerritory->get_claimant() == player){ //advance 
-        sourceTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - armiesToAdvance));
-        targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToAdvance));
-    }else if(targetTerritory->get_claimant() != player){ //attack
-        int attackingChances = sourceTerritory->get_stationed_army()*0.6;
-        int defendingChances = targetTerritory->get_stationed_army()*0.7;
+void Advance::execute() {
+
+    if (!validate()) {
+        cout << "INVALID ORDER" << endl;
+        return;
+    }
+
+
+    cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
+    notify(this); //Call notify to notify observers
+
+    if (targetTerritory->get_claimant() == player) { //advance 
+        targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
+        sourceTerritory->set_stationed_army(0);
+    }
+    else if (targetTerritory->get_claimant() != player) { //attack
+        int attackingChances = sourceTerritory->get_stationed_army() * 0.6;
+        int defendingChances = targetTerritory->get_stationed_army() * 0.7;
         if (attackingChances == defendingChances) {
-                targetTerritory->set_stationed_army(*new int(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army()));
-            } 
-        else if (attackingChances > defendingChances){
-            targetTerritory->set_stationed_army(*new int((attackingChances - defendingChances)/0.6));
+            targetTerritory->set_stationed_army(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army());
+        }
+        else if (attackingChances > defendingChances) {
+            targetTerritory->set_stationed_army((attackingChances - defendingChances) / 0.6);
             targetTerritory->claim(player, false);
 
-            // player needs to draw a card
-            
-           
-                
-            }
+            player->drawCard();
+        }
     }
-
-    }
-   else
-      cout << "INVALID ORDER" << endl;
-
 }
 
 /**

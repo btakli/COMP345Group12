@@ -357,8 +357,12 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
+    LOG("Deploy Phase - New Round");
 
-
+    //Displays the current cars each player have
+    for (Player* player : engine->get_players()) {
+        cout << *player->getName() << " card info: \n " << *player->getHand() << endl;
+    }
 
     //if(input == *_command){
 
@@ -841,7 +845,7 @@ void GameEngine::add_new_player() {
             string playerName = c.getCommandName().substr(space);
             if (!already.contains(playerName)) {
                 already.insert(playerName);
-                this->get_players().push_back(new Player(playerName));
+                this->get_players().push_back(new Player(playerName, this->getDeck()));
                 std::cout << "Current player count: " << this->get_players().size();
             }
         }
@@ -1170,7 +1174,7 @@ void GameEngine::airliftHelper(Player& player) {
 
 void GameEngine::deploy_phase(Player& player) {
 
-    LOG("Deploy Phase")
+    
 
     while (has_army(player.getIndex())) {
         

@@ -17,7 +17,8 @@ Player::Player() {
     this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
-Player::Player(string name) {
+Player::Player(string name, Deck* deck) {
+    this->_deck = deck;
     this->_index = new int(s_index++);
     this->_name = new string(name);
     this->_collection = new vector<Territory*>;
@@ -36,6 +37,11 @@ Player::Player(string name, vector<Territory*> collection) {
     this->_hand = new Hand();                         
     this->_listOfOrders = new OrdersList();
     this->_ps = nullptr; //Strategy not set in this constructor!
+}
+
+void Player::drawCard() {
+    cout << "Draw a card" << endl;
+    _hand->addCard(_deck->draw());
 }
 
 Player::Player(string name, vector<Territory*> collection, LogObserver* lo): Player(name,collection)
