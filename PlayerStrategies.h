@@ -105,8 +105,10 @@ public:
 	void setWeakest();
 	//Updates the _weakest pointer
 	void findWeakest();
+
 	//destructor
 	~BenevolentPlayerStrategy();      
+	
 
 private:
 	//points to players weakest territory

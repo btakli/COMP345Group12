@@ -171,12 +171,14 @@ void BenevolentPlayerStrategy::toDefend(Territory* t)
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
+	_weakest = nullptr;
 	setWeakest();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
 {
-
+	this->p = other.p;
+	this->_weakest = other._weakest;
 }
 
 BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& rhs)
@@ -198,7 +200,6 @@ Territory* BenevolentPlayerStrategy::getWeakest()
 
 void BenevolentPlayerStrategy::setWeakest()
 {
-	_weakest = new Territory;
 	this->_weakest = p->get_territories()[0];
 	int lowest = p->get_territories()[0]->get_stationed_army();
 	for (auto ter : p->get_territories()) {
@@ -233,6 +234,7 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 
 void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 {
+	//automatically switches ownership of neigbouring countries to their own
 }
 
 void CheaterPlayerStrategy::toAttack(Territory* t)
