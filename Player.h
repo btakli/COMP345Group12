@@ -26,11 +26,11 @@ public:
     //Legacy constructor without observer or strategy
     Player(string name, vector<Territory*> collection);
     //Constructor with logging observer which will be passed to list of orders
-    Player(string name, vector<Territory*> collection, LogObserver* lo);
+    Player(string name, Deck* deck, LogObserver* lo);
     //Constructor with logging observer which will be passed to list of orders. Takes in Player Strategy too which is necessary.
-    Player(string name, vector<Territory*> collection, LogObserver* lo, PlayerStrategy* ps);
+    Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps);
     //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
-    Player(string name, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
+    Player(string name, Deck* deck, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //Add a territory to defend
     vector<Territory*> toDefend(Territory *t);
     //ad a territory to attack
@@ -56,7 +56,9 @@ public:
     
     //Returns player index.
     int& getIndex();
+    //Player draws a card from the deck
     void drawCard();
+    //Get all territories the Player owns.
     vector<Territory*>& get_territories();
     
 
@@ -73,9 +75,9 @@ private:
     Hand* _hand;
     //OrdersList object holds orders
     OrdersList* _listOfOrders;
-
+    //Strategy for the player
     PlayerStrategy* _ps;
-
+    //The main deck, player should have a pointer to it but NOT delete it!
     Deck* _deck;
 };
 

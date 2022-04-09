@@ -3,9 +3,24 @@
 #include "Orders.h"
 #include "GameEngine.h"
 
+PlayerStrategy::PlayerStrategy()
+{
+	p = nullptr; //Player not set yet. Will set with setPlayer();
+}
+
+PlayerStrategy::~PlayerStrategy()
+{
+	p = nullptr; //Do NOT delete p! p is an actual Player so do not delete it!
+}
+
 void PlayerStrategy::setPlayer(Player* newPlayer)
 {
 	p = newPlayer;
+}
+
+Player* PlayerStrategy::getPlayer()
+{
+	return p;
 }
 
 PlayerStrategy::PlayerStrategy(Player* p): p(p)
@@ -76,15 +91,19 @@ std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human)
 //----------------------------------------------------------------------------------------
 
 
+NeutralPlayerStrategy::NeutralPlayerStrategy() : PlayerStrategy()
+{
+}
+
 void NeutralPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void NeutralPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void NeutralPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
 {
 }
 
@@ -115,15 +134,24 @@ NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 
 
+AggressivePlayerStrategy::AggressivePlayerStrategy() : PlayerStrategy()
+{
+}
+
+AggressivePlayerStrategy::~AggressivePlayerStrategy()
+{
+	//Nothing to destroy
+}
+
 void AggressivePlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void AggressivePlayerStrategy::toAttack(Territory* t)
+vector<Territory*> AggressivePlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void AggressivePlayerStrategy::toDefend(Territory* t)
+vector<Territory*> AggressivePlayerStrategy::toDefend(Territory* t)
 {
 }
 
@@ -153,6 +181,10 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(): BenevolentPlayerStrategy(nullptr)
+{
+}
+
 void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 {
 	findWeakest();
@@ -162,11 +194,11 @@ void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 	}				//Advance onto weakest territories
 }
 
-void BenevolentPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> BenevolentPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void BenevolentPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 {
 
 }
@@ -224,7 +256,6 @@ void BenevolentPlayerStrategy::findWeakest()
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 	delete _weakest;
-	delete p;
 }
 
 
@@ -234,6 +265,15 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
+CheaterPlayerStrategy::CheaterPlayerStrategy(): PlayerStrategy()
+{
+}
+
+CheaterPlayerStrategy::~CheaterPlayerStrategy()
+{
+	//Nothing to delete here
+}
+
 void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 {	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
 	for (auto ter : p->get_territories()) {
@@ -242,11 +282,11 @@ void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 	//automatically switches ownership of neigbouring countries to their own
 }
 
-void CheaterPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> CheaterPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void CheaterPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 {
 }
 
@@ -276,15 +316,24 @@ CheaterPlayerStrategy* CheaterPlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
+HumanPlayerStrategy::HumanPlayerStrategy() : PlayerStrategy()
+{
+}
+
+HumanPlayerStrategy::~HumanPlayerStrategy()
+{
+	//Nothing to delete here!
+}
+
 void HumanPlayerStrategy::issueOrder(Order* pOrder)
 {
 }
 
-void HumanPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> HumanPlayerStrategy::toAttack(Territory* t)
 {
 }
 
-void HumanPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> HumanPlayerStrategy::toDefend(Territory* t)
 {
 }
 

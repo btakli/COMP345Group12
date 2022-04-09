@@ -8,63 +8,43 @@ using std::cout;
 
 int Player::s_index = 0;
 
-Player::Player() {
-    this->_index = new int(s_index++);
-    this->_name = new string("player");
-    this->_collection = new vector<Territory*> {};
-    this->_hand  = new Hand();
-    this->_listOfOrders = new OrdersList();
-    this->_ps = nullptr; //Strategy not set in this constructor!
+Player::Player() : Player("player", nullptr, nullptr, nullptr) {
+
 }
 
-Player::Player(string name, Deck* deck) {
+Player::Player(string name, Deck* deck): Player(name, deck, nullptr, nullptr) {
+    
+}
+
+Player::Player(string name, vector<Territory*> collection) : Player(name,nullptr) {
+    for (auto territory : collection) {
+        this->_collection->push_back(territory);
+    }
+}
+
+Player::Player(string name, Deck* deck, LogObserver* lo): Player(name,deck,lo,nullptr)
+{
+}
+
+Player::Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps) //This is the main constructor you should use!
+{
+    this->_index = new int(s_index++);
+    this->_name = new string(name);
     this->_deck = deck;
-    this->_index = new int(s_index++);
-    this->_name = new string(name);
-    this->_collection = new vector<Territory*>;
-    this->_hand = new Hand();                         
+    this->_collection = new vector<Territory*>();
+    this->_hand = new Hand();
     this->_listOfOrders = new OrdersList();
-    this->_ps = nullptr; //Strategy not set in this constructor!
-}
-
-Player::Player(string name, vector<Territory*> collection) {
-    this->_index = new int(s_index++);
-    this->_name = new string(name);
-    this->_collection = new vector<Territory*>;
-    for (auto territory : collection) {
-        this->_collection->push_back(territory);
-    }
-    this->_hand = new Hand();                         
-    this->_listOfOrders = new OrdersList();
-    this->_ps = nullptr; //Strategy not set in this constructor!
-}
-
-void Player::drawCard() {
-    cout << "Draw a card" << endl;
-    _hand->addCard(_deck->draw());
-}
-
-Player::Player(string name, vector<Territory*> collection, LogObserver* lo): Player(name,collection)
-{
-    _listOfOrders->attach(lo);
-}
-
-Player::Player(string name, vector<Territory*> collection, LogObserver* lo, PlayerStrategy* ps): Player(name, collection, lo)
-{
     this->_ps = ps;
+
+    if (lo)
+        _listOfOrders->attach(lo);
+    else
+        cout << "~~Note: No LogObserver is attached to the list of orders of player \"" << *_name << "\"~~" << endl;
 }
 
-Player::Player(string name, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders) {
-    this->_index = new int(s_index++);
-    this->_name = new string(name);
-    this->_collection = new vector<Territory*>;
-    for (auto territory : collection) {
-        this->_collection->push_back(territory);
-    }
-    this->_hand = new Hand(*hand);                         
+Player::Player(string name, Deck* deck, vector<Territory*> collection, Hand* hand, OrdersList * listOfOrders): Player(name,collection) {
+    this->_deck = deck;                     
     this->_listOfOrders = new OrdersList(*listOfOrders);
-
-    this->_ps = nullptr; //Strategy not set in this constructor!
 }
 
 Player::~Player() {
@@ -75,8 +55,19 @@ Player::~Player() {
     delete _index;
 }
 
+void Player::drawCard() {
+    cout << "Draw a card" << endl;
+    _hand->addCard(_deck->draw());
+}
+
 vector<Territory*> Player::toDefend(Territory* source) {
-    vector<Territory*> neighbors;
+    if (_ps)
+        return _ps->toDefend(source);
+    else
+        std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
+
+    //This is what you had before
+    /*vector<Territory*> neighbors;
 
     for (Territory* t : source->get_neighbors()) {
         if (t->get_claimant() == this) {
@@ -84,11 +75,17 @@ vector<Territory*> Player::toDefend(Territory* source) {
         }
     }
 
-    return neighbors;
+    return neighbors;*/
 }
 
 vector<Territory*> Player::toAttack(Territory* source) {
-    vector<Territory*> neighbors;
+    if (_ps)
+        return _ps->toAttack(source);
+    else
+        std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
+    
+    //This is what you had before
+    /*vector<Territory*> neighbors;
 
     for (Territory* t : source->get_neighbors()) {
         if (t->get_claimant() != this) {
@@ -96,7 +93,7 @@ vector<Territory*> Player::toAttack(Territory* source) {
         }
     }
 
-    return neighbors;
+    return neighbors;*/
 }
 
 int& Player::getIndex() {
@@ -111,7 +108,7 @@ void Player::issueOrder(Order *pOrder) {
     if (_ps)
         _ps->issueOrder(pOrder);
     else
-        std::cout << "No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?" << std::endl;
+        std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
     //this->_listOfOrders->addOrder(pOrder); //Old way of doing it
 }
 
@@ -136,6 +133,7 @@ vector<Territory*>& Player::get_territories() {
 Player::Player(const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
+    this->_deck = new Deck(*p._deck);
     this->_collection = new vector<Territory*>();
 
     this->_ps = p._ps->clone();

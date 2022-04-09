@@ -8,18 +8,24 @@ class Territory;
 //PlayerStrategy abstract class, used to set the different player strategies (Neutral, Cheater, Human, Aggressive, Benevolent)
 class PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	PlayerStrategy();
+	//Destructor
+	virtual ~PlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder) = 0;
 	//add a territory to attack
-	virtual void toAttack(Territory* t) = 0;
+	virtual vector<Territory*> toAttack(Territory* t) = 0;
 	//Add a territory to defend
-	virtual void toDefend(Territory* t) = 0;
+	virtual vector<Territory*> toDefend(Territory* t) = 0;
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const PlayerStrategy& playerStrategy);
 	//clone method
 	virtual PlayerStrategy* clone() = 0;
 	//Set player pointer to a new player. Useful for copy constructor of player;
 	void setPlayer(Player* newPlayer);
+	//Get pointer to Player p. Returns null if there is no player pointed to.
+	Player* getPlayer();
 	
 protected:
 	//Protected constructor, we should not be able to construct this
@@ -34,12 +40,14 @@ protected:
 //Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player.
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	NeutralPlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
-	virtual void toAttack(Territory* t);
+	virtual vector<Territory*> toAttack(Territory* t);
 	//Add a territory to defend
-	virtual void toDefend(Territory* t);
+	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const NeutralPlayerStrategy& neutral);
 	//Constructor
@@ -54,12 +62,16 @@ public:
 //Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore).
 class AggressivePlayerStrategy : public PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	AggressivePlayerStrategy();
+	//Destructor
+	virtual ~AggressivePlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
-	virtual void toAttack(Territory* t);
+	virtual vector<Territory*> toAttack(Territory* t);
 	//Add a territory to defend
-	virtual void toDefend(Territory* t);
+	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const AggressivePlayerStrategy& aggressive);
 	//Constructor
@@ -75,14 +87,18 @@ public:
 //Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories).
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	BenevolentPlayerStrategy();
+	//Destructor
+	virtual ~BenevolentPlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	//used exclusively to deploy on the weakest territories, and then spread them onto remaining weakest countries using advance
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
 	//not needed for this strategy
-	virtual void toAttack(Territory* t);
+	virtual vector<Territory*> toAttack(Territory* t);
 	//Add a territory to defend
-	virtual void toDefend(Territory* t);
+	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const BenevolentPlayerStrategy& benevolent);
 	//Constructor
@@ -93,7 +109,8 @@ public:
 	BenevolentPlayerStrategy& operator=(const BenevolentPlayerStrategy& rhs);
 	//clone method
 	virtual BenevolentPlayerStrategy* clone();
-
+	
+private:
 	//---------
 	//Functions specific to Benevolent player strategy
 	//---------
@@ -105,12 +122,6 @@ public:
 	void setWeakest();
 	//Updates the _weakest pointer
 	void findWeakest();
-
-	//destructor
-	~BenevolentPlayerStrategy();      
-	
-
-private:
 	//points to players weakest territory
 	Territory* _weakest;
 
@@ -119,12 +130,16 @@ private:
 //Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn).
 class CheaterPlayerStrategy : public PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	CheaterPlayerStrategy();
+	//Destructor
+	virtual ~CheaterPlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
-	virtual void toAttack(Territory* t);
+	virtual vector<Territory*> toAttack(Territory* t);
 	//Add a territory to defend
-	virtual void toDefend(Territory* t);
+	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const CheaterPlayerStrategy& cheater);
 	//Constructor
@@ -140,12 +155,16 @@ public:
 //Human player: requires user interactions to make decisions.
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
+	//Default constructor. Player is not pointed to so you need to use setPlayer();
+	HumanPlayerStrategy();
+	//Destructor
+	virtual ~HumanPlayerStrategy();
 	//takes a pointer to an Order and adds it to the players list of orders
 	virtual void issueOrder(Order* pOrder);
 	//add a territory to attack
-	virtual void toAttack(Territory* t);
+	virtual vector<Territory*> toAttack(Territory* t);
 	//Add a territory to defend
-	virtual void toDefend(Territory* t);
+	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human);
 	//Constructor
