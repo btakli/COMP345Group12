@@ -150,6 +150,16 @@ void Player::setStrategy(PlayerStrategy* ps)
 
 }
 
+bool Player::wasAttacked()
+{
+    return *_wasAttacked;
+}
+
+void Player::setWasAttacked(bool value)
+{
+    *_wasAttacked = value;
+}
+
 Player::Player(const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
