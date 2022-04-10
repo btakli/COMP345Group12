@@ -88,7 +88,7 @@ Deploy::Deploy() : Order("deploy"){ //Constructor
 
 
 
-Deploy::Deploy(Player* p, Territory* target, int numToDeploy) : Order("deploy"){
+Deploy::Deploy(Player* p, Territory* target, int numToDeploy) : Deploy() {
     player = p;
     this->targetTerritory = target;
     armiesToDeploy = numToDeploy;
@@ -151,7 +151,7 @@ Advance::Advance() : Order("advance"){ //Constructor
     armiesToAdvance = 0;
 }
 
-Advance::Advance(Player* p, Territory* source, Territory* target) : Order("advance"){
+Advance::Advance(Player* p, Territory* source, Territory* target) : Advance() {
     player = p;
     this->sourceTerritory = source;
     this->targetTerritory = target;
@@ -165,7 +165,7 @@ Advance& Advance::operator=(const Advance& adv){ //Assignment Operator
     return *this;
 }
 
-Advance::Advance(const Advance& adv){ //Copy constructor
+Advance::Advance(const Advance& adv) { //Copy constructor
 
 }
 
@@ -225,7 +225,7 @@ Bomb::Bomb() : Order("bomb"){ //Constructor
     targetTerritory = nullptr;
 }
 
-Bomb::Bomb(Territory* target) : Order("bomb"){
+Bomb::Bomb(Territory* target) : Bomb() {
 
     this->targetTerritory = target;
 }
@@ -280,7 +280,7 @@ Blockade::Blockade() : Order("blockade"){ //Constructor
    targetTerritory = nullptr;
 }
 
-Blockade::Blockade(Territory* target) : Order("blockade"){ 
+Blockade::Blockade(Territory* target) : Blockade() {
     this->targetTerritory = target;
 }
 
@@ -333,7 +333,7 @@ Airlift::Airlift() : Order("airlift"){ //Constructor
    armiesToAirlift = 0;
 }
 
-Airlift::Airlift(Territory* source, Territory* target) : Order("airlift"){
+Airlift::Airlift(Territory* source, Territory* target) : Airlift() {
     this->sourceTerritory = source;
     this->targetTerritory = target;
 }
@@ -392,7 +392,7 @@ Negotiate::Negotiate() : Order("negotiate"){ //Constructor
     targetPlayer = nullptr;
 }
 
-Negotiate::Negotiate(Player* p, Player* target) : Order("negotiate"){ 
+Negotiate::Negotiate(Player* p, Player* target) : Negotiate() {
     player = p;
     targetPlayer = target;
 }

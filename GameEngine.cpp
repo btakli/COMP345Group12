@@ -845,7 +845,7 @@ void GameEngine::add_new_player() {
             string playerName = c.getCommandName().substr(space);
             if (!already.contains(playerName)) {
                 already.insert(playerName);
-                this->get_players().push_back(new Player(playerName, this->getDeck()));
+                this->get_players().push_back(new Player(playerName, this->getDeck(),(LogObserver*) this->getObservers().at(0)));
                 std::cout << "Current player count: " << this->get_players().size();
             }
         }
@@ -962,7 +962,9 @@ void GameEngine::addReinforcementsPhase() {
 
 void GameEngine::deployReinforcementPhase() {
     for (Player* p : this->get_players()) {
-        deploy_phase(*p);
+        //This calls the deploy_phase() method of GameEngine internally IF the player is human. Otherwise does it differently.
+        p->issueOrder(this, "deploy");
+        //deploy_phase(*p);
     }
 }
 
@@ -1074,104 +1076,6 @@ void GameEngine::validateMap() {
     else std::cout << "WARNING: No map loaded." << endl;
 }
 
-void GameEngine::advanceHelper(Player& player) {
-    
-    // Pick a territory from all the territories
-    int count = 0;
-
-    cout << *player.getName() << endl;
-    cout << "Pick territory of choice: " << endl;
-    for (Territory* t : player.get_territories()) {
-         cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
-         count++;
-    }
-
-    int option;
-
-    do {
-        INPUT()
-
-        std::cin >> option;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            option = -1;
-        }
-
-        if (option > count - 1 || option < 0) 
-            cout << "Please enter a number between 0 and " << count - 1 << endl;
-
-    } while (option > count - 1 || option < 0);
-
-    count = 0;
-    cout << "Please choose a territory to advance to: " << endl;
-    for (Territory* t : player.get_territories()[option]->get_neighbors()) {
-        cout << "\n" + to_string(count) + ": " + t->get_name();
-        count++;
-    }
-
-    int option2;
-
-    do {
-        INPUT()
-
-        std::cin >> option2;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            option = -1;
-        }
-
-        if (option2 > count - 1 || option2 < 0) 
-            cout << "Please enter a number between 0 and " << count - 1 << endl;
-
-    } while (option2 > count - 1 || option2 < 0);
-    
-    player.getOrdersList()->addOrder(new Advance(&player, player.get_territories()[option], player.get_territories()[option]->get_neighbors()[option2]));
-}
-
-void GameEngine::airliftHelper(Player& player) {
-
-    LOG("Airlift");
-
-    // Pick a territories from all the territories
-    int count = 0;
-    int option[2]; //option 0 is souce and 1 is destination
-    cout << *player.getName() << endl;
-
-    for (size_t i = 0; i < 2; i++) {
-
-        cout << "Select territory " << ((i==0)?"SOURCE":"DESTINATION") << " for airlift : " << endl;
-
-        for (Territory* t : player.get_territories()) {
-            cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
-            count++;
-        }
-
-        do {
-            INPUT();
-            
-            std::cin >> option[i]; 
-
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-                option[i] = -1;
-            }
-
-            if (option[i] > count - 1 || option[i] < 0)
-                cout << "Please enter a number between 0 and " << count - 1 << endl;
-                
-        } while (option[i] > count - 1 || option[i] < 0);
-
-        count = 0;
-    }
-
-    player.getOrdersList()->addOrder(new Airlift(player.get_territories()[option[0]], player.get_territories()[option[1]]));
-}
-
 void GameEngine::deploy_phase(Player& player) {
 
     
@@ -1193,8 +1097,10 @@ void GameEngine::deploy_phase(Player& player) {
                 cout << "ERROR: Number to big. " << endl;
             }
             else {
+                Deploy* deployOrder = new Deploy(&player, territory_picker(player), army_to_deploy);
+                deployOrder->attach(this->getObservers().at(0));
 
-                player.getOrdersList()->addOrder(new Deploy(&player, territory_picker(player), army_to_deploy));
+                player.getOrdersList()->addOrder(deployOrder);
                 *(*_armyPool)[player.getIndex()] -= army_to_deploy;
 
                 if (has_army(player.getIndex()))
@@ -1240,30 +1146,35 @@ void GameEngine::ordersPicker(Player& player) {
             {
             case 1:
                 if (cardValidator(player, "diplomacy")) {
-                    diplomacyHelper(player);
+                    player.issueOrder(this, "diplomacy");
+                    //diplomacyHelper(player);
                 }
                 break;
 
             case 2:
                 if (cardValidator(player, "airlift")) {
-                    airliftHelper(player);
+                    player.issueOrder(this, "airlift");
+                    //airliftHelper(player);
                 }
                 break;
 
             case 3:
                 if (cardValidator(player, "blockade")) {
-                    blockadeHelper(player);
+                    player.issueOrder(this, "blockade");
+                    //blockadeHelper(player);
                 }
                 break;
 
             case 4:
                 if (cardValidator(player, "bomb")) {
-                    bombHelper(player);
+                    player.issueOrder(this, "bomb");
+                    //bombHelper(player);
                 }
                 break;
 
             case 5:
-                advanceHelper(player);
+                player.issueOrder(this, "advance");
+                //advanceHelper(player);
                 break;
             }
         }
@@ -1298,7 +1209,8 @@ void GameEngine::ordersPicker_Bot(Player& player, int option) {
         break;
 
     case 5:
-        advanceHelper(player);
+        player.issueOrder(this, "advance");
+        //advanceHelper(player);
         break;
     }
 }
@@ -1346,119 +1258,3 @@ void GameEngine::change_state(GameState* newState) {
     delete this->getCurrentState();
     this->setState(newState);
 }
-
-
-void GameEngine::bombHelper(Player& player) {
-    LOG("Bomb");
-
-    // Pick a territories from all the territories
-    int count = 0;
-    int option;// destination
-    cout << *player.getName() << endl;
-
-
-        cout << "Select territory DESTINATION to Bomb : " << endl;
-
-        for (Territory* t : Map::get_instance()->get_territories()) {
-            cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
-            count++;
-        }
-
-        do {
-            INPUT();
-
-            std::cin >> option;
-
-            if (std::cin.fail()) {
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
-                option = -1;
-            }
-
-            if (option > count - 1 || option < 0)
-                cout << "Please enter a number between 0 and " << count - 1 << endl;
-
-            else if (Map::get_instance()->get_territories()[option]->get_claimant() == &player) {
-
-                cout << "You can't bomb yourself" << endl;
-                option = -1;
-            }
-
-        } while (option > count - 1 || option < 0);
-
-    player.getOrdersList()->addOrder(new Bomb(Map::get_instance()->get_territories()[option]));
-}
-
-
-void GameEngine::blockadeHelper(Player& player) {
-    LOG("Blockade");
-
-    // Pick a territories from all the territories
-    int count = 0;
-    int option;// destination
-    cout << *player.getName() << endl;
-
-
-    cout << "Select territory DESTINATION to Bomb : " << endl;
-
-    for (Territory* t : player.get_territories()) {
-        cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
-        count++;
-    }
-
-    do {
-        INPUT();
-
-        std::cin >> option;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            option = -1;
-        }
-
-        if (option > count - 1 || option < 0)
-            cout << "Please enter a number between 0 and " << count - 1 << endl;
-
-
-    } while (option > count - 1 || option < 0);
-
-    player.getOrdersList()->addOrder(new Blockade(player.get_territories()[option]));
-}
-
-
-void GameEngine::diplomacyHelper(Player& player) {
-    LOG("Diplomacy");
-
-    // Pick a territories from all the territories
-    int count = 0;
-    int option;// destination
-    cout << *player.getName() << endl;
-
-
-    cout << "Select Player to Negotiate : " << endl;
-
-    for (Player* p : this->get_players()) {
-        cout << "\n" << to_string(count) << ": " << *p->getName();
-        count++;
-    }
-
-    do {
-        INPUT();
-
-        std::cin >> option;
-
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            option = -1;
-        }
-
-        if (option > count - 1 || option < 0)
-            cout << "Please enter a number between 0 and " << count - 1 << endl;
-
-    } while (option > count - 1 || option < 0);
-
-    player.getOrdersList()->addOrder(new Negotiate(&player, this->get_players()[option]));
-}
-

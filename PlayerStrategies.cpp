@@ -2,10 +2,26 @@
 #include "Player.h"
 #include "Orders.h"
 #include "GameEngine.h"
+#include "Map.h"
+
+PlayerStrategy::PlayerStrategy(): PlayerStrategy(nullptr)
+{
+	//Player not set yet. Will set with setPlayer();
+}
+
+PlayerStrategy::~PlayerStrategy()
+{
+	p = nullptr; //Do NOT delete p! p is an actual Player so do not delete it!
+}
 
 void PlayerStrategy::setPlayer(Player* newPlayer)
 {
 	p = newPlayer;
+}
+
+Player* PlayerStrategy::getPlayer()
+{
+	return p;
 }
 
 PlayerStrategy::PlayerStrategy(Player* p): p(p)
@@ -30,10 +46,15 @@ std::ostream& operator<<(std::ostream& out, const PlayerStrategy& playerStrategy
 }
 
 std::ostream& operator<<(std::ostream& out, const NeutralPlayerStrategy& neutral)
-{
-	out << "Neutral strategy: Computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player." << std::endl;
-	out << "Player info:" << std::endl;
-	out << *neutral.p;
+{	//If the neutral player was attacked, the player is now aggressive!
+	if(*neutral._wasAttacked) {
+		out << *neutral._agressiveStrategy;
+	}
+	else {
+		out << "Neutral strategy: Computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player." << std::endl;
+		out << "Player info:" << std::endl;
+		out << *neutral.p;
+	}
 	return out;
 }
 
@@ -76,30 +97,67 @@ std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human)
 //----------------------------------------------------------------------------------------
 
 
-void NeutralPlayerStrategy::issueOrder(Order* pOrder)
+NeutralPlayerStrategy::NeutralPlayerStrategy() : PlayerStrategy()
 {
+	_wasAttacked = new bool(false);
+	_agressiveStrategy = new AggressivePlayerStrategy();
 }
 
-void NeutralPlayerStrategy::toAttack(Territory* t)
+NeutralPlayerStrategy::~NeutralPlayerStrategy()
 {
+	delete _wasAttacked;
+	delete _agressiveStrategy;
 }
 
-void NeutralPlayerStrategy::toDefend(Territory* t)
+void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
+	//No orders to issue UNLESS attacked
+	if (*_wasAttacked) {
+		if (_agressiveStrategy->getPlayer() == nullptr)
+			_agressiveStrategy->setPlayer(p);
+		else
+			_agressiveStrategy->issueOrder(gameEngine, orderType); //We will now let the aggressive strategy issue orders
+	}
 }
 
-NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : PlayerStrategy(p)
+vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 {
+	//Don't attack UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
+	if (*_wasAttacked) {
+		return _agressiveStrategy->toAttack(t);
+	} else
+	//No territories to attack
+	return vector<Territory*>();
+}
+
+vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
+{
+	//Don't defend UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
+	if (*_wasAttacked) {
+		return _agressiveStrategy->toDefend(t);
+	}
+	else
+		//No territories to defend
+		return vector<Territory*>();
+}
+
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p) : NeutralPlayerStrategy()
+{
+	setPlayer(p);
+	_agressiveStrategy->setPlayer(p);
 }
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& other) : PlayerStrategy(other)
 {
-	this->p = other.p;
+	this->_wasAttacked = new bool(*other._wasAttacked);
+	this->_agressiveStrategy = new AggressivePlayerStrategy(*other._agressiveStrategy);
 }
 
 NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& rhs)
 {
-	this->p = rhs.p;
+	setPlayer(rhs.p);
+	this->_wasAttacked = new bool(*rhs._wasAttacked);
+	this->_agressiveStrategy = new AggressivePlayerStrategy(*rhs._agressiveStrategy);
 	return *this;
 }
 
@@ -115,16 +173,29 @@ NeutralPlayerStrategy* NeutralPlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 
 
-void AggressivePlayerStrategy::issueOrder(Order* pOrder)
+AggressivePlayerStrategy::AggressivePlayerStrategy() : PlayerStrategy()
 {
 }
 
-void AggressivePlayerStrategy::toAttack(Territory* t)
+AggressivePlayerStrategy::~AggressivePlayerStrategy()
+{
+	//Nothing to destroy
+}
+
+void AggressivePlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
 }
 
-void AggressivePlayerStrategy::toDefend(Territory* t)
+vector<Territory*> AggressivePlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
+}
+
+vector<Territory*> AggressivePlayerStrategy::toDefend(Territory* t)
+{
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -153,7 +224,11 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
-void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(): BenevolentPlayerStrategy(nullptr)
+{
+}
+
+void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
 	findWeakest();
 	while (true)
@@ -162,13 +237,16 @@ void BenevolentPlayerStrategy::issueOrder(Order* pOrder)
 	}				//Advance onto weakest territories
 }
 
-void BenevolentPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> BenevolentPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
-void BenevolentPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 {
-
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -224,7 +302,6 @@ void BenevolentPlayerStrategy::findWeakest()
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 	delete _weakest;
-	delete p;
 }
 
 
@@ -234,7 +311,16 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
-void CheaterPlayerStrategy::issueOrder(Order* pOrder)
+CheaterPlayerStrategy::CheaterPlayerStrategy(): PlayerStrategy()
+{
+}
+
+CheaterPlayerStrategy::~CheaterPlayerStrategy()
+{
+	//Nothing to delete here
+}
+
+void CheaterPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
 	for (auto ter : p->get_territories()) {
 		ter->claim(p, true);
@@ -242,12 +328,16 @@ void CheaterPlayerStrategy::issueOrder(Order* pOrder)
 	//automatically switches ownership of neigbouring countries to their own
 }
 
-void CheaterPlayerStrategy::toAttack(Territory* t)
+vector<Territory*> CheaterPlayerStrategy::toAttack(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
-void CheaterPlayerStrategy::toDefend(Territory* t)
+vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 {
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -276,16 +366,49 @@ CheaterPlayerStrategy* CheaterPlayerStrategy::clone()
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
-void HumanPlayerStrategy::issueOrder(Order* pOrder)
+HumanPlayerStrategy::HumanPlayerStrategy() : PlayerStrategy()
 {
 }
 
-void HumanPlayerStrategy::toAttack(Territory* t)
+HumanPlayerStrategy::~HumanPlayerStrategy()
 {
+	//Nothing to delete here!
 }
 
-void HumanPlayerStrategy::toDefend(Territory* t)
+void HumanPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
+	if (orderType == "deploy")
+		gameEngine->deploy_phase(*p);
+	else if (orderType == "diplomacy")
+		diplomacyHelper(gameEngine);
+	else if (orderType == "airlift")
+		airliftHelper();
+	else if (orderType == "blockade")
+		blockadeHelper();
+	else if (orderType == "bomb")
+		bombHelper();
+	else if (orderType == "advance")
+		advanceHelper();
+	else
+		std::cout << "~~Invalid order issued~~" << std::endl;
+}
+
+vector<Territory*> HumanPlayerStrategy::toAttack(Territory* t)
+{
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() != p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
+}
+
+vector<Territory*> HumanPlayerStrategy::toDefend(Territory* t)
+{
+	//TEMPORARY
+	return vector<Territory*>();
 }
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -306,4 +429,239 @@ HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& r
 HumanPlayerStrategy* HumanPlayerStrategy::clone()
 {
 	return new HumanPlayerStrategy(*this);
+}
+
+void HumanPlayerStrategy::log(string str)
+{
+	std::cout << "\n>> " << str << std::endl;
+}
+
+void HumanPlayerStrategy::input()
+{
+	std::cout << "> " << std::endl;
+}
+
+void HumanPlayerStrategy::advanceHelper()
+{
+	// Pick a territory from all the territories
+	int count = 0;
+
+	cout << *p->getName() << endl;
+	cout << "Pick territory of choice: " << endl;
+	for (Territory* t : p->get_territories()) {
+		cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
+		count++;
+	}
+
+	int option;
+
+	do {
+		input();
+
+			std::cin >> option;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			option = -1;
+		}
+
+		if (option > count - 1 || option < 0)
+			cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+	} while (option > count - 1 || option < 0);
+
+	count = 0;
+	cout << "Please choose a territory to advance to: " << endl;
+	for (Territory* t : p->get_territories()[option]->get_neighbors()) {
+		cout << "\n" + to_string(count) + ": " + t->get_name();
+		count++;
+	}
+
+	int option2;
+
+	do {
+		input();
+
+			std::cin >> option2;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			option = -1;
+		}
+
+		if (option2 > count - 1 || option2 < 0)
+			cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+	} while (option2 > count - 1 || option2 < 0);
+	Advance* advanceOrder = new Advance(&(*p), p->get_territories()[option], p->get_territories()[option]->get_neighbors()[option2]);
+	//Attach the first observer to the order.
+	advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+	p->getOrdersList()->addOrder(advanceOrder);
+}
+
+void HumanPlayerStrategy::airliftHelper()
+{
+	log("Airlift");
+
+	// Pick a territories from all the territories
+	int count = 0;
+	int option[2]; //option 0 is souce and 1 is destination
+	cout << *p->getName() << endl;
+
+	for (size_t i = 0; i < 2; i++) {
+
+		cout << "Select territory " << ((i == 0) ? "SOURCE" : "DESTINATION") << " for airlift : " << endl;
+
+		for (Territory* t : p->get_territories()) {
+			cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
+			count++;
+		}
+
+		do {
+			input();
+
+			std::cin >> option[i];
+
+			if (std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				option[i] = -1;
+			}
+
+			if (option[i] > count - 1 || option[i] < 0)
+				cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+		} while (option[i] > count - 1 || option[i] < 0);
+
+		count = 0;
+	}
+	Airlift* airliftOrder = new Airlift(p->get_territories()[option[0]], p->get_territories()[option[1]]);
+	airliftOrder->attach(p->getOrdersList()->getObservers().at(0));
+	p->getOrdersList()->addOrder(airliftOrder);
+}
+
+void HumanPlayerStrategy::bombHelper()
+{
+	log("Bomb");
+
+	// Pick a territories from all the territories
+	int count = 0;
+	int option;// destination
+	cout << *p->getName() << endl;
+
+
+	cout << "Select territory DESTINATION to Bomb : " << endl;
+
+	for (Territory* t : Map::get_instance()->get_territories()) {
+		cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
+		count++;
+	}
+
+	do {
+		input();
+
+		std::cin >> option;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			option = -1;
+		}
+
+		if (option > count - 1 || option < 0)
+			cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+		else if (Map::get_instance()->get_territories()[option]->get_claimant() == &(*p)) {
+
+			cout << "You can't bomb yourself" << endl;
+			option = -1;
+		}
+
+	} while (option > count - 1 || option < 0);
+
+	Bomb* bombOrder = new Bomb(Map::get_instance()->get_territories()[option]);
+	bombOrder->attach(p->getOrdersList()->getObservers().at(0));
+
+	p->getOrdersList()->addOrder(bombOrder);
+}
+
+void HumanPlayerStrategy::blockadeHelper()
+{
+	log("Blockade");
+
+	// Pick a territories from all the territories
+	int count = 0;
+	int option;// destination
+	cout << *p->getName() << endl;
+
+
+	cout << "Select territory DESTINATION to Bomb : " << endl;
+
+	for (Territory* t : p->get_territories()) {
+		cout << "\n" << to_string(count) << ": " << t->get_name() << " [" << t->get_stationed_army() << "]";
+		count++;
+	}
+
+	do {
+		input();
+
+		std::cin >> option;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			option = -1;
+		}
+
+		if (option > count - 1 || option < 0)
+			cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+
+	} while (option > count - 1 || option < 0);
+
+	Blockade* blockadeOrder = new Blockade(p->get_territories()[option]);
+	blockadeOrder->attach(p->getOrdersList()->getObservers().at(0));
+
+	p->getOrdersList()->addOrder(blockadeOrder);
+}
+
+void HumanPlayerStrategy::diplomacyHelper(GameEngine* gameEngine)
+{
+	log("Diplomacy");
+
+	// Pick a territories from all the territories
+	int count = 0;
+	int option;// destination
+	cout << *p->getName() << endl;
+
+
+	cout << "Select Player to Negotiate : " << endl;
+
+	for (Player* p : gameEngine->get_players()) {
+		cout << "\n" << to_string(count) << ": " << *p->getName();
+		count++;
+	}
+
+	do {
+		input();
+
+		std::cin >> option;
+
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			option = -1;
+		}
+
+		if (option > count - 1 || option < 0)
+			cout << "Please enter a number between 0 and " << count - 1 << endl;
+
+	} while (option > count - 1 || option < 0);
+
+	Negotiate* negotiateOrder = new Negotiate(&(*p), gameEngine->get_players()[option]);
+	negotiateOrder->attach(p->getOrdersList()->getObservers().at(0));
+
+	p->getOrdersList()->addOrder(negotiateOrder);
 }
