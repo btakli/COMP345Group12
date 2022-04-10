@@ -172,3 +172,8 @@ void Subject::notify(ILoggable* thisObj)
 	}
 
 }
+
+vector<Observer*> Subject::getObservers()
+{
+	return *_observers;
+}

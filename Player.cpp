@@ -36,6 +36,14 @@ Player::Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps) //T
     this->_listOfOrders = new OrdersList();
     this->_ps = ps;
 
+    //Auto set the default strategy to human
+    if (!_ps) {
+        _ps = new HumanPlayerStrategy();
+        _ps->setPlayer(this);
+    }
+    if (_ps)
+        _ps->setPlayer(this);
+
     if (lo)
         _listOfOrders->attach(lo);
     else
@@ -101,13 +109,16 @@ int& Player::getIndex() {
     return *_index;
 }
 
-void Player::issueOrder() { 
-
+void Player::issueOrder(GameEngine* gameEngine, string orderType) { 
+    if (_ps)
+        _ps->issueOrder(gameEngine, orderType);
+    else
+        std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
 }
 
 void Player::issueOrder(Order *pOrder) {
     if (_ps)
-        _ps->issueOrder(pOrder);
+        _ps->issueOrder(nullptr,nullptr); //TODO FIX?!?!
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
     //this->_listOfOrders->addOrder(pOrder); //Old way of doing it
@@ -129,6 +140,14 @@ string* Player::getName()
 
 vector<Territory*>& Player::get_territories() {
     return *_collection;
+}
+
+void Player::setStrategy(PlayerStrategy* ps)
+{
+    if (_ps)
+        delete _ps;
+    this->_ps = ps;
+
 }
 
 Player::Player(const Player &p){

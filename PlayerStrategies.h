@@ -1,12 +1,17 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <string>
+
 //Forward declaration
 class Player;
 class Order;
 class Territory;
+class GameEngine;
 
 using std::vector;
+using std::string;
+
 
 //PlayerStrategy abstract class, used to set the different player strategies (Neutral, Cheater, Human, Aggressive, Benevolent)
 class PlayerStrategy {
@@ -15,11 +20,11 @@ public:
 	PlayerStrategy();
 	//Destructor
 	virtual ~PlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
-	virtual void issueOrder(Order* pOrder) = 0;
-	//add a territory to attack
+	//Contains logic to add order to player's list of orders
+	virtual void issueOrder(GameEngine* gameEngine, string orderType) = 0;
+	//Returns list of territories that can be attacked from t
 	virtual vector<Territory*> toAttack(Territory* t) = 0;
-	//Add a territory to defend
+	//Returns a list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t) = 0;
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const PlayerStrategy& playerStrategy);
@@ -41,15 +46,19 @@ protected:
 	Player* p;
 };
 //Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player.
+//Forward declaration
+class AggressivePlayerStrategy;
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
 	//Default constructor. Player is not pointed to so you need to use setPlayer();
 	NeutralPlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
-	virtual void issueOrder(Order* pOrder);
-	//add a territory to attack
+	//Destructor
+	virtual ~NeutralPlayerStrategy();
+	//Contains logic to add order to player's list of orders
+	virtual void issueOrder(GameEngine* gameEngine, string orderType);
+	//Returns list of territories that can be attacked from t
 	virtual vector<Territory*> toAttack(Territory* t);
-	//Add a territory to defend
+	//Returns list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const NeutralPlayerStrategy& neutral);
@@ -61,6 +70,10 @@ public:
 	NeutralPlayerStrategy& operator=(const NeutralPlayerStrategy& rhs);
 	//clone method
 	virtual NeutralPlayerStrategy* clone();
+private:
+	//We become aggressive if attacked! Delegate all actions here if so.
+	bool* _wasAttacked;
+	AggressivePlayerStrategy* _agressiveStrategy;
 };
 //Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore).
 class AggressivePlayerStrategy : public PlayerStrategy {
@@ -69,11 +82,11 @@ public:
 	AggressivePlayerStrategy();
 	//Destructor
 	virtual ~AggressivePlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
-	virtual void issueOrder(Order* pOrder);
-	//add a territory to attack
+	//Contains logic to add order to player's list of orders
+	virtual void issueOrder(GameEngine* gameEngine, string orderType);
+	//Returns list of territories that can be attacked from t
 	virtual vector<Territory*> toAttack(Territory* t);
-	//Add a territory to defend
+	//Returns list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const AggressivePlayerStrategy& aggressive);
@@ -94,13 +107,13 @@ public:
 	BenevolentPlayerStrategy();
 	//Destructor
 	virtual ~BenevolentPlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
+	//Contains logic to add order to player's list of orders
 	//used exclusively to deploy on the weakest territories, and then spread them onto remaining weakest countries using advance
-	virtual void issueOrder(Order* pOrder);
-	//add a territory to attack
+	virtual void issueOrder(GameEngine* gameEngine, string orderType);
+	//Returns list of territories that can be attacked from t
 	//not needed for this strategy
 	virtual vector<Territory*> toAttack(Territory* t);
-	//Add a territory to defend
+	//Returns list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const BenevolentPlayerStrategy& benevolent);
@@ -137,11 +150,11 @@ public:
 	CheaterPlayerStrategy();
 	//Destructor
 	virtual ~CheaterPlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
-	virtual void issueOrder(Order* pOrder);
-	//add a territory to attack
+	//Contains logic to add order to player's list of orders
+	virtual void issueOrder(GameEngine* gameEngine, string orderType);
+	//Returns list of territories that can be attacked from t
 	virtual vector<Territory*> toAttack(Territory* t);
-	//Add a territory to defend
+	//Returns list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const CheaterPlayerStrategy& cheater);
@@ -162,11 +175,11 @@ public:
 	HumanPlayerStrategy();
 	//Destructor
 	virtual ~HumanPlayerStrategy();
-	//takes a pointer to an Order and adds it to the players list of orders
-	virtual void issueOrder(Order* pOrder);
-	//add a territory to attack
+	//Contains logic to add order to player's list of orders
+	virtual void issueOrder(GameEngine* gameEngine, string orderType);
+	//Returns list of territories that can be attacked from t
 	virtual vector<Territory*> toAttack(Territory* t);
-	//Add a territory to defend
+	//Returns list of territories that can be defended by t
 	virtual vector<Territory*> toDefend(Territory* t);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& out, const HumanPlayerStrategy& human);
@@ -178,6 +191,19 @@ public:
 	HumanPlayerStrategy& operator=(const HumanPlayerStrategy& rhs);
 	//clone method
 	virtual HumanPlayerStrategy* clone();
+private:
+	//Formatted output for the console
+	void log(std::string str);
+	//Formatted output for an input to the console "> *insert text*"
+	void input();
+	//Deploy helper for IssueOrder
+	void advanceHelper();
+	//Airlift helper for IssueOrder
+	void airliftHelper();
+	//Bomb helper for IssueOrder
+	void bombHelper();
+	//Blockade helper for IssueOrder
+	void blockadeHelper();
+	//Diplomacy helper for IssueOrder
+	void diplomacyHelper(GameEngine* gameEngine);
 };
-
-

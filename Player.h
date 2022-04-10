@@ -12,6 +12,7 @@ using std::vector;
 //Forward declaration
 class Territory;
 class PlayerStrategy;
+class GameEngine;
 
 //Class for players
 class Player {
@@ -22,20 +23,20 @@ public:
     //Constructor with player name
     Player(string name, Deck* deck);
 
-    //Legacy constructor without observer or strategy
+    //LEGACY: constructor without observer or strategy
     Player(string name, vector<Territory*> collection);
-    //Constructor with logging observer which will be passed to list of orders
+    //LEGACY: Constructor with logging observer which will be passed to list of orders
     Player(string name, Deck* deck, LogObserver* lo);
     //Constructor with logging observer which will be passed to list of orders. Takes in Player Strategy too which is necessary.
     Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps);
-    //Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
+    //LEGACY: Constructor taking in string for name, list of pointers to territory, Hand pointer and OrdersList pointer
     Player(string name, Deck* deck, std::vector<Territory*> collection, Hand* hand, OrdersList* listOfOrders);
     //Add a territory to defend
     vector<Territory*> toDefend(Territory *t);
     //ad a territory to attack
     vector<Territory*> toAttack(Territory *t);
-    //Creates new order and adds it to _listOfOrders
-    void issueOrder();
+    //Creates new order and adds it to _listOfOrders. Contains all the logic needed for decisions
+    void issueOrder(GameEngine* gameEngine, string orderType);
     //Copy constructor
     Player(const Player& p);
     //assignment operator
@@ -59,6 +60,9 @@ public:
     void drawCard();
     //Get all territories the Player owns.
     vector<Territory*>& get_territories();
+
+    //Sets the player's strategy to a new one
+    void setStrategy(PlayerStrategy* ps);
     
 
 private:

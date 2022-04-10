@@ -437,8 +437,6 @@ public:
     bool cardValidator(Player& player, string type);
     //validate a loaded map
     void validateMap();
-    //Deploy helper
-    void advanceHelper(Player& player);
     //Checks to see if the territories are all owned by the same player
     bool checkWin(GameEngine& engine);
     //Initializes the _conqBool
@@ -455,14 +453,6 @@ public:
     void deploy_phase(Player& player);
 
     void change_state(GameState*);
-
-    void airliftHelper(Player& player);
-
-    void bombHelper(Player& player);
-
-    void blockadeHelper(Player& player);
-
-    void diplomacyHelper(Player& player);
 
     private:
     GameState* _currentState; //current state

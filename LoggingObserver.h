@@ -83,6 +83,8 @@ public:
 	virtual void notify(ILoggable* thisObj);
 	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& strm, const Subject& subject);
+	//returns a list of attached observers.
+	virtual vector<Observer*> getObservers();
 private:
 	//List of Observers
 	vector<Observer*>* _observers;
