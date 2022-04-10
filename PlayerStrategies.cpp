@@ -111,6 +111,10 @@ NeutralPlayerStrategy::~NeutralPlayerStrategy()
 
 void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
+	//If player was attacked, permanently turn _wasAttacked to true
+	if (p->wasAttacked())
+		*_wasAttacked = true;
+
 	//No orders to issue UNLESS attacked
 	if (*_wasAttacked) {
 		if (_agressiveStrategy->getPlayer() == nullptr)
@@ -122,6 +126,10 @@ void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 
 vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 {
+	//If player was attacked, permanently turn _wasAttacked to true
+	if (p->wasAttacked())
+		*_wasAttacked = true;
+
 	//Don't attack UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
 	if (*_wasAttacked) {
 		return _agressiveStrategy->toAttack(t);
@@ -132,6 +140,10 @@ vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 
 vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
 {
+	//If player was attacked, permanently turn _wasAttacked to true
+	if (p->wasAttacked())
+		*_wasAttacked = true;
+
 	//Don't defend UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
 	if (*_wasAttacked) {
 		return _agressiveStrategy->toDefend(t);

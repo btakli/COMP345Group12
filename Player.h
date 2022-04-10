@@ -63,9 +63,16 @@ public:
 
     //Sets the player's strategy to a new one
     void setStrategy(PlayerStrategy* ps);
+
+    //Getter for _wasAttacked boolean
+    bool wasAttacked();
+    //Setter for _wasAttacked boolean
+    void setWasAttacked(bool value);
     
 
 private:
+    //Boolean showing if the Player was attacked
+    bool* _wasAttacked;
     //static index
     static int s_index;
     //player index
