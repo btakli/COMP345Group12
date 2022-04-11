@@ -1,10 +1,5 @@
-~~~~ Gamelog for game starting on: Sun Apr 10 01:33:52 2022
+~~~~ Gamelog for game starting on: Mon Apr 11 16:33:25 2022
 
-Command: loadmap canada
-Command: validatemap
-Command: addplayer player1
-Command: addplayer player2
-Command: gamestart
 Game Engine new state: Start
 Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded
@@ -14,13 +9,5 @@ Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
-Game Engine new state: Assignedreinforcement
-Command's Effect: Transitioning to state Assignedreinforcement
-Order Issued: deploy
-Order Issued: advance
-Order Issued: deploy
-Order Issued: advance
-Order Executed: Deploy: place some armies on one of the current player's territories.
-Order Executed: Deploy: place some armies on one of the current player's territories.
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
