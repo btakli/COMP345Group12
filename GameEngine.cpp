@@ -848,17 +848,33 @@ void GameEngine::map_picker() {
     for (Command c : *(this->getCommandProcessor())->getCommandList()) {
 
         size_t space = c.getCommandName().find(" ") + 1;
-        string mapName = c.getCommandName().substr(space);
+        string map = c.getCommandName().substr(space);
 
-        if (mapName == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
-        else if (mapName == CANADA) MapLoader::get_instance()->load_map(CANADA);
-        else if (mapName == COW) MapLoader::get_instance()->load_map(COW);
-        else if (mapName == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
-        else if (mapName == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
-        else if (mapName == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
-        else if (mapName == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
-        else if (mapName == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
-        else if (mapName == TINY)MapLoader::get_instance()->load_map(TINY);
+        if (this->getCommandProcessor()->tournament_mode) {
+            cout << "Tournament mode" << endl;
+                 if (map == "1") MapLoader::get_instance()->load_map(BERLIN);
+            else if (map == "2") MapLoader::get_instance()->load_map(CANADA);
+            else if (map == "3") MapLoader::get_instance()->load_map(COW);
+            else if (map == "4") MapLoader::get_instance()->load_map(ESTONIA);
+            else if (map == "5") MapLoader::get_instance()->load_map(FORTERESS);
+            else if (map == "6") MapLoader::get_instance()->load_map(INVALID1);
+            else if (map == "7") MapLoader::get_instance()->load_map(INVALID2);
+            else if (map == "8") MapLoader::get_instance()->load_map(INVALID3);
+            else if (map == "9") MapLoader::get_instance()->load_map(TINY);
+        }
+        else { // Normal mode
+            cout << "Normal mode" << endl;
+
+                 if (map == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
+            else if (map == CANADA) MapLoader::get_instance()->load_map(CANADA);
+            else if (map == COW) MapLoader::get_instance()->load_map(COW);
+            else if (map == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
+            else if (map == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
+            else if (map == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
+            else if (map == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
+            else if (map == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
+            else if (map == TINY)MapLoader::get_instance()->load_map(TINY);
+        }
     }
 }
 
@@ -866,6 +882,11 @@ void GameEngine::map_picker() {
 void GameEngine::add_new_player() {
 
     list<Command>* commands = this->getCommandProcessor()->getCommandList();
+
+    int aggressiveIndex = 0;
+    int benevolentIndex = 0;
+    int neutralIndex = 0;
+    int cheaterIndex = 0;
 
     for (Command c : *commands) {
          
@@ -879,8 +900,19 @@ void GameEngine::add_new_player() {
             string playerName = c.getCommandName().substr(space);
             if (!already.contains(playerName)) {
                 already.insert(playerName);
-                this->get_players().push_back(new Player(playerName, this->getDeck(),(LogObserver*) this->getObservers().at(0)));
+
+                if (this->getCommandProcessor()->tournament_mode) {
+                    if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
+                    else if (playerName == "2")this->get_players().push_back(new Player("Benevolent" + to_string(++benevolentIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new BenevolentPlayerStrategy()));
+                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral" + to_string(++neutralIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
+                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater" + to_string(++cheaterIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
+                    else cout << "ERROR: Unkown behavior" << endl;
+                }
+                else { // Normal Mode
+                    this->get_players().push_back(new Player(playerName, this->getDeck(), (LogObserver*)this->getObservers().at(0)));
+                }
                 std::cout << "Current player count: " << this->get_players().size();
+
             }
         }
     }

@@ -7,6 +7,7 @@
 #include "CommandProcessing.h"
 #include "LoggingObserver.h"
 #include <set>
+#include "PlayerStrategies.h"
 
 using std::cout;
 using std::endl;
