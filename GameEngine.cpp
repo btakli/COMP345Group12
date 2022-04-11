@@ -510,30 +510,30 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
     else{ // Not Win
         //get currentTunrsLeftInt points to the same address as the property max_turns
         
-        cout << "current turn left:" << *engine->getCommandProcessor()->getMaxTurns() <<endl;
-        int currentTunrsLeftInt = std::stoi(*engine->getCommandProcessor()->getMaxTurns());
-        if(currentTunrsLeftInt == 0){
-            cout << "Reached the maximum number of turns" <<endl;
-            cout << endl;
-            cout << "Exiting the game with a Draw..." << endl;
-            cout << endl;
-            engine->change_state(new Win());
-            //engine->getCurrentState()->transition(engine, "");
+        if (engine->getCommandProcessor()->tournament_mode) {
+            cout << "Current turn left:" << *engine->getCommandProcessor()->getMaxTurns() << endl;
+            int currentTunrsLeftInt = std::stoi(*engine->getCommandProcessor()->getMaxTurns());
+            if (currentTunrsLeftInt == 0) {
+                cout << "Reached the maximum number of turns" << endl;
+                cout << endl;
+                cout << "Exiting the game with a Draw..." << endl;
+                cout << endl;
+                engine->change_state(new Win());
+                //engine->getCurrentState()->transition(engine, "");
+            }
+            else {
+                // modify the turn number by decreasing by 1 after each turn
+                currentTunrsLeftInt -= 1;
+                //assign it back to the max_turn value
+                engine->getCommandProcessor()->getMaxTurns()->assign(std::to_string(currentTunrsLeftInt));
+                cout << "current turn left AFTER EXECUTION:" << *engine->getCommandProcessor()->getMaxTurns() << endl;
+            }
+        }
+        engine->excecuteOrdersPhase();
+        engine->change_state(new AssignedReinforcement());
 
-        }else{
-            engine->excecuteOrdersPhase();
-            engine->change_state(new AssignedReinforcement());
-
-             // modify the turn number by decreasing by 1 after each turn
-            currentTunrsLeftInt -= 1;
-            //assign it back to the max_turn value
-            engine->getCommandProcessor()->getMaxTurns()->assign(std::to_string(currentTunrsLeftInt));
-            cout << "current turn left AFTER EXECUTION:" << *engine->getCommandProcessor()->getMaxTurns() <<endl;
-
-            engine->getCurrentState()->transition(engine, "");
+        engine->getCurrentState()->transition(engine, "");
         
-           
-        } 
     }
 
 
