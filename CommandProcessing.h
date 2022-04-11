@@ -85,6 +85,8 @@ class CommandProcessor: public ILoggable, public Subject
     void tournamentHelper(string commandLine);    
     void showHelpPage();
 
+    bool tournament_mode;
+
     protected:
     //implemented as virtual function so it would work for both console
     // and file inputs:
