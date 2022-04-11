@@ -735,7 +735,6 @@ GameEngine::GameEngine(){
             fileReader = true;
             size_t pos = input_option.find(" ");
             string pathIn = input_option.substr(pos+1);
-            cout << "path name is:" << pathIn << endl;
             _myProcessor = new FileCommandProcessorAdapter(pathIn);
     }else{
         cout << "Please enter a correct option." << endl;
