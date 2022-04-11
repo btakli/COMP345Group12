@@ -90,6 +90,7 @@ CommandProcessor::CommandProcessor(){
     this->_game_num = new string();
     this->_max_turn = new string();
     this->reject = false;
+    this->tournament_mode = false;
     ILoggable::_currentState->assign("Initial");
 }
 
@@ -234,6 +235,7 @@ void CommandProcessor::saveCommand(){
             /*******************
              * TOURNAMENT MODE
             ********************/
+           this->tournament_mode = true;
             //save all info needed:
             tournamentHelper(commandLine);
             if(!reject){
@@ -267,6 +269,7 @@ void CommandProcessor::saveCommand(){
         /*****************
          * REGULAR MODE
         ******************/
+       this->tournament_mode = false;
         //use stringstream to seperate the command with "space"
         stringstream ss (commandLine);
         string prev_command;
