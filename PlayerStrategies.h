@@ -98,6 +98,9 @@ public:
 	AggressivePlayerStrategy& operator=(const AggressivePlayerStrategy& rhs);
 	//clone method
 	virtual AggressivePlayerStrategy* clone();
+private:
+	//Finds the strongest territory (one with the most deployed armies). If there is a tie, return any of them.
+	Territory* strongestTerritory();
 };
 
 //Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories).

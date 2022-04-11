@@ -196,18 +196,73 @@ AggressivePlayerStrategy::~AggressivePlayerStrategy()
 
 void AggressivePlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
+	//Strongest territory
+	Territory* strongest = strongestTerritory();
+	//Neighbours of strongest
+	vector<Territory*> neighboursOfStrongest = strongest->get_neighbors();
+
+	//If we are at the deploy phase, deploy on the strongest territory all armies in your army pool. 
+	if (orderType == "deploy")
+	{
+		int armiesToDeploy = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
+		Deploy* deployOrder = new Deploy(&(*p), strongest, *(gameEngine->get_ArmyPoolAt(p->getIndex())));
+		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
+
+		p->getOrdersList()->addOrder(deployOrder);
+		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armiesToDeploy;
+	}
+
+	//Advance all your armies to the strongest territory (if you can)
+	for (Territory* neighbour : neighboursOfStrongest) {
+		//If we are a neighbour of the strongest territory and we have at least 1 army unit, advance it to our strongest territory
+		if (neighbour->get_claimant() == p && neighbour->get_stationed_army() > 0) {
+			Advance* advanceOrder = new Advance(&(*p), neighbour, strongest);
+			advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+			p->getOrdersList()->addOrder(advanceOrder);
+		}
+	}
+
+	//Then advance all your armies into enemy territories until you cannot.
+	for (Territory* myTerritory : p->get_territories()) {
+		//continue to next if we have no armies to advance.
+		if (myTerritory->get_stationed_army() == 0)
+			continue;
+		//If the neighbour is an enemy, attack it
+		for (Territory* neighbour : myTerritory->get_neighbors()) {
+			if (neighbour->get_claimant() != p) {
+				Advance* advanceOrder = new Advance(&(*p), myTerritory, neighbour);
+				advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+				p->getOrdersList()->addOrder(advanceOrder);
+				
+				break; //We advanced all armies to that enemy, so break this loop and move onto next territory of ours.
+			}
+		}
+	}
+	
 }
 
 vector<Territory*> AggressivePlayerStrategy::toAttack(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() != p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
 }
 
 vector<Territory*> AggressivePlayerStrategy::toDefend(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() == p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
 }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -228,6 +283,20 @@ AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePl
 AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 {
 	return new AggressivePlayerStrategy(*this);
+}
+
+Territory* AggressivePlayerStrategy::strongestTerritory()
+{
+	//Set strongest initially to the first territory
+	Territory* strongest = p->get_territories().at(0);
+
+	//Return first territory with the highest army count
+	for (auto ter : p->get_territories()) {
+		if (ter->get_stationed_army() > strongest->get_stationed_army()) {
+			strongest = ter;
+		}
+	}
+	return strongest;
 }
 
 //----------------------------------------------------------------------------------------
