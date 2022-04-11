@@ -35,6 +35,7 @@ Player::Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps) //T
     this->_hand = new Hand();
     this->_listOfOrders = new OrdersList();
     this->_ps = ps;
+    this->_wasAttacked = new bool(false);
 
     //Auto set the default strategy to human
     if (!_ps) {
@@ -61,6 +62,7 @@ Player::~Player() {
     delete _hand;                          
     delete _listOfOrders;
     delete _index;
+    delete _wasAttacked;
 }
 
 void Player::drawCard() {
@@ -150,11 +152,22 @@ void Player::setStrategy(PlayerStrategy* ps)
 
 }
 
+bool Player::wasAttacked()
+{
+    return *_wasAttacked;
+}
+
+void Player::setWasAttacked(bool value)
+{
+    *_wasAttacked = value;
+}
+
 Player::Player(const Player &p){
     this->_index = new int(*p._index);
     this->_name = new string(*(p._name));
     this->_deck = new Deck(*p._deck);
     this->_collection = new vector<Territory*>();
+    this->_wasAttacked = new bool(*(p._wasAttacked));
 
     this->_ps = p._ps->clone();
     this->_ps->setPlayer(this);
