@@ -1,7 +1,13 @@
-~~~~ Gamelog for game starting on: Mon Apr 11 18:56:56 2022
+~~~~ Gamelog for game starting on: Mon Apr 11 19:29:22 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded
 Game Engine new state: MapValidated
 Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy

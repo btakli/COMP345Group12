@@ -359,11 +359,17 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
-    LOG("Deploy Phase - New Round");
+    cout << "**************************\nDeploy Phase - Round: " + to_string(++ * engine->_round) + "\n **************************" << endl;
+
+    cout << *Map::get_instance() << endl;
 
     //Displays the current cars each player have
+
+    cout << "**************************"
+            "\n   Card Information"
+            "\n************************" << endl;
     for (Player* player : engine->get_players()) {
-        cout << *player->getName() << " card info: \n " << *player->getHand() << endl;
+        cout << *player->getName() << "\n" << *player->getHand() << endl;
     }
 
     //if(input == *_command){
@@ -501,7 +507,7 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
 
         cout << "Going to Win state" << endl;
     }
-    else{
+    else{ // Not Win
         //get currentTunrsLeftInt points to the same address as the property max_turns
         
         cout << "current turn left:" << *engine->getCommandProcessor()->getMaxTurns() <<endl;
@@ -692,7 +698,7 @@ string End::getName(){
 *************************GameEngine Class:*****************************
 ***********************************************************************/
 GameEngine::GameEngine(){
-
+    _round = new int(0);
     _orders = new queue<Order*>();
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
@@ -749,6 +755,7 @@ GameEngine::GameEngine(){
 }
 
 GameEngine::~GameEngine(){
+    delete _round;
     delete _currentState;
     delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
@@ -1003,10 +1010,6 @@ void GameEngine::addReinforcementsPhase() {
 
     LOG("Reinforcement Phase")
 
-    cout << "After previous army" << endl;
-    for (int* army : this->get_ArmyPools()) cout << *army << endl;
-
-
     // # Territories / 3 to floor added to army pool 
     for (Player* player : this->get_players()) {
         *(this->get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
@@ -1022,8 +1025,6 @@ void GameEngine::addReinforcementsPhase() {
     // 3 min army points per round
     for (int* army : this->get_ArmyPools()) *army += 3; 
 
-    cout << "After new army" << endl;
-    for (int* army : this->get_ArmyPools()) cout << *army << endl;
 }
 
 void GameEngine::deployReinforcementPhase() {
