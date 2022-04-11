@@ -244,7 +244,25 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(): PlayerStrategy()
 void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
 	int armyCount = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
-	//if order type is deploy or 
+	if (armyCount != 0) {
+		Deploy* deployOrder = new Deploy(&(*p), _weakest, armyCount);
+		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
+		p->getOrdersList()->addOrder(deployOrder);
+		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armyCount;
+	}
+	if (armyCount == 0) {
+		Territory* old;
+		old = _weakest;
+		findWeakest();
+		Advance* advanceOrder = new Advance(&(*p), old, _weakest);
+		//Attach the first observer to the order.
+		advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+		p->getOrdersList()->addOrder(advanceOrder);
+	}
+	//if armyCount > 0, deploy on armyCount on weekest
+	//
+	//then advance half of the army to newest weakeast once from old weakest
+
 
 }
 
@@ -321,6 +339,7 @@ void BenevolentPlayerStrategy::findWeakest()
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(): PlayerStrategy()
 {
+	setPlayer(p);
 }
 
 CheaterPlayerStrategy::~CheaterPlayerStrategy()
@@ -330,7 +349,7 @@ CheaterPlayerStrategy::~CheaterPlayerStrategy()
 
 void CheaterPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
-
+	
 	for (auto ter : p->get_territories()) {
 		for (auto neighbour : toAttack(ter)) {
 			neighbour->claim(p, true);
@@ -360,10 +379,12 @@ vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
+	setPlayer(p);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->setPlayer(other.p);
 	this->p = other.p;
 }
 
