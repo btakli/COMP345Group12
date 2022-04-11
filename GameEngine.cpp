@@ -303,6 +303,8 @@ void PlayersAdded::transition(GameEngine* engine, string input){
             engine->draw_initial_cards();
             engine->popConqBool();
 
+            engine->getCurrentState() ->transition(engine, "");
+
         }
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -372,6 +374,7 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
 
         engine->change_state(new IssueOrders());
         engine->getCurrentState() ->transition(engine, "");
+        
 
     //}else{
        // std::cout << "ERROR: Please enter a valid command." << endl;
@@ -499,9 +502,32 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
         cout << "Going to Win state" << endl;
     }
     else{
-        engine->excecuteOrdersPhase();
-        engine->change_state(new AssignedReinforcement());
-        engine->getCurrentState()->transition(engine, "");
+        //get currentTunrsLeftInt points to the same address as the property max_turns
+        
+        cout << "current turn left:" << *engine->getCommandProcessor()->getMaxTurns() <<endl;
+        int currentTunrsLeftInt = std::stoi(*engine->getCommandProcessor()->getMaxTurns());
+        if(currentTunrsLeftInt == 0){
+            cout << "Reached the maximum number of turns" <<endl;
+            cout << endl;
+            cout << "Exiting the game with a Draw..." << endl;
+            cout << endl;
+            engine->change_state(new Win());
+            //engine->getCurrentState()->transition(engine, "");
+
+        }else{
+            engine->excecuteOrdersPhase();
+            engine->change_state(new AssignedReinforcement());
+
+             // modify the turn number by decreasing by 1 after each turn
+            currentTunrsLeftInt -= 1;
+            //assign it back to the max_turn value
+            engine->getCommandProcessor()->getMaxTurns()->assign(std::to_string(currentTunrsLeftInt));
+            cout << "current turn left AFTER EXECUTION:" << *engine->getCommandProcessor()->getMaxTurns() <<endl;
+
+            engine->getCurrentState()->transition(engine, "");
+        
+           
+        } 
     }
 
 
@@ -575,21 +601,25 @@ Win::~Win(){
 
 void Win::transition(GameEngine* engine, string input){
 
-    //if(input == *_command2){
+    if(input == *_command2){
         engine->change_state(new End());
-
+        cout << endl;
         std::cout << "**************************" << endl;
         std::cout << "*********Game Ends********" << endl;
         std::cout << "**************************" << endl;
+        cout << endl;
         engine->setStatus(false); //set the _continue to false
         engine->fileReader = false;
-   // }else if(input == *_command1){
+    }else if(input == *_command1){
         engine->change_state(new Start());
-
+        cout << endl;
+        cout << "************************************" << endl;
         cout << "**********Game restarted!!**********" << endl;
-    //}else{
-    //    std::cout << "ERROR: Please enter a valid command." << endl;
-   // }
+        cout << "************************************" << endl;
+        cout << endl;
+    }else{
+       std::cout << "ERROR: Please enter a valid command." << endl;
+   }
 }
 
 Win::Win(const Win& other){
@@ -713,6 +743,9 @@ GameEngine::GameEngine(){
     }
     }
     while(!pass);
+    //After the type of commandprocessor is known
+    //Get the commands from the command processor:
+    _myProcessor->getCommand();
     
 }
 
