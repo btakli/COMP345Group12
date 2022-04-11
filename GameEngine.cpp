@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "PlayerStrategies.h"
 #include <iostream>
 #include <random>
 #include <set>
@@ -1110,11 +1111,10 @@ void GameEngine::validateMap() {
 
 void GameEngine::deploy_phase(Player& player) {
 
-    
 
     while (has_army(player.getIndex())) {
         
-        std::cout << "Please enter deploy army for player " << *player.getName() << endl;
+        std::cout << "Please enter how many armies to deploy for player " << *player.getName() << endl;
         cout << "Remaining army to deploy: " << *(*_armyPool)[player.getIndex()] << endl;
 
         int army_to_deploy;

@@ -232,43 +232,53 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
-//-----------------------------------Benevolent Player Stategy-------------------------------
+//-----------------------------------Benevolent Player Stategy----------------------------
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(): BenevolentPlayerStrategy(nullptr)
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(): PlayerStrategy()
 {
+	_weakest = new Territory();
 }
 
 void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
-	findWeakest();
-	while (true)
-	{
-		break;		//deploy all armies to weakest, update weakest using findWeakest()
-	}				//Advance onto weakest territories
+	int armyCount = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
+	//if order type is deploy or 
+
 }
 
 vector<Territory*> BenevolentPlayerStrategy::toAttack(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+		return vector<Territory*>();
 }
 
 vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> owned;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() == p) {
+			owned.push_back(terr);
+		}
+	}
+	return owned;
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
+	setPlayer(p);
 	_weakest = nullptr;
-	setWeakest();
+	findWeakest();
+}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+	delete _weakest;
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
 {
+	this->setPlayer(other.p);
 	this->p = other.p;
 	this->_weakest = other._weakest;
 }
@@ -290,17 +300,6 @@ Territory* BenevolentPlayerStrategy::getWeakest()
 	return _weakest;
 }
 
-void BenevolentPlayerStrategy::setWeakest()
-{
-	this->_weakest = p->get_territories()[0];
-	int lowest = p->get_territories()[0]->get_stationed_army();
-	for (auto ter : p->get_territories()) {
-		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
-			_weakest = ter;
-		}
-	}
-}
-
 void BenevolentPlayerStrategy::findWeakest()
 {
 	this->_weakest = p->get_territories()[0];
@@ -312,9 +311,6 @@ void BenevolentPlayerStrategy::findWeakest()
 	}
 }
 
-BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
-	delete _weakest;
-}
 
 
 //----------------------------------------------------------------------------------------
@@ -334,16 +330,26 @@ CheaterPlayerStrategy::~CheaterPlayerStrategy()
 
 void CheaterPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
+
 	for (auto ter : p->get_territories()) {
-		ter->claim(p, true);
+		for (auto neighbour : toAttack(ter)) {
+			neighbour->claim(p, true);
+		}
 	}
 	//automatically switches ownership of neigbouring countries to their own
 }
 
 vector<Territory*> CheaterPlayerStrategy::toAttack(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() != p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
+
 }
 
 vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
