@@ -48,6 +48,9 @@
     <ClCompile Include="PlayerStrategies.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TournamentDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cards.h">

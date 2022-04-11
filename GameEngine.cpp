@@ -839,6 +839,7 @@ void GameEngine::map_picker() {
 #define INVALID1 "invalid1"
 #define INVALID2 "invalid2"
 #define INVALID3 "invalid3"
+#define TINY "tiny"
 
 #define UPPERLIMIT 8
 
@@ -857,6 +858,7 @@ void GameEngine::map_picker() {
         else if (mapName == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
         else if (mapName == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
         else if (mapName == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
+        else if (mapName == TINY)MapLoader::get_instance()->load_map(TINY);
     }
 }
 
