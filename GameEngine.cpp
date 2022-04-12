@@ -863,7 +863,8 @@ void GameEngine::map_picker() {
 
     for (Command c : *(this->getCommandProcessor())->getCommandList()) {
 
-        string map = c.getCommandName(1, false);
+        size_t space = c.getCommandName().find(" ") + 1;
+        string map = c.getCommandName().substr(space);
 
         if (this->getCommandProcessor()->tournament_mode) {
             cout << "Tournament mode" << endl;
@@ -905,20 +906,22 @@ void GameEngine::add_new_player() {
 
     for (Command c : *commands) {
          
-        string commandprefix = c.getCommandName(0, true);
+        size_t pos1 = (c.getCommandName()).find(" ");
+        size_t pos2 = 0;
+        int length = pos1 - pos2;
+        string commandprefix = (c.getCommandName()).substr(0, length);
 
         if (commandprefix == "addplayer") {
-
-            string playerName = c.getCommandName(1, false);
-
+            size_t space = c.getCommandName().find(" ") + 1;
+            string playerName = c.getCommandName().substr(space);
             if (!already.contains(playerName)) {
                 already.insert(playerName);
 
                 if (this->getCommandProcessor()->tournament_mode) {
-                         if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
+                    if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
                     else if (playerName == "2")this->get_players().push_back(new Player("Benevolent" + to_string(++benevolentIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new BenevolentPlayerStrategy()));
-                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral"    + to_string(++neutralIndex),    this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
-                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater"    + to_string(++cheaterIndex),    this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
+                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral" + to_string(++neutralIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
+                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater" + to_string(++cheaterIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
                     else cout << "ERROR: Unkown behavior" << endl;
                 }
                 else { // Normal Mode
@@ -974,14 +977,17 @@ void GameEngine::order_of_play() {
 }
 
 void GameEngine::give_initial_armies() {
-
     int size = this->get_players().size();
-
-    cout << "The army pool sizes are the following: " << endl;
-
-    for (int i = 0; i < size; i++) {
+    int i = 0;
+    for (i; i < size; i++) {
         this->get_ArmyPools().push_back(new int(50));
-        cout << "Player " << (i + 1) << " has " << *this->get_ArmyPools().at(i) << " armies" << endl;
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: this->get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
     }
 }
 
