@@ -600,9 +600,9 @@ std::string Territory::to_string() const {
 	std::string tmp = "";
 
 	for (Territory* c : get_neighbors()) 
-		tmp += "\t>> [" + std::to_string(c->get_index()) + "] " + c->get_name() + " [Stationed Army:" + std::to_string(c->get_stationed_army()) + "]\n";
+		tmp += "\t>> [" + std::to_string(c->get_index()) + "] " + c->get_name() + " [Stationed Army: " + std::to_string(c->get_stationed_army()) + "]\n";
 	
-	return LandMass::to_string() + "\n" + tmp;
+	return LandMass::to_string() + " [Stationed Army: " + std::to_string(this->get_stationed_army()) + "]\n" + tmp;
 }
 
 bool& Territory::get_visited() const {
