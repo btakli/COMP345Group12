@@ -81,11 +81,13 @@ class CommandProcessor: public ILoggable, public Subject
     list<string>* getPlayerCommands();
     string* getGameNum();
     string* getMaxTurns();
+    void setMaxTurns(string newNum);
     //This analyze the tournament command (if any) and catch the needed info
     void tournamentHelper(string commandLine);    
     void showHelpPage();
 
     bool tournament_mode;
+    string* turn_num;
 
     protected:
     //implemented as virtual function so it would work for both console
@@ -103,6 +105,7 @@ class CommandProcessor: public ILoggable, public Subject
    std::list<string>* _commands_players;
    string* _game_num;
    string* _max_turn;
+   
    
 };
 

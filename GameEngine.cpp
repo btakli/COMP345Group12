@@ -522,20 +522,25 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
                 cout << endl;
                 engine->change_state(new Win());
                 //engine->getCurrentState()->transition(engine, "");
-            }
-            else {
+            }else {
                 // modify the turn number by decreasing by 1 after each turn
                 currentTunrsLeftInt -= 1;
                 //assign it back to the max_turn value
                 engine->getCommandProcessor()->getMaxTurns()->assign(std::to_string(currentTunrsLeftInt));
                 cout << "current turn left AFTER EXECUTION:" << *engine->getCommandProcessor()->getMaxTurns() << endl;
+                engine->excecuteOrdersPhase();
+                engine->change_state(new AssignedReinforcement());
+                engine->getCurrentState()->transition(engine, "");
             }
-        }
-        engine->excecuteOrdersPhase();
-        engine->change_state(new AssignedReinforcement());
+        }else{
+            //if it is in nomal mode
+            // we don't need to check the maximum turn:
+            //execute orders directly:
+            engine->excecuteOrdersPhase();
+            engine->change_state(new AssignedReinforcement());
+            engine->getCurrentState()->transition(engine, "");
 
-        engine->getCurrentState()->transition(engine, "");
-        
+        }
     }
 
 
@@ -620,6 +625,10 @@ void Win::transition(GameEngine* engine, string input){
         engine->fileReader = false;
     }else if(input == *_command1){
         engine->change_state(new Start());
+        //restore the number of maximum turns:
+        string* gameTurn = engine->getCommandProcessor()->turn_num;
+        engine->getCommandProcessor()->setMaxTurns(*gameTurn);
+
         cout << endl;
         cout << "************************************" << endl;
         cout << "**********Game restarted!!**********" << endl;

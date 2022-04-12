@@ -226,6 +226,7 @@ void CommandProcessor::tournamentHelper(string commandLine){
         this->_game_num = new string(gameNum);
         //save max turn:
         this->_max_turn = new string(maxTurn);
+        this->turn_num = new string(maxTurn);
         }
         
     }
@@ -408,6 +409,10 @@ string* CommandProcessor::getGameNum(){
 
 string* CommandProcessor::getMaxTurns(){
     return this->_max_turn;
+}
+
+void CommandProcessor::setMaxTurns(string newNum){
+    this->_max_turn = new string(newNum);
 }
 
 void CommandProcessor::showHelpPage(){
