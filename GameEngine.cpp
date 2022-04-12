@@ -447,6 +447,7 @@ void IssueOrders::transition(GameEngine* engine, string input){
 
     //}else if(input == *_command2){
         engine->change_state(new ExecuteOrders());
+
         engine->getCurrentState()->transition(engine, "");
 
     //}else{
@@ -849,8 +850,6 @@ void GameEngine::map_picker() {
 #define INVALID3 "invalid3"
 #define TINY "tiny"
 
-#define UPPERLIMIT 8
-
     Map::get_instance()->unload();
 
     for (Command c : *(this->getCommandProcessor())->getCommandList()) {
@@ -1051,8 +1050,9 @@ void GameEngine::excecuteOrdersPhase() {
             if (done.contains(p)) continue; // If player's no more orders - skip
 
             if (p->getOrdersList()->size() > 0) {
-
-                this->get_orders().push(p->getOrdersList()->get_order_list().front());
+                Order* o = p->getOrdersList()->get_order_list().front();
+                cout << *p->getName() << *o << endl;
+                this->get_orders().push(o);
                 p->getOrdersList()->remove();
             }
 
@@ -1067,6 +1067,7 @@ void GameEngine::excecuteOrdersPhase() {
     // Execute orders round-robin way
     for (size_t i = 0; i < size; i++) {
         Order* order = this->get_orders().front();
+        cout << *order << endl;
         order->execute();
         cout << "Executing: " << *order << endl;
         this->get_orders().pop();
@@ -1206,7 +1207,7 @@ void GameEngine::ordersPicker(Player& player) {
                     std::cin.ignore(1000, '\n');
                     option = -1;
                 }
-            } while (option > UPPERLIMIT || option < 1);
+            } while (option > 6 || option < 1);
             cout << endl;
 
             switch (option)

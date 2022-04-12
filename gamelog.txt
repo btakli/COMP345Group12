@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Mon Apr 11 18:47:23 2022
+~~~~ Gamelog for game starting on: Tue Apr 12 01:45:10 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
@@ -9,72 +9,425 @@ Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
-Game Engine new state: Assignedreinforcement
-Command's Effect: Transitioning to state Assignedreinforcement
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
 Order Issued: deploy
 Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 58 armies.
+	Aggressive1 deploying on territory RibSteaks 58 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player1 deploying on territory NT-Victoria_Island-West 58 armies.
+	Benevolent1 deploying on territory Ear 58 armies.
 Order Issued: deploy
 Order Issued: advance
 Order Issued: deploy
-Order Issued: advance
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+	Aggressive1 deploying on territory RibSteaks 8 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player1 deploying on territory NT-Victoria_Island-West 8 armies.
+	Benevolent1 deploying on territory Brisket 8 armies.
 Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 attacking with 66 armies from NU-Victoria_Island-East the enemy territory Nunavut-Continental
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 66 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+	Aggressive1 attacking with 66 armies from RibSteaks the enemy territory RibRoasts
 Order Issued: deploy
 Order Issued: advance
-Order Issued: advance
 Order Issued: deploy
-Order Issued: advance
-Order Issued: advance
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+	Aggressive1 deploying on territory RibRoasts 8 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player1 deploying on territory NT-Victoria_Island-West 8 armies.
+	Benevolent1 deploying on territory UpperTail 7 armies.
 Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 moving 0 armies from Nunavut-Continental to their other territory NU-Victoria_Island-East
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 74 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 attacking with 139 armies from NU-Victoria_Island-East the enemy territory NU-Northern_Islands
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 0 armies from Nunavut-Continental the enemy territory Manitoba-North
+	Aggressive1 attacking with 73 armies from RibRoasts the enemy territory ChuckRoast
 Order Issued: deploy
 Order Issued: advance
-Order Issued: advance
 Order Issued: deploy
-Order Issued: advance
-Order Issued: advance
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 8 armies.
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 moving 0 armies from NU-Northern_Islands to their other territory NU-Victoria_Island-East
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 74 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 attacking with 285 armies from NU-Victoria_Island-East the enemy territory NT-Victoria_Island-West
-Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 0 armies from NU-Northern_Islands the enemy territory Nunavut-Continental
-Order Issued: deploy
-Order Issued: advance
-Order Issued: deploy
-Order Issued: advance
+	Aggressive1 deploying on territory ChuckRoast 8 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+	Benevolent1 deploying on territory Poll 7 armies.
 Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player2 moving 0 armies from NT-Victoria_Island-West to their other territory NU-Victoria_Island-East
+	Aggressive1 attacking with 80 armies from ChuckRoast the enemy territory GroundBeef
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory GroundBeef 9 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 7 armies.
 Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
-	player1 attacking with 0 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+	Aggressive1 attacking with 89 armies from GroundBeef the enemy territory Neck
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Neck 9 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 7 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 98 armies from Neck the enemy territory Poll
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Poll 9 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 7 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 98 armies from Poll the enemy territory Ear
 Order Issued: deploy
 Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
 Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory UpperTail 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Brisket 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory UpperTail 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Brisket 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory UpperTail 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Brisket 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory UpperTail 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Brisket 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory FrontHoof 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory ArmRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Tailhead 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory SkirtSteak 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory RumpRoast 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Jaw 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory UpperTail 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Throat 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Porterhouse 6 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Ear 10 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory TopRound 6 armies.

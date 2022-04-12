@@ -205,9 +205,9 @@ void AggressivePlayerStrategy::issueOrder(GameEngine* gameEngine, string orderTy
 	if (orderType == "deploy")
 	{
 		int armiesToDeploy = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
-		Deploy* deployOrder = new Deploy(&(*p), strongest, *(gameEngine->get_ArmyPoolAt(p->getIndex())));
+		Deploy* deployOrder = new Deploy(p, strongest, *(gameEngine->get_ArmyPoolAt(p->getIndex())));
 		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
-
+		
 		p->getOrdersList()->addOrder(deployOrder);
 		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armiesToDeploy;
 	}
@@ -314,7 +314,8 @@ void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderTy
 {
 	int armyCount = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
 	if (armyCount != 0) {
-		Deploy* deployOrder = new Deploy(&(*p), _weakest, armyCount);
+		findWeakest();
+		Deploy* deployOrder = new Deploy(p, _weakest, armyCount);
 		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
 		p->getOrdersList()->addOrder(deployOrder);
 		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armyCount;
@@ -323,7 +324,7 @@ void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderTy
 		Territory* old;
 		old = _weakest;
 		findWeakest();
-		Advance* advanceOrder = new Advance(&(*p), old, _weakest);
+		Advance* advanceOrder = new Advance(p, old, _weakest);
 		//Attach the first observer to the order.
 		advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
 		p->getOrdersList()->addOrder(advanceOrder);

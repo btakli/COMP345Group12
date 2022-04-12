@@ -128,7 +128,6 @@ bool Deploy::validate(){
         cout << "invalid order" << endl;
         return false;
     }
-
 }
 
 void Deploy::execute(){
@@ -232,6 +231,14 @@ void Advance::execute() {
             targetTerritory->set_stationed_army((attackingChances - defendingChances) / 0.6);
             sourceTerritory->set_stationed_army(0);
 
+            auto it= targetTerritory->get_claimant()->get_territories().begin();
+
+            for (Territory* t : targetTerritory->get_claimant()->get_territories()) {
+                if (t == targetTerritory) break;
+                advance(it, 1);
+            }
+
+            targetTerritory->get_claimant()->get_territories().erase(it);
             targetTerritory->claim(player, false);
             player->get_territories().push_back(targetTerritory);
 
