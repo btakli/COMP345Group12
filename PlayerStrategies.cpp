@@ -238,7 +238,7 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(): PlayerStrategy()
 {
-	_weakest = new Territory();
+	_weakest = nullptr; //Do not make a new territory!
 }
 
 void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
@@ -285,13 +285,13 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
-	setPlayer(p);
 	_weakest = nullptr;
-	findWeakest();
+	if (this->p)
+		findWeakest();
 }
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
-	delete _weakest;
+	//Do NOT delete the weakest since it points to a real territory
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
@@ -339,7 +339,6 @@ void BenevolentPlayerStrategy::findWeakest()
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(): PlayerStrategy()
 {
-	setPlayer(p);
 }
 
 CheaterPlayerStrategy::~CheaterPlayerStrategy()
@@ -379,7 +378,6 @@ vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
-	setPlayer(p);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
