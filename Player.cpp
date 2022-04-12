@@ -39,7 +39,7 @@ Player::Player(string name, Deck* deck, LogObserver* lo, PlayerStrategy* ps) //T
 
     //Auto set the default strategy to human
     if (!_ps) {
-        _ps = new AggressivePlayerStrategy();
+        _ps = new HumanPlayerStrategy();
         _ps->setPlayer(this);
     }
     if (_ps)
