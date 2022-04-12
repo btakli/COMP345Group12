@@ -1043,24 +1043,24 @@ void GameEngine::excecuteOrdersPhase() {
     set<Player*> done;
 
     // Requeue round-robin orders
+
     while (true) {
         for (Player* p : this->get_players()) {
+            //cout << done.size() << "   " << get_players().size() << "   " << done.contains(p) << "    " << p->getOrdersList()->size() << endl;
 
-            if (done.contains(p)) continue;
+            if (done.contains(p)) continue; // If player's no more orders - skip
 
             if (p->getOrdersList()->size() > 0) {
 
                 this->get_orders().push(p->getOrdersList()->get_order_list().front());
                 p->getOrdersList()->remove();
+            }
 
-                if (p->getOrdersList()->size() < 1) {
-                    done.insert(p);
-                }
+            if (p->getOrdersList()->size() < 1) {
+                done.insert(p);
             }
         }
-
         if (done.size() == get_players().size()) break;
-
     }
 
     int size = this->get_orders().size();

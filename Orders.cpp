@@ -5,6 +5,8 @@
 #include "GameEngine.h"
 #include "Player.h"
 #include "Cards.h"
+#include <cmath>
+
 using namespace std;
 
 //GameEngine *Order::game = new GameEngine();
@@ -204,7 +206,7 @@ void Advance::execute() {
     cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
 
     if (targetTerritory->get_claimant() == player) { //advance 
-
+        cout << "Reinforce" << endl;
         targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
         sourceTerritory->set_stationed_army(0);
 
@@ -212,21 +214,30 @@ void Advance::execute() {
             + sourceTerritory->get_name() + " to their other territory " + targetTerritory->get_name());
     }
     else if (targetTerritory->get_claimant() != player) { //attack
-        
+        cout << "Attacking" << endl;
         _currentState->append("\n\t" + *player->getName() + " attacking with " + std::to_string(sourceTerritory->get_stationed_army()) + " armies from "
             + sourceTerritory->get_name() + " the enemy territory " + targetTerritory->get_name());
 
-        int attackingChances = sourceTerritory->get_stationed_army() * 0.6;
-        int defendingChances = targetTerritory->get_stationed_army() * 0.7;
+        float attackingChances = sourceTerritory->get_stationed_army() * 0.6;
+        float defendingChances = targetTerritory->get_stationed_army() * 0.7;
+
         if (attackingChances == defendingChances) {
-            targetTerritory->set_stationed_army(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army());
+            int sourceArmy = sourceTerritory->get_stationed_army();
+            int targetArmy = targetTerritory->get_stationed_army();
+
+            targetTerritory->set_stationed_army(abs(sourceArmy - targetArmy));
+            sourceTerritory->set_stationed_army(abs(sourceArmy - targetArmy));
         }
         else if (attackingChances > defendingChances) {
             targetTerritory->set_stationed_army((attackingChances - defendingChances) / 0.6);
+            sourceTerritory->set_stationed_army(0);
+
             targetTerritory->claim(player, false);
 
             player->drawCard();
         }
+
+        targetTerritory->get_claimant()->setWasAttacked(true);
     }
     notify(this); //Call notify to notify observers
     

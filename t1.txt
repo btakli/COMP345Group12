@@ -1,1 +1,1 @@
-tournament -M canada cow -P 1 2 3 -G 2 -D 3
+tournament -M 1 2 -P 1 2 3 -G 2 -D 13
