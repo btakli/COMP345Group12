@@ -15,6 +15,7 @@ int main(){
     CommandProcessor* processor = myGame->getCommandProcessor();
     
     list<Command>* commandList = processor->getCommandList(); // get the command of gameengine from its commandprocessor object
+    cout << "Wrong num:" << *processor->getMaxTurns() <<endl;
     for (Command& command : *commandList) {
         command.attach(lo);
         processor->validate(myGame, &command);
