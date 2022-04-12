@@ -15,7 +15,7 @@ using namespace std;
  */
 
 Order::Order() : _type(new string("Default Order")){
-    _currentState->assign("Order: Default Order"); //State doesn't change for an order.
+    _currentState->assign("Order: Default Order");
 }
 
 Order::Order(string type)
@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& description, const Order& o)
 
 
 Deploy::Deploy() : Order("deploy"){ //Constructor
-   _currentState->assign("Deploy: place some armies on one of the current player's territories."); //State doesn't change for an order.
+   _currentState->assign("Deploy: place some armies on one of the current player's territories.");
 
     player = nullptr;
     targetTerritory = nullptr;
@@ -103,7 +103,10 @@ Deploy& Deploy::operator=(const Deploy& dep){ //Assignment Operator
 }
 
 Deploy::Deploy(const Deploy& dep){ //Copy constructor
-
+    this->_currentState->assign(*dep._currentState);
+    this->player = dep.player;
+    this->targetTerritory = dep.targetTerritory;
+    this->armiesToDeploy = dep.armiesToDeploy;
 }
 
 Deploy* Deploy::clone() const 
@@ -131,6 +134,7 @@ void Deploy::execute(){
         //cout << "Deploy: place some armies on one of the current player's territories." << endl;
         //New Implementation
         targetTerritory->set_stationed_army(*new int(targetTerritory->get_stationed_army() + armiesToDeploy));
+        _currentState->append("\n\t" + *player->getName() + " deploying on territory " + targetTerritory->get_name() + " " + std::to_string(armiesToDeploy) + " armies.");
         notify(this); //Call notify to notify observers
     }
    else
@@ -144,7 +148,7 @@ void Deploy::execute(){
  */
 
 Advance::Advance() : Order("advance"){ //Constructor
-    _currentState->assign("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)."); //State doesn't change for an order.
+    _currentState->assign("Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).");
     player = nullptr;
     sourceTerritory = nullptr;
     targetTerritory = nullptr;
@@ -166,7 +170,11 @@ Advance& Advance::operator=(const Advance& adv){ //Assignment Operator
 }
 
 Advance::Advance(const Advance& adv) { //Copy constructor
-
+    this->_currentState->assign(*adv._currentState);
+    this->player = adv.player;
+    this->sourceTerritory = adv.sourceTerritory;
+    this->targetTerritory = adv.targetTerritory;
+    this->armiesToAdvance = adv.armiesToAdvance;
 }
 
 Advance* Advance::clone() const 
@@ -194,13 +202,20 @@ void Advance::execute() {
 
 
     cout << "Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target)." << endl;
-    notify(this); //Call notify to notify observers
 
     if (targetTerritory->get_claimant() == player) { //advance 
+
         targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
         sourceTerritory->set_stationed_army(0);
+
+        _currentState->append("\n\t" + *player->getName() + " moving " + std::to_string(sourceTerritory->get_stationed_army()) + " armies from "
+            + sourceTerritory->get_name() + " to their other territory " + targetTerritory->get_name());
     }
     else if (targetTerritory->get_claimant() != player) { //attack
+        
+        _currentState->append("\n\t" + *player->getName() + " attacking with " + std::to_string(sourceTerritory->get_stationed_army()) + " armies from "
+            + sourceTerritory->get_name() + " the enemy territory " + targetTerritory->get_name());
+
         int attackingChances = sourceTerritory->get_stationed_army() * 0.6;
         int defendingChances = targetTerritory->get_stationed_army() * 0.7;
         if (attackingChances == defendingChances) {
@@ -213,6 +228,8 @@ void Advance::execute() {
             player->drawCard();
         }
     }
+    notify(this); //Call notify to notify observers
+    
 }
 
 /**
@@ -221,7 +238,7 @@ void Advance::execute() {
  */
 
 Bomb::Bomb() : Order("bomb"){ //Constructor
-    _currentState->assign("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories."); //State doesn't change for an order.
+    _currentState->assign("Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories.");
     targetTerritory = nullptr;
 }
 
@@ -239,7 +256,8 @@ Bomb& Bomb::operator=(const Bomb& bmb){ //Assignment Operator
 }
 
 Bomb::Bomb(const Bomb& bmb){ //Copy constructor
-
+    this->_currentState->assign(*bmb._currentState);
+    this->targetTerritory = bmb.targetTerritory;
 }
 
 Bomb* Bomb::clone() const 
@@ -267,6 +285,7 @@ void Bomb::execute(){
     cout << "Bomb: destroy half of the armies located on an opponent’s territory that is adjacent to one of the current player's territories." << endl;
     int bombedArmies = (targetTerritory->get_stationed_army()) / 2;
     targetTerritory->set_stationed_army(bombedArmies);
+    _currentState->append("\n\t" + targetTerritory->get_name() + " was bombed!");
     notify(this); //Call notify to notify observers
 }
 
@@ -276,7 +295,7 @@ void Bomb::execute(){
  */
 
 Blockade::Blockade() : Order("blockade"){ //Constructor
-   _currentState->assign("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory."); //State doesn't change for an order.
+   _currentState->assign("Blockade: triple the number of armies on one of the current player's territories and make it a neutral territory.");
    targetTerritory = nullptr;
 }
 
@@ -293,7 +312,8 @@ Blockade& Blockade::operator=(const Blockade& blck){ //Assignment Operator
 }
 
 Blockade::Blockade(const Blockade& blck){ //Copy constructor
-
+    this->_currentState->assign(*blck._currentState);
+    this->targetTerritory = blck.targetTerritory;
 }
 
 Blockade* Blockade::clone() const 
@@ -316,7 +336,7 @@ void Blockade::execute(){
     int doubleArmies = (targetTerritory->get_stationed_army()) * 2;
     targetTerritory->set_stationed_army(doubleArmies);
     targetTerritory->claim(nullptr, false);
-    //player->setNeutral(targetTerritory);
+    _currentState->append("\n\tDoubled army count on " + targetTerritory->get_name() + " to " + std::to_string(doubleArmies) + " armies");
     notify(this); //Call notify to notify observers
 }
 
@@ -327,7 +347,7 @@ void Blockade::execute(){
  */
 
 Airlift::Airlift() : Order("airlift"){ //Constructor
-   //A1 _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory."); //State doesn't change for an order.
+   _currentState = new string("Airlift: advance some armies from one of the current player's territories to any another territory.");
    sourceTerritory = nullptr;
    targetTerritory = nullptr;
    armiesToAirlift = 0;
@@ -348,7 +368,10 @@ Airlift& Airlift::operator=(const Airlift& al){ //Assignment Operator
 }
 
 Airlift::Airlift(const Airlift& al){ //Copy constructor
-
+    this->_currentState->assign(*al._currentState);
+    this->sourceTerritory = al.sourceTerritory;
+    this->targetTerritory = al.targetTerritory;
+    this->armiesToAirlift = al.armiesToAirlift;
 }
 
 Airlift* Airlift::clone() const 
@@ -374,6 +397,7 @@ void Airlift::execute(){
         //new implementation
         targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
         sourceTerritory->set_stationed_army(0);
+        _currentState->append("\n\tAdvancing armies from " + sourceTerritory->get_name() + " to " + targetTerritory->get_name());
         notify(this); //Call notify to notify observers
     }
    else
@@ -387,7 +411,7 @@ void Airlift::execute(){
  */
 
 Negotiate::Negotiate() : Order("negotiate"){ //Constructor
-    _currentState->assign("Negotiate: prevent attacks between the current player and another player until the end of the turn."); //State doesn't change for an order.
+    _currentState->assign("Negotiate: prevent attacks between the current player and another player until the end of the turn.");
     player = nullptr;
     targetPlayer = nullptr;
 }
@@ -407,7 +431,9 @@ Negotiate& Negotiate::operator=(const Negotiate& ng){ //Assignment Operator
 }
 
 Negotiate::Negotiate(const Negotiate& ng){ //Copy constructor
-
+    _currentState->assign(*ng._currentState);
+    player = ng.player;
+    targetPlayer = ng.targetPlayer;
 }
 
 Negotiate* Negotiate::clone() const 
@@ -428,7 +454,7 @@ bool Negotiate::validate(){
 void Negotiate::execute(){
     if (validate()) {
         cout << "Negotiate: prevent attacks between the current player and another player until the end of the turn." << endl;
-
+        _currentState->append("\n\tPreventing attacks between " + *player->getName() + " and " + *targetPlayer->getName());
         notify(this); //Call notify to notify observers
     }
    else

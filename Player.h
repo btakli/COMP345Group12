@@ -6,15 +6,15 @@
 #include "Cards.h"
 #include "Orders.h"
 #include "LoggingObserver.h"
+#include "PlayerStrategies.h"
 using std::string;
 using std::vector;
 
 //Forward declaration
 class Territory;
-class PlayerStrategy;
 class GameEngine;
 
-//Class for players
+//Class for players. Defaults to HumanPlayerStrategy strategy type if no strategy is provided
 class Player {
 public:
     //Basic constructor
@@ -35,7 +35,11 @@ public:
     vector<Territory*> toDefend(Territory *t);
     //ad a territory to attack
     vector<Territory*> toAttack(Territory *t);
-    //Creates new order and adds it to _listOfOrders. Contains all the logic needed for decisions
+    ///<summary>Creates new order and adds it to _listOfOrders. Contains all the logic needed for decisions.</summary>
+    ///<param name='GameEngine* gameEngine'>calls this method, some GameEngine methods are used in issueOrder depending on the order. Pass in *this* from gameEngine</param>
+    ///<param name='string orderType'>Type of order. Result MAY change depending on order type given (most bots only care about deploy). 
+    /// Types are: deploy, diplomacy, airlift, blockade, bomb and advance.
+    /// </param>
     void issueOrder(GameEngine* gameEngine, string orderType);
     //Copy constructor
     Player(const Player& p);
@@ -45,8 +49,6 @@ public:
     ~Player();
     //stream insertion operator overload for Player
     friend std::ostream& operator<<(std::ostream& out, const Player& player);
-    //takes a pointer to an Order and adds it to the players list of orders
-    void issueOrder(Order *pOrder);
     //Returns players hand
     Hand* getHand();
     //Returns player's OrdersList

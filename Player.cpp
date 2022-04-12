@@ -76,17 +76,6 @@ vector<Territory*> Player::toDefend(Territory* source) {
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
     return vector<Territory*>();
-
-    //This is what you had before
-    /*vector<Territory*> neighbors;
-
-    for (Territory* t : source->get_neighbors()) {
-        if (t->get_claimant() == this) {
-            neighbors.push_back(t);
-        }
-    }
-
-    return neighbors;*/
 }
 
 vector<Territory*> Player::toAttack(Territory* source) {
@@ -95,16 +84,6 @@ vector<Territory*> Player::toAttack(Territory* source) {
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
     return vector<Territory*>();
-    //This is what you had before
-    /*vector<Territory*> neighbors;
-
-    for (Territory* t : source->get_neighbors()) {
-        if (t->get_claimant() != this) {
-            neighbors.push_back(t);
-        }
-    }
-
-    return neighbors;*/
 }
 
 int& Player::getIndex() {
@@ -116,14 +95,6 @@ void Player::issueOrder(GameEngine* gameEngine, string orderType) {
         _ps->issueOrder(gameEngine, orderType);
     else
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
-}
-
-void Player::issueOrder(Order *pOrder) {
-    if (_ps)
-        _ps->issueOrder(nullptr,nullptr); //TODO FIX?!?!
-    else
-        std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
-    //this->_listOfOrders->addOrder(pOrder); //Old way of doing it
 }
 
 Hand* Player::getHand() {

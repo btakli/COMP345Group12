@@ -1,7 +1,80 @@
-~~~~ Gamelog for game starting on: Mon Apr 11 19:39:58 2022
+~~~~ Gamelog for game starting on: Mon Apr 11 18:47:23 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded
 Game Engine new state: MapValidated
 Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: Assignedreinforcement
+Command's Effect: Transitioning to state Assignedreinforcement
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 58 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player1 deploying on territory NT-Victoria_Island-West 58 armies.
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Issued: advance
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player1 deploying on territory NT-Victoria_Island-West 8 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 attacking with 66 armies from NU-Victoria_Island-East the enemy territory Nunavut-Continental
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 66 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player1 deploying on territory NT-Victoria_Island-West 8 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 moving 0 armies from Nunavut-Continental to their other territory NU-Victoria_Island-East
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 74 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 attacking with 139 armies from NU-Victoria_Island-East the enemy territory NU-Northern_Islands
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 0 armies from Nunavut-Continental the enemy territory Manitoba-North
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 moving 0 armies from NU-Northern_Islands to their other territory NU-Victoria_Island-East
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 74 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 attacking with 285 armies from NU-Victoria_Island-East the enemy territory NT-Victoria_Island-West
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 0 armies from NU-Northern_Islands the enemy territory Nunavut-Continental
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Issued: advance
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player2 moving 0 armies from NT-Victoria_Island-West to their other territory NU-Victoria_Island-East
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 0 armies from NT-Victoria_Island-West the enemy territory NU-Victoria_Island-East
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player2 deploying on territory NU-Victoria_Island-East 8 armies.
+Order Issued: deploy
