@@ -176,6 +176,10 @@ void CommandProcessor::tournamentHelper(string commandLine){
         string gameNum;
         try{
             gameNum = commandLine.substr(game_num_index+3, 1);
+            if(((game_turn_index-1)-(game_num_index+3)) > 1){
+                cout << "Please make sure you enter one number between 1 and 5 for -G." <<endl;
+                reject = true;
+            }
         }catch(out_of_range &e){
             cout << "Please enter a number for -G." <<endl;
            reject = true;
@@ -184,6 +188,9 @@ void CommandProcessor::tournamentHelper(string commandLine){
         string maxTurn;
         try{
             maxTurn = commandLine.substr(game_turn_index+3, 2);
+            if(commandLine.substr(game_turn_index+3).length() > 2){
+                cout << "Please make sure to enter one number between 10 and 50 for -D." <<endl;
+            }
         }catch(out_of_range &e){
             cout << "Please enter a number for -D." <<endl;
            reject = true;
@@ -198,7 +205,6 @@ void CommandProcessor::tournamentHelper(string commandLine){
             cout << "The number of games for each map has to be between 1 to 5" << endl;
         }
         int maxTurnInt = std::stoi(maxTurn);
-        cout << "Converted max tunr:" << maxTurnInt <<endl;
         if(maxTurnInt > 50 || maxTurnInt < 10){
             this->reject = true;
             cout << "The number of maximum turns for each game has to be between 10 to 50" << endl;
