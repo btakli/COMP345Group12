@@ -137,8 +137,6 @@ private:
 
 	//returns a pointer weakest territory owned by player
 	Territory* getWeakest();
-	//Creates _weakest and finds the weakest territory. Only to be called once
-	void setWeakest();
 	//Updates the _weakest pointer
 	void findWeakest();
 	//points to players weakest territory

@@ -1,10 +1,5 @@
 ~~~~ Gamelog for game starting on: Mon Apr 11 18:47:23 2022
 
-Command: loadmap canada
-Command: validatemap
-Command: addplayer player1
-Command: addplayer player2
-Command: gamestart
 Game Engine new state: Start
 Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded

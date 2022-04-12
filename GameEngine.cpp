@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "PlayerStrategies.h"
 #include <iostream>
 #include <random>
 #include <set>
@@ -303,6 +304,8 @@ void PlayersAdded::transition(GameEngine* engine, string input){
             engine->draw_initial_cards();
             engine->popConqBool();
 
+            engine->getCurrentState() ->transition(engine, "");
+
         }
     }else{
         std::cout << "ERROR: Please enter a valid command." << endl;
@@ -357,11 +360,17 @@ AssignedReinforcement::~AssignedReinforcement(){
 
 void AssignedReinforcement::transition(GameEngine* engine, string input){
 
-    LOG("Deploy Phase - New Round");
+    cout << "**************************\nDeploy Phase - Round: " + to_string(++ * engine->_round) + "\n **************************" << endl;
+
+    cout << *Map::get_instance() << endl;
 
     //Displays the current cars each player have
+
+    cout << "**************************"
+            "\n   Card Information"
+            "\n************************" << endl;
     for (Player* player : engine->get_players()) {
-        cout << *player->getName() << " card info: \n " << *player->getHand() << endl;
+        cout << *player->getName() << "\n" << *player->getHand() << endl;
     }
 
     //if(input == *_command){
@@ -372,6 +381,7 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
 
         engine->change_state(new IssueOrders());
         engine->getCurrentState() ->transition(engine, "");
+        
 
     //}else{
        // std::cout << "ERROR: Please enter a valid command." << endl;
@@ -498,10 +508,33 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
 
         cout << "Going to Win state" << endl;
     }
-    else{
+    else{ // Not Win
+        //get currentTunrsLeftInt points to the same address as the property max_turns
+        
+        if (engine->getCommandProcessor()->tournament_mode) {
+            cout << "Current turn left:" << *engine->getCommandProcessor()->getMaxTurns() << endl;
+            int currentTunrsLeftInt = std::stoi(*engine->getCommandProcessor()->getMaxTurns());
+            if (currentTunrsLeftInt == 0) {
+                cout << "Reached the maximum number of turns" << endl;
+                cout << endl;
+                cout << "Exiting the game with a Draw..." << endl;
+                cout << endl;
+                engine->change_state(new Win());
+                //engine->getCurrentState()->transition(engine, "");
+            }
+            else {
+                // modify the turn number by decreasing by 1 after each turn
+                currentTunrsLeftInt -= 1;
+                //assign it back to the max_turn value
+                engine->getCommandProcessor()->getMaxTurns()->assign(std::to_string(currentTunrsLeftInt));
+                cout << "current turn left AFTER EXECUTION:" << *engine->getCommandProcessor()->getMaxTurns() << endl;
+            }
+        }
         engine->excecuteOrdersPhase();
         engine->change_state(new AssignedReinforcement());
+
         engine->getCurrentState()->transition(engine, "");
+        
     }
 
 
@@ -575,21 +608,25 @@ Win::~Win(){
 
 void Win::transition(GameEngine* engine, string input){
 
-    //if(input == *_command2){
+    if(input == *_command2){
         engine->change_state(new End());
-
+        cout << endl;
         std::cout << "**************************" << endl;
         std::cout << "*********Game Ends********" << endl;
         std::cout << "**************************" << endl;
+        cout << endl;
         engine->setStatus(false); //set the _continue to false
         engine->fileReader = false;
-   // }else if(input == *_command1){
+    }else if(input == *_command1){
         engine->change_state(new Start());
-
+        cout << endl;
+        cout << "************************************" << endl;
         cout << "**********Game restarted!!**********" << endl;
-    //}else{
-    //    std::cout << "ERROR: Please enter a valid command." << endl;
-   // }
+        cout << "************************************" << endl;
+        cout << endl;
+    }else{
+       std::cout << "ERROR: Please enter a valid command." << endl;
+   }
 }
 
 Win::Win(const Win& other){
@@ -662,7 +699,7 @@ string End::getName(){
 *************************GameEngine Class:*****************************
 ***********************************************************************/
 GameEngine::GameEngine(){
-
+    _round = new int(0);
     _orders = new queue<Order*>();
     _players_ptr = new std::vector<Player*>();
     _currentState = new Start(); //All game begin with Start state
@@ -705,7 +742,6 @@ GameEngine::GameEngine(){
             fileReader = true;
             size_t pos = input_option.find(" ");
             string pathIn = input_option.substr(pos+1);
-            cout << "path name is:" << pathIn << endl;
             _myProcessor = new FileCommandProcessorAdapter(pathIn);
     }else{
         cout << "Please enter a correct option." << endl;
@@ -713,10 +749,14 @@ GameEngine::GameEngine(){
     }
     }
     while(!pass);
+    //After the type of commandprocessor is known
+    //Get the commands from the command processor:
+    _myProcessor->getCommand();
     
 }
 
 GameEngine::~GameEngine(){
+    delete _round;
     delete _currentState;
     delete _myProcessor;
     for (Player* p : *_players_ptr) delete p;
@@ -807,6 +847,7 @@ void GameEngine::map_picker() {
 #define INVALID1 "invalid1"
 #define INVALID2 "invalid2"
 #define INVALID3 "invalid3"
+#define TINY "tiny"
 
 #define UPPERLIMIT 8
 
@@ -815,16 +856,33 @@ void GameEngine::map_picker() {
     for (Command c : *(this->getCommandProcessor())->getCommandList()) {
 
         size_t space = c.getCommandName().find(" ") + 1;
-        string mapName = c.getCommandName().substr(space);
+        string map = c.getCommandName().substr(space);
 
-        if (mapName == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
-        else if (mapName == CANADA) MapLoader::get_instance()->load_map(CANADA);
-        else if (mapName == COW) MapLoader::get_instance()->load_map(COW);
-        else if (mapName == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
-        else if (mapName == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
-        else if (mapName == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
-        else if (mapName == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
-        else if (mapName == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
+        if (this->getCommandProcessor()->tournament_mode) {
+            cout << "Tournament mode" << endl;
+                 if (map == "1") MapLoader::get_instance()->load_map(BERLIN);
+            else if (map == "2") MapLoader::get_instance()->load_map(CANADA);
+            else if (map == "3") MapLoader::get_instance()->load_map(COW);
+            else if (map == "4") MapLoader::get_instance()->load_map(ESTONIA);
+            else if (map == "5") MapLoader::get_instance()->load_map(FORTERESS);
+            else if (map == "6") MapLoader::get_instance()->load_map(INVALID1);
+            else if (map == "7") MapLoader::get_instance()->load_map(INVALID2);
+            else if (map == "8") MapLoader::get_instance()->load_map(INVALID3);
+            else if (map == "9") MapLoader::get_instance()->load_map(TINY);
+        }
+        else { // Normal mode
+            cout << "Normal mode" << endl;
+
+                 if (map == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
+            else if (map == CANADA) MapLoader::get_instance()->load_map(CANADA);
+            else if (map == COW) MapLoader::get_instance()->load_map(COW);
+            else if (map == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
+            else if (map == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
+            else if (map == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
+            else if (map == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
+            else if (map == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
+            else if (map == TINY)MapLoader::get_instance()->load_map(TINY);
+        }
     }
 }
 
@@ -832,6 +890,11 @@ void GameEngine::map_picker() {
 void GameEngine::add_new_player() {
 
     list<Command>* commands = this->getCommandProcessor()->getCommandList();
+
+    int aggressiveIndex = 0;
+    int benevolentIndex = 0;
+    int neutralIndex = 0;
+    int cheaterIndex = 0;
 
     for (Command c : *commands) {
          
@@ -845,8 +908,19 @@ void GameEngine::add_new_player() {
             string playerName = c.getCommandName().substr(space);
             if (!already.contains(playerName)) {
                 already.insert(playerName);
-                this->get_players().push_back(new Player(playerName, this->getDeck(),(LogObserver*) this->getObservers().at(0)));
+
+                if (this->getCommandProcessor()->tournament_mode) {
+                    if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
+                    else if (playerName == "2")this->get_players().push_back(new Player("Benevolent" + to_string(++benevolentIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new BenevolentPlayerStrategy()));
+                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral" + to_string(++neutralIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
+                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater" + to_string(++cheaterIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
+                    else cout << "ERROR: Unkown behavior" << endl;
+                }
+                else { // Normal Mode
+                    this->get_players().push_back(new Player(playerName, this->getDeck(), (LogObserver*)this->getObservers().at(0)));
+                }
                 std::cout << "Current player count: " << this->get_players().size();
+
             }
         }
     }
@@ -937,10 +1011,6 @@ void GameEngine::addReinforcementsPhase() {
 
     LOG("Reinforcement Phase")
 
-    cout << "After previous army" << endl;
-    for (int* army : this->get_ArmyPools()) cout << *army << endl;
-
-
     // # Territories / 3 to floor added to army pool 
     for (Player* player : this->get_players()) {
         *(this->get_ArmyPools()[player->getIndex()]) += (int)(player->get_territories().size() / 3);
@@ -956,8 +1026,6 @@ void GameEngine::addReinforcementsPhase() {
     // 3 min army points per round
     for (int* army : this->get_ArmyPools()) *army += 3; 
 
-    cout << "After new army" << endl;
-    for (int* army : this->get_ArmyPools()) cout << *army << endl;
 }
 
 void GameEngine::deployReinforcementPhase() {
@@ -1078,11 +1146,10 @@ void GameEngine::validateMap() {
 
 void GameEngine::deploy_phase(Player& player) {
 
-    
 
     while (has_army(player.getIndex())) {
         
-        std::cout << "Please enter deploy army for player " << *player.getName() << endl;
+        std::cout << "Please enter how many armies to deploy for player " << *player.getName() << endl;
         cout << "Remaining army to deploy: " << *(*_armyPool)[player.getIndex()] << endl;
 
         int army_to_deploy;

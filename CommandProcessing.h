@@ -72,6 +72,21 @@ class CommandProcessor: public ILoggable, public Subject
     //stream insertion operator:
     friend ostream& operator<<(ostream& os, const CommandProcessor& cp);
 
+
+    /************************************************************
+     * method for a3
+    *************************************************************/
+
+    list<string>* getMapCommands();
+    list<string>* getPlayerCommands();
+    string* getGameNum();
+    string* getMaxTurns();
+    //This analyze the tournament command (if any) and catch the needed info
+    void tournamentHelper(string commandLine);    
+    void showHelpPage();
+
+    bool tournament_mode;
+
     protected:
     //implemented as virtual function so it would work for both console
     // and file inputs:
@@ -79,6 +94,16 @@ class CommandProcessor: public ILoggable, public Subject
     void saveCommand();
     std::string* command_in;
     std::list<Command>* commands_ptr;
+    bool reject;
+    /************************************************************
+     * properties for a3
+    *************************************************************/
+   private:
+   std::list<string>* _commands_map;
+   std::list<string>* _commands_players;
+   string* _game_num;
+   string* _max_turn;
+   
 };
 
 //FileLineReader

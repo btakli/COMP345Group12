@@ -84,12 +84,24 @@ Command& Command::operator = (const Command& c){
 CommandProcessor::CommandProcessor(){
     command_in = new string("ASDFADSF");
     this->commands_ptr = new list<Command>();
+    //a3
+    this->_commands_map = new list<string>();
+    this->_commands_players = new list<string>();
+    this->_game_num = new string();
+    this->_max_turn = new string();
+    this->reject = false;
+    this->tournament_mode = false;
     ILoggable::_currentState->assign("Initial");
 }
 
 CommandProcessor::~CommandProcessor(){
     delete this->commands_ptr; //avoid memory leak
     delete this->command_in;
+    //a3
+    delete this->_commands_map;
+    delete this->_commands_players;
+    delete this->_game_num;
+    delete this->_max_turn;
 }
 
 void CommandProcessor::setPath(string newPath){
@@ -105,18 +117,166 @@ void CommandProcessor::readCommand(){
     command_in = new string(commands);
 }
 
+/************************
+ * A3 TOURNAMENT helper
+************************/
+void CommandProcessor::tournamentHelper(string commandLine){
+    size_t map_index = commandLine.find("-M");
+    size_t player_index = commandLine.find("-P");
+    size_t game_num_index = commandLine.find("-G");
+    size_t game_turn_index = commandLine.find("-D");
+    this->reject = false;
+    // make sure all options are entered:
+    if(map_index == std::string::npos){
+        cout << "Please enter a valid list of map file from 1 to 5." << endl;
+        this->reject = true;
+        showHelpPage();
+    }
+    if(player_index == std::string::npos){
+        cout << "Please enter a valid list of player strategies from 2 to 4." << endl;
+        this->reject = true;
+        showHelpPage();
+    }
+    //validate game numbers
+    if(game_num_index == std::string::npos){ 
+        cout << "Please enter a valid number of game you would like to play." << endl;
+        this->reject = true;
+        showHelpPage();
+    }
+        
+    
+    //validate game turns
+    if(game_turn_index == std::string::npos){
+        cout << "Please enter a valid number of maximum truns you would like to have for each game." << endl;
+        this->reject = true;
+        showHelpPage();
+    }
+        
+    // If have the command for all options, continue:
+    if(!reject){
+         
+        //get the map list:
+        string mapCommands;
+        try{
+             mapCommands = commandLine.substr(map_index+3, (player_index-1)-(map_index+3));
+        }catch(out_of_range &e){
+           cout << "Please enter at least one map file." <<endl;
+           reject = true;
+        }
+         
+        //get the player list:
+        string playerCommand;
+        try{
+            playerCommand = commandLine.substr(player_index+3, (game_num_index-1)-(player_index+3));
+        }catch(out_of_range &e){
+            cout << "Please enter at least one player strategy." <<endl;
+           reject = true;
+        }
+        //get game number:
+        string gameNum;
+        try{
+            gameNum = commandLine.substr(game_num_index+3, 1);
+        }catch(out_of_range &e){
+            cout << "Please enter a number for -G." <<endl;
+           reject = true;
+        }
+        //get max turn number:
+        string maxTurn;
+        try{
+            maxTurn = commandLine.substr(game_turn_index+3, 2);
+        }catch(out_of_range &e){
+            cout << "Please enter a number for -D." <<endl;
+           reject = true;
+        }
+        
+        // After second round of validation:
+        if(!reject){
+        //Third round of validation:
+        int gameNumInt = std::stoi(gameNum);
+        if(gameNumInt > 5 || gameNumInt < 1){
+            this->reject = true;
+            cout << "The number of games for each map has to be between 1 to 5" << endl;
+        }
+        int maxTurnInt = std::stoi(maxTurn);
+        cout << "Converted max tunr:" << maxTurnInt <<endl;
+        if(maxTurnInt > 50 || maxTurnInt < 10){
+            this->reject = true;
+            cout << "The number of maximum turns for each game has to be between 10 to 50" << endl;
+        }
+        //save map files:
+        stringstream ms (mapCommands);
+        string map;
+        while (ms >> map){
+            this->_commands_map->push_back(map);
+        }
+        //save player strategies:
+        stringstream ps (playerCommand);
+        string playerS;
+        while (ps >> playerS){
+            this->_commands_players->push_back(playerS);
+        }
+
+        //save game number:
+        this->_game_num = new string(gameNum);
+        //save max turn:
+        this->_max_turn = new string(maxTurn);
+        }
+        
+    }
+}
 // SPECIAL NOTES HERE:
 // If the command has a prefix as "loadmap" or "addplayer"
 // sasvemap would stop adding it to the list until it reads the name
 // of the mapfile or the name of the player
 void CommandProcessor::saveCommand(){
-    if(command_in){
         string commandLine = *command_in;
+        string t_mode = commandLine.substr(0, 10);
+       
+        if(t_mode == "tournament"){
+            /*******************
+             * TOURNAMENT MODE
+            ********************/
+           this->tournament_mode = true;
+            //save all info needed:
+            tournamentHelper(commandLine);
+            if(!reject){
+                //save all commands to commandlist:
+                string replayCountStr = *_game_num;
+                int replayCount = std::stoi(replayCountStr);
+                for(string m : *_commands_map){
+                    int mapReplayCount = replayCount;
+                    while(mapReplayCount > 0){
+                        //add the loadmap command:
+                        commands_ptr->push_back(Command("loadmap "+m));
+                        //add the vlidatemap command:
+                        commands_ptr->push_back(Command("validatemap"));
+                        //add all addplayer commands:
+                        for(string p : *_commands_players){
+                            commands_ptr->push_back(Command("addplayer "+p));
+                        }
+                        //push game start:
+                        commands_ptr->push_back(Command("gamestart"));
+                        // push replay:
+                        commands_ptr->push_back(Command("replay"));
+                        mapReplayCount -= 1;
+                    }
+                //replay the game with the next map:
+                //commands_ptr->push_back(Command("replay"));
+                }
+                commands_ptr->pop_back();
+                commands_ptr->push_back(Command("quit"));
+            }
+        }else{
+        /*****************
+         * REGULAR MODE
+        ******************/
+       this->tournament_mode = false;
         //use stringstream to seperate the command with "space"
         stringstream ss (commandLine);
         string prev_command;
         string oneCommand;
         while (ss >> oneCommand){
+            
             if(oneCommand != "loadmap" && oneCommand != "addplayer"){
                 if(prev_command == "loadmap"){
                     (*commands_ptr).push_back(Command(("loadmap "+ oneCommand)));
@@ -136,12 +296,11 @@ void CommandProcessor::saveCommand(){
              }
              prev_command = oneCommand;
         }
+        }
         cout << "The size of the command list is: " << (*commands_ptr).size() << endl;
-        
-    }else{
-        cout << "error!! no commands received!!" << endl;
-    }
+    
 }
+
 
 std::string CommandProcessor::stringToLog(){
     return "Command: " + *ILoggable::_currentState;
@@ -149,8 +308,12 @@ std::string CommandProcessor::stringToLog(){
 
 // command getCommand() read commands, and then save them to a list of Command objects
 std::list<Command>* CommandProcessor::getCommand(){
-    readCommand();
-    saveCommand();
+    // As long as the command is rejected, we keep asking for new command:
+    do{
+        readCommand();
+        saveCommand();
+    }while(reject);
+
     return commands_ptr;
 }
 
@@ -221,6 +384,35 @@ CommandProcessor& CommandProcessor::operator = (const CommandProcessor& cp){
     this->commands_ptr = new list<Command> (*(cp.commands_ptr));
     return *this;
 }
+
+/****************************************
+ * a3 methods:
+*****************************************/
+list<string>* CommandProcessor::getMapCommands(){
+    return this->_commands_map;
+}
+
+list<string>* CommandProcessor::getPlayerCommands(){
+    return this->_commands_players;
+}
+
+string* CommandProcessor::getGameNum(){
+    return this->_game_num;
+}
+
+string* CommandProcessor::getMaxTurns(){
+    return this->_max_turn;
+}
+
+void CommandProcessor::showHelpPage(){
+    
+        cout << "Tournament Mode:" << endl;
+        cout << "Use -M <listofmapfiles> to specify the list of maps;" <<endl;
+        cout << "Use -P <listofplayerstrategies> to specify the player strategies;" << endl;
+        cout << "Use -G <numberofgames> to specify the number of games to play;" << endl;
+        cout << "Use -D <maxnumberofturns> to specify the maximum turns for each game." << endl;
+    
+}
 /*****************************************
  *******FileCommandProcessorAdapter*******
 ******************************************/
@@ -238,7 +430,14 @@ void FileCommandProcessorAdapter::setPath(string newPath){
     this->_pathIn = new string(newPath);
 }
 void FileCommandProcessorAdapter::readCommand(){
-    string str_path = *_pathIn;
+    string str_path;
+    if(reject){
+        cout << "Please enter a new file name: " << endl;
+        cin >> str_path;
+    }else{
+        str_path = *_pathIn;
+    }
+     
     flr = new FileLineReader(str_path);
     string* commandsFile = new string(flr->readLineFromFile());
     command_in = commandsFile;
@@ -296,7 +495,8 @@ string FileLineReader::readLineFromFile(){
             this->_path = new string(newPath);
         }
     } while (!valid);
-    
+    //delete the extra space:
+    command = command.substr(1);
     return command;
 }
 
