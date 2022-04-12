@@ -197,10 +197,12 @@ void Advance::execute() {
     notify(this); //Call notify to notify observers
 
     if (targetTerritory->get_claimant() == player) { //advance 
+        cout << "Reinforce" << endl;
         targetTerritory->set_stationed_army(targetTerritory->get_stationed_army() + sourceTerritory->get_stationed_army());
         sourceTerritory->set_stationed_army(0);
     }
     else if (targetTerritory->get_claimant() != player) { //attack
+        cout << "Attacking" << endl;
         int attackingChances = sourceTerritory->get_stationed_army() * 0.6;
         int defendingChances = targetTerritory->get_stationed_army() * 0.7;
         if (attackingChances == defendingChances) {
