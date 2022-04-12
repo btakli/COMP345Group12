@@ -333,7 +333,8 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
 	_weakest = nullptr;
-	setWeakest();
+	if (this->p) //Don't find the weakest if the player pointer hasn't been set!
+		findWeakest();
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
@@ -361,8 +362,8 @@ Territory* BenevolentPlayerStrategy::getWeakest()
 
 void BenevolentPlayerStrategy::setWeakest()
 {
-	this->_weakest = p->get_territories()[0];
-	int lowest = p->get_territories()[0]->get_stationed_army();
+	this->_weakest = p->get_territories().at(0);
+	int lowest = p->get_territories().at(0)->get_stationed_army();
 	for (auto ter : p->get_territories()) {
 		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
 			_weakest = ter;
@@ -372,8 +373,8 @@ void BenevolentPlayerStrategy::setWeakest()
 
 void BenevolentPlayerStrategy::findWeakest()
 {
-	this->_weakest = p->get_territories()[0];
-	int lowest = p->get_territories()[0]->get_stationed_army();
+	this->_weakest = p->get_territories().at(0);
+	int lowest = p->get_territories().at(0)->get_stationed_army();
 	for (auto ter : p->get_territories()) {
 		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
 			_weakest = ter;
