@@ -487,7 +487,7 @@ std::string Continent::to_string() const {
 
 	for (Territory* c : get_territories()) tmp += "   " + c->to_string() + "\n";
 
-	return LandMass::to_string() + " | Army: " + std::to_string(get_army_bonus_value()) + " | " + get_color() + "\n"
+	return LandMass::to_string() + " | Army Bonus: " + std::to_string(get_army_bonus_value()) + "\n"
 		+ tmp;
 }
 
@@ -599,9 +599,10 @@ void Territory::set_neighbor(Territory& bordered_territory) {
 std::string Territory::to_string() const {
 	std::string tmp = "";
 
-	for (Territory* c : get_neighbors()) tmp += "\t>> " + std::to_string(c->get_index()) + " " + c->get_name()+ "\n";
+	for (Territory* c : get_neighbors()) 
+		tmp += "\t>> [" + std::to_string(c->get_index()) + "] " + c->get_name() + " [Stationed Army:" + std::to_string(c->get_stationed_army()) + "]\n";
 	
-	return LandMass::to_string() + "Parent: " + get_parent().get_name() + "\n" + tmp;
+	return LandMass::to_string() + "\n" + tmp;
 }
 
 bool& Territory::get_visited() const {

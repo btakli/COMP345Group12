@@ -7,6 +7,7 @@
 #include "CommandProcessing.h"
 #include "LoggingObserver.h"
 #include <set>
+#include "PlayerStrategies.h"
 
 using std::cout;
 using std::endl;
@@ -372,7 +373,7 @@ class GameEngine : public ILoggable, public Subject{
     queue<Order*>* _orders;
 
 public:
-    
+    int* _round;
     // Returns a pointer to the current players in game
     std::vector<Player*>& get_players();
     
