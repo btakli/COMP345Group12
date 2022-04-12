@@ -233,6 +233,7 @@ void Advance::execute() {
             sourceTerritory->set_stationed_army(0);
 
             targetTerritory->claim(player, false);
+            player->get_territories().push_back(targetTerritory);
 
             player->drawCard();
         }
