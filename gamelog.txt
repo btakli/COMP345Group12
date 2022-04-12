@@ -1,7 +1,110 @@
-~~~~ Gamelog for game starting on: Mon Apr 11 19:39:58 2022
+~~~~ Gamelog for game starting on: Tue Apr 12 16:43:59 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
 Command's Effect: Transitioning to state MapLoaded
 Game Engine new state: MapValidated
 Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: End
+Command's Effect: Transitioning to state End
