@@ -860,38 +860,35 @@ void GameEngine::map_picker() {
 #define TINY "tiny"
 
     Map::get_instance()->unload();
+   
+    string map = this->getCommandProcessor()->getCommandList()->front().getCommandName(1, false);
 
-    for (Command c : *(this->getCommandProcessor())->getCommandList()) {
-
-        size_t space = c.getCommandName().find(" ") + 1;
-        string map = c.getCommandName().substr(space);
-
-        if (this->getCommandProcessor()->tournament_mode) {
-            cout << "Tournament mode" << endl;
-                 if (map == "1") MapLoader::get_instance()->load_map(BERLIN);
-            else if (map == "2") MapLoader::get_instance()->load_map(CANADA);
-            else if (map == "3") MapLoader::get_instance()->load_map(COW);
-            else if (map == "4") MapLoader::get_instance()->load_map(ESTONIA);
-            else if (map == "5") MapLoader::get_instance()->load_map(FORTERESS);
-            else if (map == "6") MapLoader::get_instance()->load_map(INVALID1);
-            else if (map == "7") MapLoader::get_instance()->load_map(INVALID2);
-            else if (map == "8") MapLoader::get_instance()->load_map(INVALID3);
-            else if (map == "9") MapLoader::get_instance()->load_map(TINY);
-        }
-        else { // Normal mode
-            cout << "Normal mode" << endl;
-
-                 if (map == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
-            else if (map == CANADA) MapLoader::get_instance()->load_map(CANADA);
-            else if (map == COW) MapLoader::get_instance()->load_map(COW);
-            else if (map == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
-            else if (map == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
-            else if (map == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
-            else if (map == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
-            else if (map == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
-            else if (map == TINY)MapLoader::get_instance()->load_map(TINY);
-        }
+    if (this->getCommandProcessor()->tournament_mode) {
+        cout << "Tournament mode" << endl;
+        if (map == "1") MapLoader::get_instance()->load_map(BERLIN);
+        else if (map == "2") MapLoader::get_instance()->load_map(CANADA);
+        else if (map == "3") MapLoader::get_instance()->load_map(COW);
+        else if (map == "4") MapLoader::get_instance()->load_map(ESTONIA);
+        else if (map == "5") MapLoader::get_instance()->load_map(FORTERESS);
+        else if (map == "6") MapLoader::get_instance()->load_map(INVALID1);
+        else if (map == "7") MapLoader::get_instance()->load_map(INVALID2);
+        else if (map == "8") MapLoader::get_instance()->load_map(INVALID3);
+        else if (map == "9") MapLoader::get_instance()->load_map(TINY);
     }
+    else { // Normal mode
+        cout << "Normal mode" << endl;
+
+        if (map == BERLIN) MapLoader::get_instance()->load_map(BERLIN);
+        else if (map == CANADA) MapLoader::get_instance()->load_map(CANADA);
+        else if (map == COW) MapLoader::get_instance()->load_map(COW);
+        else if (map == ESTONIA) MapLoader::get_instance()->load_map(ESTONIA);
+        else if (map == FORTERESS) MapLoader::get_instance()->load_map(FORTERESS);
+        else if (map == INVALID1)MapLoader::get_instance()->load_map(INVALID1);
+        else if (map == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
+        else if (map == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
+        else if (map == TINY)MapLoader::get_instance()->load_map(TINY);
+    }
+
 }
 
 // Add a new player
