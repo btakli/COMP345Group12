@@ -5,6 +5,8 @@
 #include "GameEngine.h"
 #include "Player.h"
 #include "Cards.h"
+#include <cmath>
+
 using namespace std;
 
 //GameEngine *Order::game = new GameEngine();
@@ -203,17 +205,26 @@ void Advance::execute() {
     }
     else if (targetTerritory->get_claimant() != player) { //attack
         cout << "Attacking" << endl;
-        int attackingChances = sourceTerritory->get_stationed_army() * 0.6;
-        int defendingChances = targetTerritory->get_stationed_army() * 0.7;
+        float attackingChances = sourceTerritory->get_stationed_army() * 0.6;
+        float defendingChances = targetTerritory->get_stationed_army() * 0.7;
+
         if (attackingChances == defendingChances) {
-            targetTerritory->set_stationed_army(sourceTerritory->get_stationed_army() - targetTerritory->get_stationed_army());
+            int sourceArmy = sourceTerritory->get_stationed_army();
+            int targetArmy = targetTerritory->get_stationed_army();
+
+            targetTerritory->set_stationed_army(abs(sourceArmy - targetArmy));
+            sourceTerritory->set_stationed_army(abs(sourceArmy - targetArmy));
         }
         else if (attackingChances > defendingChances) {
             targetTerritory->set_stationed_army((attackingChances - defendingChances) / 0.6);
+            sourceTerritory->set_stationed_army(0);
+
             targetTerritory->claim(player, false);
 
             player->drawCard();
         }
+
+        targetTerritory->get_claimant()->setWasAttacked(true);
     }
 }
 
