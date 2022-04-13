@@ -613,29 +613,45 @@ Win::~Win(){
 
 void Win::transition(GameEngine* engine, string input){
 
-    if(input == *_command2){
-        engine->change_state(new End());
-        cout << endl;
-        std::cout << "**************************" << endl;
-        std::cout << "*********Game Ends********" << endl;
-        std::cout << "**************************" << endl;
-        cout << endl;
-        engine->setStatus(false); //set the _continue to false
-        engine->fileReader = false;
-    }else if(input == *_command1){
-        engine->change_state(new Start());
-        //restore the number of maximum turns:
-        string* gameTurn = engine->getCommandProcessor()->turn_num;
-        engine->getCommandProcessor()->setMaxTurns(*gameTurn);
+    //if(input == *_command2){
+    //    engine->change_state(new End());
+    //    cout << endl;
+    //    std::cout << "**************************" << endl;
+    //    std::cout << "*********Game Ends********" << endl;
+    //    std::cout << "**************************" << endl;
+    //    cout << endl;
+    //    engine->setStatus(false); //set the _continue to false
+    //    engine->fileReader = false;
+    //}else 
+        
+    if (input == *_command1) {
 
-        cout << endl;
-        cout << "************************************" << endl;
-        cout << "**********Game restarted!!**********" << endl;
-        cout << "************************************" << endl;
-        cout << endl;
-    }else{
-       std::cout << "ERROR: Please enter a valid command." << endl;
-   }
+        if (engine->get_mapQ().empty()) {
+            engine->change_state(new End());
+            cout << endl;
+            std::cout << "**************************" << endl;
+            std::cout << "*********Game Ends********" << endl;
+            std::cout << "**************************" << endl;
+            cout << endl;
+            engine->setStatus(false); //set the _continue to false
+            engine->fileReader = false;
+        }
+        else {
+            engine->change_state(new Start());
+            //restore the number of maximum turns:
+            string* gameTurn = engine->getCommandProcessor()->turn_num;
+            engine->getCommandProcessor()->setMaxTurns(*gameTurn);
+
+            cout << endl;
+            cout << "************************************" << endl;
+            cout << "**********Game restarted!!**********" << endl;
+            cout << "************************************" << endl;
+            cout << endl;
+        }
+    }
+    else {
+        std::cout << "ERROR: Please enter a valid command." << endl;
+    }
 }
 
 Win::Win(const Win& other){
@@ -708,6 +724,7 @@ string End::getName(){
 *************************GameEngine Class:*****************************
 ***********************************************************************/
 GameEngine::GameEngine(){
+    _mapQ = new queue<string>;
     _round = new int(0);
     _orders = new queue<Order*>();
     _players_ptr = new std::vector<Player*>();
@@ -765,6 +782,7 @@ GameEngine::GameEngine(){
 }
 
 GameEngine::~GameEngine(){
+    delete _mapQ;
     delete _round;
     delete _currentState;
     delete _myProcessor;
@@ -844,8 +862,35 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
     return *this;
 }
 
+void GameEngine::get_all_map_commands() {
+    set<string> mapSet;
+    list<Command> commands = *(this->getCommandProcessor())->getCommandList();
 
-// MapDriver
+    for (Command c : commands) {
+        size_t space = c.getCommandName().find(" ") + 1;
+        if (c.getCommandName().substr(0, space - 1) == "loadmap") {
+            string map = c.getCommandName().substr(space);
+
+            if (this->getCommandProcessor()->tournament_mode) {
+
+                if (!isdigit(map[0])) break;
+            }
+
+            if (!mapSet.contains(c.getCommandName().substr(space)))
+                mapSet.insert(c.getCommandName().substr(space));
+        }
+    }
+
+    if (mapSet.empty()) { 
+        cout << "ERROR: Invalid map file command."
+            "\n Please use format : -M (number) " << endl;
+        exit(0);
+    }
+
+    for (string s : mapSet) (*_mapQ).push(s); // queue the maps
+        
+}
+
 void GameEngine::map_picker() {
 
 #define BERLIN "berlin"
@@ -861,8 +906,15 @@ void GameEngine::map_picker() {
 #define UPPERLIMIT 8
 
     Map::get_instance()->unload();
-   
-    string map = this->getCommandProcessor()->getCommandList()->front().getCommandName(1, false);
+
+
+    if (_mapQ->empty()) {
+        cout << "WARNING: No Map in queue." << endl;
+        return;
+    }
+
+    string map = _mapQ->front();
+    _mapQ->pop();
 
     if (this->getCommandProcessor()->tournament_mode) {
         cout << "Tournament mode" << endl;
@@ -875,6 +927,7 @@ void GameEngine::map_picker() {
         else if (map == "7") MapLoader::get_instance()->load_map(INVALID2);
         else if (map == "8") MapLoader::get_instance()->load_map(INVALID3);
         else if (map == "9") MapLoader::get_instance()->load_map(TINY);
+        else cout << "ERROR: Map: " << map << " DNE." << endl;
     }
     else { // Normal mode
         cout << "Normal mode" << endl;
@@ -888,6 +941,7 @@ void GameEngine::map_picker() {
         else if (map == INVALID2)MapLoader::get_instance()->load_map(INVALID2);
         else if (map == INVALID3)MapLoader::get_instance()->load_map(INVALID3);
         else if (map == TINY)MapLoader::get_instance()->load_map(TINY);
+        else cout << "ERROR: Map: " << map << " DNE." << endl;
     }
 
 }
@@ -904,11 +958,13 @@ void GameEngine::add_new_player() {
 
     for (Command c : *commands) {
          
-        string commandprefix = c.getCommandName(0, true);
+        size_t pos1 = (c.getCommandName()).find(" ");
+        string commandprefix = (c.getCommandName()).substr(0, pos1);
 
         if (commandprefix == "addplayer") {
 
-            string playerName = c.getCommandName(1, false);
+            size_t space = c.getCommandName().find(" ") + 1;
+            string playerName = c.getCommandName().substr(space);
 
             if (!already.contains(playerName)) {
                 already.insert(playerName);
@@ -1325,4 +1381,8 @@ void GameEngine::resetAllConq() {
 void GameEngine::change_state(GameState* newState) {
     delete this->getCurrentState();
     this->setState(newState);
+}
+
+queue<string>& GameEngine::get_mapQ() {
+    return *_mapQ;
 }

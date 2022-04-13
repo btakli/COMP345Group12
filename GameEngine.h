@@ -371,6 +371,7 @@ class GameEngine : public ILoggable, public Subject{
     Deck * _deck;
     
     queue<Order*>* _orders;
+    queue<string>* _mapQ;
 
 public:
     int* _round;
@@ -454,6 +455,10 @@ public:
     void deploy_phase(Player& player);
 
     void change_state(GameState*);
+
+    void get_all_map_commands();
+
+    queue<string>& get_mapQ();
 
     private:
     GameState* _currentState; //current state

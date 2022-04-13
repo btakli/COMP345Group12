@@ -15,11 +15,11 @@ int main(){
     CommandProcessor* processor = myGame->getCommandProcessor();
     
     list<Command>* commandList = processor->getCommandList(); // get the command of gameengine from its commandprocessor object
+    myGame->get_all_map_commands();
     for (Command& command : *commandList) {
         command.attach(lo);
         processor->validate(myGame, &command);
     }
-    
     
     //prevent memory leak:
     //delete myGame;  

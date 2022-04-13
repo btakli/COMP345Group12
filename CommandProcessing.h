@@ -22,8 +22,6 @@ class Command : public ILoggable, public Subject
     void saveEffect(string nextState);
     // returns the name of the command as a string
     std::string getCommandName();
-    // returns the name of the command as a string - uses substr length or not
-    std::string getCommandName(int spaceOffset, bool length);
     // returns the name of the effect as a string
     std::string getEffect();
     //logger function:
