@@ -860,32 +860,22 @@ GameEngine& GameEngine::operator = (const GameEngine& e){
 }
 
 void GameEngine::get_all_map_commands() {
-    set<string> mapSet;
+ 
     list<Command> commands = *(this->getCommandProcessor())->getCommandList();
 
     for (Command c : commands) {
         size_t space = c.getCommandName().find(" ") + 1;
         if (c.getCommandName().substr(0, space - 1) == "loadmap") {
             string map = c.getCommandName().substr(space);
-
+            cout << "ASDf " << map << endl;
             if (this->getCommandProcessor()->tournament_mode) {
 
                 if (!isdigit(map[0])) break;
             }
 
-            if (!mapSet.contains(c.getCommandName().substr(space)))
-                mapSet.insert(c.getCommandName().substr(space));
+            (*_mapQ).push(map); // queue the maps
         }
     }
-
-    if (mapSet.empty()) { 
-        cout << "ERROR: Invalid map file command."
-            "\n Please use format : -M (number) " << endl;
-        exit(0);
-    }
-
-    for (string s : mapSet) (*_mapQ).push(s); // queue the maps
-        
 }
 
 void GameEngine::map_picker() {
@@ -1338,18 +1328,21 @@ void GameEngine::ordersPicker_Bot(Player& player, int option) {
 
 
 bool GameEngine::checkWin(GameEngine& engine) {
-    string temp;
 
-    Player* tempP = (Map::get_instance()->get_territories()[0])->get_claimant();
-    for (auto ter : Map::get_instance()->get_territories()) {
+    Player* winner = Map::get_instance()->get_territories()[0]->get_claimant();
+
+    for (Territory* ter : Map::get_instance()->get_territories()) {
         
-        if (ter->get_claimant() == nullptr) {
+        if (ter->get_claimant() == nullptr) // Neutral Player
             return false;
-        }
-        if (!(ter->get_claimant() == tempP)) {
+        
+        if (ter->get_claimant() != winner)  // Territory does not belong to him
             return false;
-        }
+        
     }
+
+    // Winner
+
     return true;
 }
 
