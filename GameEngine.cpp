@@ -103,16 +103,19 @@ Start::~Start(){
 
 
 void Start::transition(GameEngine* engine, string input){
-    string* gameCount = engine->getGameNum();
-    string* totalNum = engine->getCommandProcessor()->getGameNum();
-    int totalNumInt = std::stoi(*totalNum);
-    int gameCountInt = std::stoi(*gameCount);
-    if(gameCountInt < totalNumInt){
-        gameCountInt += 1;
-    }else{
-        gameCountInt = 1;
+    if(engine->getCommandProcessor()->tournament_mode){
+        string* gameCount = engine->getGameNum();
+        string* totalNum = engine->getCommandProcessor()->getGameNum();
+        int totalNumInt = std::stoi(*totalNum);
+        int gameCountInt = std::stoi(*gameCount);
+        if(gameCountInt < totalNumInt){
+            gameCountInt += 1;
+        }else{
+            gameCountInt = 1;
+     }
+        engine->setGameNum(std::to_string(gameCountInt));
     }
-    engine->setGameNum(std::to_string(gameCountInt));
+    
     if(input == *_command){
         engine->map_picker();
         engine->change_state(new MapLoaded());
@@ -593,12 +596,14 @@ Win::~Win(){
 }
 
 void Win::transition(GameEngine* engine, string input){
-        string winnerOfTheGame = *engine->getWinnerName();
-        string GameNumLeft = *engine->getGameNum();
-        string mapNumber = *engine->getMapNum();
-        //get the result of this game:
-        string GameResult = mapNumber + " " + "Game "+ GameNumLeft + " " + winnerOfTheGame;
-        engine->result->assign(*engine->result + "\n" + GameResult);
+        if(engine->getCommandProcessor()->tournament_mode){
+            string winnerOfTheGame = *engine->getWinnerName();
+            string GameNumLeft = *engine->getGameNum();
+            string mapNumber = *engine->getMapNum();
+            //get the result of this game:
+            string GameResult = mapNumber + " " + "Game "+ GameNumLeft + " " + winnerOfTheGame;
+            engine->result->assign(*engine->result + "\n" + GameResult);
+        }
         if (input == *_command2 && engine->get_mapQ().empty()) {
             engine->change_state(new End());
             cout << endl;
@@ -1320,7 +1325,7 @@ bool GameEngine::checkWin(GameEngine& engine) {
     }
 
     // Winner
-    this->setWinner(*winner->getName());
+    engine.setWinner(*winner->getName());
     return true;
 }
 
