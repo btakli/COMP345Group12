@@ -341,7 +341,7 @@ list<Command>* CommandProcessor::getCommandList() {
 // else save an error message
 bool CommandProcessor::validate(GameEngine* myGame, Command* command) {
     
-    if (myGame != NULL && command != NULL) {
+    if (myGame != NULL && command != NULL && myGame->getStatus()) {
 
         GameState* currentState = myGame->getCurrentState();
 
@@ -387,9 +387,6 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command) {
             }
         }
 
-    }
-    else {
-        cout << "uninitialized game detected!" << endl;
     }
     return false;
 }

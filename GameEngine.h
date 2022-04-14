@@ -464,6 +464,11 @@ public:
     GameState* _currentState; //current state
     bool _continue; 
     CommandProcessor* _myProcessor;
+
+    /*******************
+     ********a3*********
+     *******************/
+    
 };
 
 

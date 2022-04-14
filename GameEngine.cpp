@@ -623,10 +623,9 @@ void Win::transition(GameEngine* engine, string input){
     //    engine->setStatus(false); //set the _continue to false
     //    engine->fileReader = false;
     //}else 
+        // after each game, output the result:
         
-    if (input == *_command1) {
-
-        if (engine->get_mapQ().empty()) {
+        if (input == *_command2 && engine->get_mapQ().empty()) {
             engine->change_state(new End());
             cout << endl;
             std::cout << "**************************" << endl;
@@ -636,7 +635,7 @@ void Win::transition(GameEngine* engine, string input){
             engine->setStatus(false); //set the _continue to false
             engine->fileReader = false;
         }
-        else {
+        else if(input == *_command1){
             engine->change_state(new Start());
             //restore the number of maximum turns:
             string* gameTurn = engine->getCommandProcessor()->turn_num;
@@ -647,9 +646,7 @@ void Win::transition(GameEngine* engine, string input){
             cout << "**********Game restarted!!**********" << endl;
             cout << "************************************" << endl;
             cout << endl;
-        }
-    }
-    else {
+        }else {
         std::cout << "ERROR: Please enter a valid command." << endl;
     }
 }
