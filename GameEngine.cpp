@@ -620,6 +620,10 @@ void Win::transition(GameEngine* engine, string input){
             cout << "**********Game restarted!!**********" << endl;
             cout << "************************************" << endl;
             cout << endl;
+            //RESET PLAYERS BETWEEN ROUNDS!
+            for (Player* player : engine->get_players()) {
+                player->clearPlayerBetweenRounds();
+            }
         }else {
         std::cout << "ERROR: Please enter a valid command." << endl;
     }

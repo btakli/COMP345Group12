@@ -45,8 +45,6 @@ public:
     ~Player();
     //stream insertion operator overload for Player
     friend std::ostream& operator<<(std::ostream& out, const Player& player);
-    //takes a pointer to an Order and adds it to the players list of orders
-    void issueOrder(Order *pOrder);
     //Returns players hand
     Hand* getHand();
     //Returns player's OrdersList
@@ -68,6 +66,8 @@ public:
     bool wasAttacked();
     //Setter for _wasAttacked boolean
     void setWasAttacked(bool value);
+    //Clear player hand and territories list between rounds
+    void clearPlayerBetweenRounds();
     
 
 private:

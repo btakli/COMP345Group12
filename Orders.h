@@ -236,6 +236,8 @@ public:
     void addOrder(Order* order);
     //remove method to delete a specific order from the list using its index inside the orderslist
 	void remove();
+    //clear all orders
+    void clearOrders();
     //Method responsible for writing a specific string based on the type of order added to the list. Abstract method from ILoggable.
     std::string stringToLog();
     //get order list

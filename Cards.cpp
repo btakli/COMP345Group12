@@ -356,6 +356,11 @@ vector<Card*> Hand::getCards()
 	return *_cards;
 }
 
+void Hand::clearHand()
+{
+	_cards->clear();
+}
+
 int Hand::size()
 {
 	return _cards->size();

@@ -349,9 +349,11 @@ CheaterPlayerStrategy::~CheaterPlayerStrategy()
 
 void CheaterPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {	//toAttack returns a list of all neighbouring territories in main. replace get_territories() with toAttack
-	
-	for (auto ter : p->get_territories()) {
-		for (auto neighbour : toAttack(ter)) {
+	vector<Territory*> territories = p->get_territories();
+	int territoryCount = territories.size();
+	for (int i = 0; i < territoryCount; i++) {
+		Territory* terr = territories.at(i);
+		for (auto neighbour : toAttack(terr)) {
 			neighbour->claim(p, true);
 		}
 	}
