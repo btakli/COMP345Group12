@@ -460,6 +460,18 @@ public:
 
     queue<string>& get_mapQ();
 
+    /*******************
+     ********a3*********
+     *******************/
+    string* getWinnerName();
+    string* getGameNum();
+    string* getMapNum();
+    void setWinner(string w);
+    void setGameNum(string g);
+    void setMapNum(string m);
+
+    string* result;
+    
     private:
     GameState* _currentState; //current state
     bool _continue; 
@@ -468,7 +480,10 @@ public:
     /*******************
      ********a3*********
      *******************/
-    
+    string* _winner;
+    string* _game_num;
+    string* _map_num;
+
 };
 
 

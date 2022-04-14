@@ -103,7 +103,16 @@ Start::~Start(){
 
 
 void Start::transition(GameEngine* engine, string input){
-
+    string* gameCount = engine->getGameNum();
+    string* totalNum = engine->getCommandProcessor()->getGameNum();
+    int totalNumInt = std::stoi(*totalNum);
+    int gameCountInt = std::stoi(*gameCount);
+    if(gameCountInt < totalNumInt){
+        gameCountInt += 1;
+    }else{
+        gameCountInt = 1;
+    }
+    engine->setGameNum(std::to_string(gameCountInt));
     if(input == *_command){
         engine->map_picker();
         engine->change_state(new MapLoaded());
@@ -417,16 +426,6 @@ bool AssignedReinforcement::validate(string command){
 string AssignedReinforcement::getName(){
     return "Assignedreinforcement";
 }
-/**********************************************************************
-****************Play :***************************
-***********************************************************************/
-
-/**********************************************************************
-****************Reinforcement State:***************************
-***********************************************************************/
-//ReinforcementPhase::ReinforcementPhase() {
-//    _command1 = new string(REINFORCEMENT_PHASE)
-//}
 
 /**********************************************************************
 ******************Issue Orders State:**********************************
@@ -519,6 +518,7 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
                 cout << endl;
                 cout << "Exiting the game with a Draw..." << endl;
                 cout << endl;
+                engine->setWinner("Draw");
                 engine->change_state(new Win());
                 //engine->getCurrentState()->transition(engine, "");
             }else {
@@ -541,25 +541,6 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
 
         }
     }
-
-
- //   if(input == *_command1){
-
-        
-
-    //}
-    //    else if(input == *_command2){
-        
-
-       
-    //}else if(input == *_command3){
-    //    engine->change_state(new Win());
-
-    //    cout << "CONGRATES!! You won the game!!" << endl;
-    //}
-    //else{
-    //    std::cout << "ERROR: Please enter a valid command." << endl;
-    //}
 }
 
 ExecuteOrders::ExecuteOrders(const ExecuteOrders& other){
@@ -612,19 +593,12 @@ Win::~Win(){
 }
 
 void Win::transition(GameEngine* engine, string input){
-
-    //if(input == *_command2){
-    //    engine->change_state(new End());
-    //    cout << endl;
-    //    std::cout << "**************************" << endl;
-    //    std::cout << "*********Game Ends********" << endl;
-    //    std::cout << "**************************" << endl;
-    //    cout << endl;
-    //    engine->setStatus(false); //set the _continue to false
-    //    engine->fileReader = false;
-    //}else 
-        // after each game, output the result:
-        
+        string winnerOfTheGame = *engine->getWinnerName();
+        string GameNumLeft = *engine->getGameNum();
+        string mapNumber = *engine->getMapNum();
+        //get the result of this game:
+        string GameResult = mapNumber + " " + "Game "+ GameNumLeft + " " + winnerOfTheGame;
+        engine->result->assign(*engine->result + "\n" + GameResult);
         if (input == *_command2 && engine->get_mapQ().empty()) {
             engine->change_state(new End());
             cout << endl;
@@ -732,6 +706,10 @@ GameEngine::GameEngine(){
     _deck = new Deck();
     _conqBool = new vector<bool*>();
     _myProcessor = new CommandProcessor();
+    _winner = new string();
+    _game_num = new string("0");
+    _map_num = new string();
+    result = new string();
     std::cout << "**************************" << endl;
     std::cout << "********Game starts*******" << endl;
     std::cout << "**************************" << endl;
@@ -902,7 +880,7 @@ void GameEngine::map_picker() {
 
     string map = _mapQ->front();
     _mapQ->pop();
-
+    this->setMapNum("Map "+ map);
     if (this->getCommandProcessor()->tournament_mode) {
         cout << "Tournament mode" << endl;
         if (map == "1") MapLoader::get_instance()->load_map(BERLIN);
@@ -1342,7 +1320,7 @@ bool GameEngine::checkWin(GameEngine& engine) {
     }
 
     // Winner
-
+    this->setWinner(*winner->getName());
     return true;
 }
 
@@ -1375,4 +1353,24 @@ void GameEngine::change_state(GameState* newState) {
 
 queue<string>& GameEngine::get_mapQ() {
     return *_mapQ;
+}
+
+string* GameEngine::getWinnerName(){
+    return this->_winner;
+}
+string* GameEngine::getGameNum(){
+    return this->_game_num;
+}
+string* GameEngine::getMapNum(){
+    return this->_map_num;
+}
+
+void GameEngine::setWinner(string w){
+    this->_winner = new string(w);
+}
+void GameEngine::setGameNum(string g){
+    this->_game_num = new string(g);
+}
+void GameEngine::setMapNum(string m){
+    this->_map_num = new string(m);
 }

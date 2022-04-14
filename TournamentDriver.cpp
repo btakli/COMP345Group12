@@ -20,7 +20,7 @@ int main(){
         command.attach(lo);
         processor->validate(myGame, &command);
     }
-    
+    cout << "Game Result:" << *myGame->result <<endl;
     //prevent memory leak:
     //delete myGame;  
     delete lo;                                                                                                                                                                                                                                                 
