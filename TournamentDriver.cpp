@@ -20,7 +20,9 @@ int main(){
         command.attach(lo);
         processor->validate(myGame, &command);
     }
-    cout << "Game Result:" << *myGame->getResult() <<endl;
+    if(processor->tournament_mode){
+        cout << "Game Result:" << *myGame->getResult() <<endl;
+    }
     //prevent memory leak:
     delete myGame;  
     delete lo;                                                                                                                                                                                                                                                 
