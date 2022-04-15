@@ -449,6 +449,7 @@ void IssueOrders::transition(GameEngine* engine, string input){
 
     //}else if(input == *_command2){
         engine->change_state(new ExecuteOrders());
+
         engine->getCurrentState()->transition(engine, "");
 
     //}else{
@@ -877,8 +878,6 @@ void GameEngine::map_picker() {
 #define INVALID3 "invalid3"
 #define TINY "tiny"
 
-#define UPPERLIMIT 8
-
     Map::get_instance()->unload();
 
 
@@ -933,6 +932,7 @@ void GameEngine::add_new_player() {
     for (Command c : *commands) {
          
         size_t pos1 = (c.getCommandName()).find(" ");
+
         string commandprefix = (c.getCommandName()).substr(0, pos1);
 
         if (commandprefix == "addplayer") {
@@ -940,14 +940,15 @@ void GameEngine::add_new_player() {
             size_t space = c.getCommandName().find(" ") + 1;
             string playerName = c.getCommandName().substr(space);
 
+
             if (!already.contains(playerName)) {
                 already.insert(playerName);
 
                 if (this->getCommandProcessor()->tournament_mode) {
-                         if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
+                    if (playerName == "1")this->get_players().push_back(new Player("Aggressive" + to_string(++aggressiveIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new AggressivePlayerStrategy()));
                     else if (playerName == "2")this->get_players().push_back(new Player("Benevolent" + to_string(++benevolentIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new BenevolentPlayerStrategy()));
-                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral"    + to_string(++neutralIndex),    this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
-                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater"    + to_string(++cheaterIndex),    this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
+                    else if (playerName == "3")this->get_players().push_back(new Player("Neutral" + to_string(++neutralIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
+                    else if (playerName == "4")this->get_players().push_back(new Player("Cheater" + to_string(++cheaterIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
                     else cout << "ERROR: Unkown behavior" << endl;
                 }
                 else { // Normal Mode
@@ -1003,14 +1004,17 @@ void GameEngine::order_of_play() {
 }
 
 void GameEngine::give_initial_armies() {
-
     int size = this->get_players().size();
-
-    cout << "The army pool sizes are the following: " << endl;
-
-    for (int i = 0; i < size; i++) {
+    int i = 0;
+    for (i; i < size; i++) {
         this->get_ArmyPools().push_back(new int(50));
-        cout << "Player " << (i + 1) << " has " << *this->get_ArmyPools().at(i) << " armies" << endl;
+    }
+    cout << "The army pool sizes are the following: " << endl;
+    int j = 0;
+
+    for (int* i: this->get_ArmyPools()) {
+        cout << "Player " << j << " has " << *i << " armies" << endl;
+        j++;
     }
 }
 
@@ -1082,8 +1086,9 @@ void GameEngine::excecuteOrdersPhase() {
             if (done.contains(p)) continue; // If player's no more orders - skip
 
             if (p->getOrdersList()->size() > 0) {
-
-                this->get_orders().push(p->getOrdersList()->get_order_list().front());
+                Order* o = p->getOrdersList()->get_order_list().front();
+                cout << *p->getName() << *o << endl;
+                this->get_orders().push(o);
                 p->getOrdersList()->remove();
             }
 
@@ -1098,6 +1103,7 @@ void GameEngine::excecuteOrdersPhase() {
     // Execute orders round-robin way
     for (size_t i = 0; i < size; i++) {
         Order* order = this->get_orders().front();
+        cout << *order << endl;
         order->execute();
         cout << "Executing: " << *order << endl;
         this->get_orders().pop();
@@ -1237,7 +1243,7 @@ void GameEngine::ordersPicker(Player& player) {
                     std::cin.ignore(1000, '\n');
                     option = -1;
                 }
-            } while (option > UPPERLIMIT || option < 1);
+            } while (option > 6 || option < 1);
             cout << endl;
 
             switch (option)

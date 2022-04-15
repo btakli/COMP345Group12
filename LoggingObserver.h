@@ -13,8 +13,8 @@ public:
 	virtual ~ILoggable();
 	//Creates and returns a string to be output to the log file
 	virtual string stringToLog() = 0;
+	//Stream insertion operator overload
 	friend std::ostream& operator<<(std::ostream& strm, const ILoggable& loggable);
-private:
 protected:
 	//Constructor, protected.
 	ILoggable();
@@ -24,10 +24,12 @@ protected:
 
 class Observer {
 public:
+	//Destructor for the Observer
 	virtual ~Observer();
 	//Update method, used to update Observers
 	virtual void update(ILoggable* obj) = 0;
 protected:
+	//Protected Observer constructor
 	Observer();
 
 };

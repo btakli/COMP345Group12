@@ -45,9 +45,10 @@ protected:
 	//Pointer to player
 	Player* p;
 };
-//Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player.
+
 //Forward declaration
 class AggressivePlayerStrategy;
+//Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player.
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
 	//Default constructor. Player is not pointed to so you need to use setPlayer();
@@ -71,8 +72,9 @@ public:
 	//clone method
 	virtual NeutralPlayerStrategy* clone();
 private:
-	//We become aggressive if attacked! Delegate all actions here if so.
+	//boolean dictating whether at some point this neutral player was attacked
 	bool* _wasAttacked;
+	//We become aggressive if attacked! Delegate all actions here if so.
 	AggressivePlayerStrategy* _agressiveStrategy;
 };
 //Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore).
@@ -98,6 +100,9 @@ public:
 	AggressivePlayerStrategy& operator=(const AggressivePlayerStrategy& rhs);
 	//clone method
 	virtual AggressivePlayerStrategy* clone();
+private:
+	//Finds the strongest territory (one with the most deployed armies). If there is a tie, return any of them.
+	Territory* strongestTerritory();
 };
 
 //Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories).

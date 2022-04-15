@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+## Added to reduce clutter
+*.o
+*.out
+*.dSYM/
+
+
 ##Clion ignore:
 CMakeLists.txt
 cmake-build-debug/
@@ -244,7 +250,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 orleans.codegen.cs
-*.o
+
 
 # Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)

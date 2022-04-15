@@ -112,8 +112,10 @@ NeutralPlayerStrategy::~NeutralPlayerStrategy()
 void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
 	//If player was attacked, permanently turn _wasAttacked to true
-	if (p->wasAttacked())
+	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
+		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+	}
 
 	//No orders to issue UNLESS attacked
 	if (*_wasAttacked) {
@@ -127,8 +129,10 @@ void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 {
 	//If player was attacked, permanently turn _wasAttacked to true
-	if (p->wasAttacked())
+	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
+		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+	}
 
 	//Don't attack UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
 	if (*_wasAttacked) {
@@ -141,8 +145,10 @@ vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
 {
 	//If player was attacked, permanently turn _wasAttacked to true
-	if (p->wasAttacked())
+	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
+		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+	}
 
 	//Don't defend UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
 	if (*_wasAttacked) {
@@ -196,18 +202,73 @@ AggressivePlayerStrategy::~AggressivePlayerStrategy()
 
 void AggressivePlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
+	//Strongest territory
+	Territory* strongest = strongestTerritory();
+	//Neighbours of strongest
+	vector<Territory*> neighboursOfStrongest = strongest->get_neighbors();
+
+	//If we are at the deploy phase, deploy on the strongest territory all armies in your army pool. 
+	if (orderType == "deploy")
+	{
+		int armiesToDeploy = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
+		Deploy* deployOrder = new Deploy(p, strongest, *(gameEngine->get_ArmyPoolAt(p->getIndex())));
+		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
+		
+		p->getOrdersList()->addOrder(deployOrder);
+		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armiesToDeploy;
+	}
+
+	//Advance all your armies to the strongest territory (if you can)
+	for (Territory* neighbour : neighboursOfStrongest) {
+		//If we are a neighbour of the strongest territory and we have at least 1 army unit, advance it to our strongest territory
+		if (neighbour->get_claimant() == p && neighbour->get_stationed_army() > 0) {
+			Advance* advanceOrder = new Advance(&(*p), neighbour, strongest);
+			advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+			p->getOrdersList()->addOrder(advanceOrder);
+		}
+	}
+
+	//Then advance all your armies into enemy territories until you cannot.
+	for (Territory* myTerritory : p->get_territories()) {
+		//continue to next if we have no armies to advance.
+		if (myTerritory->get_stationed_army() == 0)
+			continue;
+		//If the neighbour is an enemy, attack it
+		for (Territory* neighbour : myTerritory->get_neighbors()) {
+			if (neighbour->get_claimant() != p) {
+				Advance* advanceOrder = new Advance(&(*p), myTerritory, neighbour);
+				advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
+				p->getOrdersList()->addOrder(advanceOrder);
+				
+				break; //We advanced all armies to that enemy, so break this loop and move onto next territory of ours.
+			}
+		}
+	}
+	
 }
 
 vector<Territory*> AggressivePlayerStrategy::toAttack(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() != p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
 }
 
 vector<Territory*> AggressivePlayerStrategy::toDefend(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() == p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
 }
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -230,6 +291,20 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 	return new AggressivePlayerStrategy(*this);
 }
 
+Territory* AggressivePlayerStrategy::strongestTerritory()
+{
+	//Set strongest initially to the first territory
+	Territory* strongest = p->get_territories().at(0);
+
+	//Return first territory with the highest army count
+	for (auto ter : p->get_territories()) {
+		if (ter->get_stationed_army() > strongest->get_stationed_army()) {
+			strongest = ter;
+		}
+	}
+	return strongest;
+}
+
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 //-----------------------------------Benevolent Player Stategy----------------------------
@@ -238,14 +313,15 @@ AggressivePlayerStrategy* AggressivePlayerStrategy::clone()
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(): PlayerStrategy()
 {
-	_weakest = new Territory();
+	_weakest = nullptr; //Do not make a new territory!
 }
 
 void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 {
 	int armyCount = *(gameEngine->get_ArmyPoolAt(p->getIndex()));
 	if (armyCount != 0) {
-		Deploy* deployOrder = new Deploy(&(*p), _weakest, armyCount);
+		findWeakest();
+		Deploy* deployOrder = new Deploy(p, _weakest, armyCount);
 		deployOrder->attach(p->getOrdersList()->getObservers().at(0));
 		p->getOrdersList()->addOrder(deployOrder);
 		*(gameEngine->get_ArmyPoolAt(p->getIndex())) -= armyCount;
@@ -254,12 +330,12 @@ void BenevolentPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderTy
 		Territory* old;
 		old = _weakest;
 		findWeakest();
-		Advance* advanceOrder = new Advance(&(*p), old, _weakest);
+		Advance* advanceOrder = new Advance(p, old, _weakest);
 		//Attach the first observer to the order.
 		advanceOrder->attach(p->getOrdersList()->getObservers().at(0));
 		p->getOrdersList()->addOrder(advanceOrder);
 	}
-	//if armyCount > 0, deploy on armyCount on weekest
+	//if armyCount > 0, deploy on armyCount on weakest
 	//
 	//then advance half of the army to newest weakeast once from old weakest
 
@@ -285,13 +361,13 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Territory* t)
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
-	setPlayer(p);
 	_weakest = nullptr;
-	findWeakest();
+	if (this->p) //Don't find the weakest if the player pointer hasn't been set!
+		findWeakest();
 }
 
 BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
-	delete _weakest;
+	//Do NOT delete the weakest since it points to a real territory
 }
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& other) : PlayerStrategy(other)
@@ -320,8 +396,8 @@ Territory* BenevolentPlayerStrategy::getWeakest()
 
 void BenevolentPlayerStrategy::findWeakest()
 {
-	this->_weakest = p->get_territories()[0];
-	int lowest = p->get_territories()[0]->get_stationed_army();
+	this->_weakest = p->get_territories().at(0);
+	int lowest = p->get_territories().at(0)->get_stationed_army();
 	for (auto ter : p->get_territories()) {
 		if (ter->get_stationed_army() < _weakest->get_stationed_army()) {
 			_weakest = ter;
@@ -339,7 +415,6 @@ void BenevolentPlayerStrategy::findWeakest()
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(): PlayerStrategy()
 {
-	setPlayer(p);
 }
 
 CheaterPlayerStrategy::~CheaterPlayerStrategy()
@@ -381,13 +456,10 @@ vector<Territory*> CheaterPlayerStrategy::toDefend(Territory* t)
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p)
 {
-	setPlayer(p);
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(const CheaterPlayerStrategy& other) : PlayerStrategy(other)
 {
-	this->setPlayer(other.p);
-	this->p = other.p;
 }
 
 CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& rhs)
@@ -431,7 +503,7 @@ void HumanPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 	else if (orderType == "advance")
 		advanceHelper();
 	else
-		std::cout << "~~Invalid order issued~~" << std::endl;
+		std::cout << "~~Invalid order issued in HumanPlayerStrategy~~" << std::endl;
 }
 
 vector<Territory*> HumanPlayerStrategy::toAttack(Territory* t)
@@ -448,8 +520,14 @@ vector<Territory*> HumanPlayerStrategy::toAttack(Territory* t)
 
 vector<Territory*> HumanPlayerStrategy::toDefend(Territory* t)
 {
-	//TEMPORARY
-	return vector<Territory*>();
+	vector<Territory*> neighbors;
+
+	for (Territory* terr : t->get_neighbors()) {
+		if (terr->get_claimant() == p) {
+			neighbors.push_back(terr);
+		}
+	}
+	return neighbors;
 }
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
@@ -458,7 +536,6 @@ HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p)
 
 HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& other) : PlayerStrategy(other)
 {
-	this->p = other.p;
 }
 
 HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& rhs)
