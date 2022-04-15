@@ -470,6 +470,7 @@ public:
     void setGameNum(string g);
     void setMapNum(string m);
 
+    string* getResult();
     string* result;
     
     private:

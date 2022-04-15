@@ -1389,3 +1389,8 @@ void GameEngine::setGameNum(string g){
 void GameEngine::setMapNum(string m){
     this->_map_num = new string(m);
 }
+string* GameEngine::getResult(){
+    ILoggable::_currentState->assign(*result);
+    notify(this);
+    return result;
+}
