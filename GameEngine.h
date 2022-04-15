@@ -386,8 +386,6 @@ public:
     void transit(string c); //transition function according to command inputs
     void setState(GameState* newState); //used to set Game object to next stats
 
-    /*void transitCommandProcessor();
-    void transitCommandAdaptor();*/
     //setter is used to set the status to false when we reach the End state
     void setStatus(bool b);
     //getter is used to get the current status of the game
@@ -445,33 +443,31 @@ public:
     void popConqBool();
     //Get the vector remembering if a player has conquered this round
     vector<bool*>& getConq();
-    //Chance value to true
+    //Change value to true
     void setConq(int i);
-
-    void ordersPicker_Bot(Player& player, int option);
-
+    // Reset all conquered to false
     void resetAllConq();
-
+    // Deploy new troops phase
     void deploy_phase(Player& player);
-
+    // Changes the game state
     void change_state(GameState*);
-
+    // Read all the maps from command
     void get_all_map_commands();
-
+    // Get the maps read in queue
     queue<string>& get_mapQ();
 
     /*******************
      ********a3*********
      *******************/
-    string* getWinnerName();
-    string* getGameNum();
-    string* getMapNum();
-    void setWinner(string w);
-    void setGameNum(string g);
-    void setMapNum(string m);
+    string* getWinnerName(); // Gets winner name
+    string* getGameNum(); // Game game number
+    string* getMapNum(); // Get map number
+    void setWinner(string w); // set a winner
+    void setGameNum(string g); // set a game number
+    void setMapNum(string m); // set a map number
 
-    string* getResult();
-    string* result;
+    string* getResult(); // get end game results
+    string* result; // the results
     
     private:
     GameState* _currentState; //current state

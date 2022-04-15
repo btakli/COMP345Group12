@@ -849,7 +849,6 @@ void GameEngine::get_all_map_commands() {
         size_t space = c.getCommandName().find(" ") + 1;
         if (c.getCommandName().substr(0, space - 1) == "loadmap") {
             string map = c.getCommandName().substr(space);
-            cout << "ASDf " << map << endl;
             if (this->getCommandProcessor()->tournament_mode) {
 
                 if (!isdigit(map[0])) break;
@@ -1061,7 +1060,6 @@ void GameEngine::deployReinforcementPhase() {
     for (Player* p : this->get_players()) {
         //This calls the deploy_phase() method of GameEngine internally IF the player is human. Otherwise does it differently.
         p->issueOrder(this, "deploy");
-        //deploy_phase(*p);
     }
 }
 
@@ -1072,10 +1070,8 @@ void GameEngine::excecuteOrdersPhase() {
     set<Player*> done;
 
     // Requeue round-robin orders
-
     while (true) {
         for (Player* p : this->get_players()) {
-            //cout << done.size() << "   " << get_players().size() << "   " << done.contains(p) << "    " << p->getOrdersList()->size() << endl;
 
             if (done.contains(p)) continue; // If player's no more orders - skip
 
@@ -1245,34 +1241,29 @@ void GameEngine::ordersPicker(Player& player) {
             case 1:
                 if (cardValidator(player, "diplomacy")) {
                     player.issueOrder(this, "diplomacy");
-                    //diplomacyHelper(player);
                 }
                 break;
 
             case 2:
                 if (cardValidator(player, "airlift")) {
                     player.issueOrder(this, "airlift");
-                    //airliftHelper(player);
                 }
                 break;
 
             case 3:
                 if (cardValidator(player, "blockade")) {
                     player.issueOrder(this, "blockade");
-                    //blockadeHelper(player);
                 }
                 break;
 
             case 4:
                 if (cardValidator(player, "bomb")) {
                     player.issueOrder(this, "bomb");
-                    //bombHelper(player);
                 }
                 break;
 
             case 5:
                 player.issueOrder(this, "advance");
-                //advanceHelper(player);
                 break;
             }
         }
@@ -1285,34 +1276,6 @@ void GameEngine::ordersPicker(Player& player) {
         cin.ignore();
     }
 }
-
-void GameEngine::ordersPicker_Bot(Player& player, int option) {
-
-    switch (option)
-    {
-    case 1:
-        cardValidator(player, "diplomacy");
-        break;
-
-    case 2:
-        cardValidator(player, "airlift");
-        break;
-
-    case 3:
-        cardValidator(player, "blockade");
-        break;
-
-    case 4:
-        cardValidator(player, "bomb");
-        break;
-
-    case 5:
-        player.issueOrder(this, "advance");
-        //advanceHelper(player);
-        break;
-    }
-}
-
 
 bool GameEngine::checkWin(GameEngine& engine) {
 

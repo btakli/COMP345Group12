@@ -429,7 +429,7 @@ void CheaterPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 	for (int i = 0; i < territoryCount; i++) {
 		Territory* terr = territories.at(i);
 		for (auto neighbour : toAttack(terr)) {
-			neighbour->claim(p, true);
+			neighbour->claim(p, false);
 		}
 	}
 	//automatically switches ownership of neigbouring countries to their own

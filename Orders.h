@@ -34,9 +34,6 @@ public:
     //Method responsible for writing a specific string based on the type of order. Abstract method from ILoggable.
     std::string stringToLog();
 
-    // static GameEngine* getGameEngine();
-    // static GameEngine* game;
-
 private:
     //stream insertion operator
     friend std::ostream& operator<<(std::ostream& description, const Order& order);
@@ -164,7 +161,6 @@ class Airlift : public Order{
 public:
     //default constructor
     Airlift();
-    Airlift(Player* p); // Parameterized Constructor
     Airlift(Territory* source, Territory* target);
     //destructor
     virtual ~Airlift();
@@ -194,7 +190,6 @@ class Negotiate : public Order{
 public:
     //default constructor
     Negotiate();
-    Negotiate(Player* p); // Parameterized Constructor
     Negotiate(Player* p, Player* target);
     //destructor
     virtual ~Negotiate();
