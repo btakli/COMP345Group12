@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Fri Apr 15 13:55:54 2022
+~~~~ Gamelog for game starting on: Fri Apr 15 18:23:30 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
@@ -9,12 +9,397 @@ Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
 Order Issued: deploy
-Order Issued: negotiate
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
 Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player2 deploying on territory NU-Victoria_Island-East 58 armies.
+	Benevolent1 deploying on territory Henningsdorf 57 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
-	player1 deploying on territory NT-Victoria_Island-West 58 armies.
-Order Executed: Negotiate: prevent attacks between the current player and another player until the end of the turn.
-	Preventing attacks between player2 and player1
+	Aggressive1 deploying on territory Hönow 57 armies.
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Aggressive1 deploying on territory Hönow 7 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Hönow the enemy territory Marzahn
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Marzahn the enemy territory Hohenschönhausen
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Hohenschönhausen the enemy territory Prenzlauer_Berg
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Prenzlauer_Berg the enemy territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Prenzlauer_Berg to their other territory Wedding
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Wedding the enemy territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Issued: deploy
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Tegel the enemy territory Wedding
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Wedding the enemy territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Tegel the enemy territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Wedding the enemy territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Tegel the enemy territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Wedding the enemy territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Wedding to their other territory Tegel
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 attacking with 64 armies from Tegel the enemy territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	Aggressive1 moving 0 armies from Tegel to their other territory Wedding
+Order Issued: deploy
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: advance
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Crimea 53 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	Benevolent1 deploying on territory Kyiv 3 armies.
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+Order Issued: deploy
+Order Issued: deploy
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: End
+Command's Effect: Transitioning to state End
+Game Engine new state: 
+Map 1 Game 1 Draw
+Map 1 Game 2 Draw
+Map 1 Game 3 Draw
+Map 1 Game 4 Draw
+Map 9 Game 1 Cheater1
+Map 9 Game 1 Cheater1
+Map 9 Game 2 Cheater1
+Map 9 Game 2 Cheater1
+Map 9 Game 3 Draw
+Map 9 Game 4 Cheater1
+Map 9 Game 4 Cheater1

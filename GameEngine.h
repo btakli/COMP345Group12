@@ -377,21 +377,25 @@ public:
     int* _round;
     // Returns a pointer to the current players in game
     std::vector<Player*>& get_players();
-    
+    //Constructor
     GameEngine();
+    //Deconstructor
     ~GameEngine();
-    GameState* getCurrentState() const; //returns pointer of current state
-
+    //returns pointer of current state
+    GameState* getCurrentState() const; 
+    //Used for logging
     string stringToLog();
-    void transit(string c); //transition function according to command inputs
-    void setState(GameState* newState); //used to set Game object to next stats
+    //transition function according to command inputs
+    void transit(string c); 
+    //used to set Game object to next stats
+    void setState(GameState* newState); 
 
     //setter is used to set the status to false when we reach the End state
     void setStatus(bool b);
     //getter is used to get the current status of the game
     bool getStatus();
     bool fileReader;
-    //retunrs the _armyPool
+    //returns the _armyPool
     vector<int*>& get_ArmyPools();
     //return amount in army pool at index
     int* get_ArmyPoolAt(int index);
@@ -449,6 +453,8 @@ public:
     void resetAllConq();
     // Deploy new troops phase
     void deploy_phase(Player& player);
+    // Change a human to a different strategy of player.
+    void changePlayerStrategy(Player& player);
     // Changes the game state
     void change_state(GameState*);
     // Read all the maps from command
@@ -459,19 +465,28 @@ public:
     /*******************
      ********a3*********
      *******************/
-    string* getWinnerName(); // Gets winner name
-    string* getGameNum(); // Game game number
-    string* getMapNum(); // Get map number
-    void setWinner(string w); // set a winner
-    void setGameNum(string g); // set a game number
-    void setMapNum(string m); // set a map number
-
-    string* getResult(); // get end game results
-    string* result; // the results
+     // Gets winner name
+    string* getWinnerName(); 
+    // Game game number
+    string* getGameNum(); 
+    // Get map number
+    string* getMapNum(); 
+    // set a winner
+    void setWinner(string w); 
+    // set a game number
+    void setGameNum(string g); 
+    // set a map number
+    void setMapNum(string m); 
+   
+    // get end game results
+    string* getResult(); 
+    // the results
+    string* result; 
     
     private:
-    GameState* _currentState; //current state
-    bool _continue; 
+    //current state, used for logging
+    GameState* _currentState; 
+    bool _continue;
     CommandProcessor* _myProcessor;
 
     /*******************
