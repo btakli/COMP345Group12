@@ -1215,11 +1215,12 @@ void GameEngine::changePlayerStrategy(Player& player)
         try {
             do {
                 std::cout << "Please enter a number between 1 to 6 to select a new strategy (you will no longer control this player!)."
-                    "\n 1. Aggressive"
-                    "\n 2. Benevolent"
-                    "\n 3. Cheater"
-                    "\n 4. Neutral"
-                    "\n 5. Finish/Cancel"
+                    "\n 1. Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore). "
+                    "\n 2. Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories)."
+                    "\n 3. Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn)."
+                    "\n 4. Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player."
+                    "\n 5. Human player: requires user interactions to make decisions."
+                    "\n 6. Finish"
                     "\n> ";
 
                 std::cin >> option;
@@ -1229,7 +1230,7 @@ void GameEngine::changePlayerStrategy(Player& player)
                     std::cin.ignore(1000, '\n');
                     option = -1;
                 }
-            } while (option > 5 || option < 1);
+            } while (option > 6 || option < 1);
             cout << endl;
 
             switch (option)
@@ -1252,15 +1253,18 @@ void GameEngine::changePlayerStrategy(Player& player)
             case 4:
                 std::cout << "Player " << *player.getName() << " is now a Neutral player!" << std::endl;
                 player.setStrategy(new NeutralPlayerStrategy(&player));
-                break;        
+                break;
+            case 5:
+                std::cout << "Player " << *player.getName() << " is now a Human player!" << std::endl;
+                player.setStrategy(new HumanPlayerStrategy(&player));
+                break;
             }
         }
         catch (std::runtime_error e) {
             std::cout << "ERROR: " << e.what() << std::endl;
         }
 
-        if (option == 5) {
-            std::cout << "Cancelling operation..." << std::endl;
+        if (option == 6) {
             break;
         }
 
