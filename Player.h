@@ -70,6 +70,8 @@ public:
     bool wasAttacked();
     //Setter for _wasAttacked boolean
     void setWasAttacked(bool value);
+    //Clear player hand and territories list between rounds
+    void clearPlayerBetweenRounds();
     
 
 private:

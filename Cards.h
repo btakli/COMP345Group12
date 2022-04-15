@@ -155,6 +155,8 @@ public:
 	void addCard(Card* card); 
 	//gets all cards in the hand
 	std::vector<Card*> getCards();
+	//Clears hand
+	void clearHand();
 	//Return the size of the hand.
 	int size();
 	//Get a card at a specific index in the hand

@@ -1,4 +1,6 @@
+
 ~~~~ Gamelog for game starting on: Tue Apr 12 01:45:10 2022
+
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
@@ -9,8 +11,20 @@ Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: Win
+Command's Effect: Transitioning to state Win
+Game Engine new state: Start
+Command's Effect: Transitioning to state Start
+Game Engine new state: Start
+Game Engine new state: MapLoaded
+Command's Effect: Transitioning to state MapLoaded
+Game Engine new state: MapValidated
+Command's Effect: Transitioning to state MapValidated
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
+Game Engine new state: PlayersAdded
+Command's Effect: Transitioning to state PlayersAdded
+
 Order Issued: deploy
 Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
@@ -431,3 +445,4 @@ Order Executed: Deploy: place some armies on one of the current player's territo
 	Aggressive1 deploying on territory Ear 10 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
 	Benevolent1 deploying on territory TopRound 6 armies.
+

@@ -15,12 +15,12 @@ int main(){
     CommandProcessor* processor = myGame->getCommandProcessor();
     
     list<Command>* commandList = processor->getCommandList(); // get the command of gameengine from its commandprocessor object
+    myGame->get_all_map_commands();
     for (Command& command : *commandList) {
         command.attach(lo);
         processor->validate(myGame, &command);
     }
-    
-    
+    cout << "Game Result:" << *myGame->result <<endl;
     //prevent memory leak:
     //delete myGame;  
     delete lo;                                                                                                                                                                                                                                                 

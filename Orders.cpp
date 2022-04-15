@@ -543,6 +543,12 @@ void OrdersList::remove() {
     _orderlist->pop();
 }
 
+void OrdersList::clearOrders()
+{
+    while (!_orderlist->empty())
+        _orderlist->pop();
+}
+
 std::string OrdersList::stringToLog()
 {
     return "Order Issued: " + *_currentState;

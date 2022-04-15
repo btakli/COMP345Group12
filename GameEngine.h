@@ -371,6 +371,7 @@ class GameEngine : public ILoggable, public Subject{
     Deck * _deck;
     
     queue<Order*>* _orders;
+    queue<string>* _mapQ;
 
 public:
     int* _round;
@@ -455,10 +456,34 @@ public:
 
     void change_state(GameState*);
 
+    void get_all_map_commands();
+
+    queue<string>& get_mapQ();
+
+    /*******************
+     ********a3*********
+     *******************/
+    string* getWinnerName();
+    string* getGameNum();
+    string* getMapNum();
+    void setWinner(string w);
+    void setGameNum(string g);
+    void setMapNum(string m);
+
+    string* result;
+    
     private:
     GameState* _currentState; //current state
     bool _continue; 
     CommandProcessor* _myProcessor;
+
+    /*******************
+     ********a3*********
+     *******************/
+    string* _winner;
+    string* _game_num;
+    string* _map_num;
+
 };
 
 

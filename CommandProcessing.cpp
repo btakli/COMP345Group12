@@ -55,19 +55,6 @@ string Command::getCommandName() {
     }
 }
 
-string Command::getCommandName(int spaceOffset, bool length) {
-    if (_command) {
-
-        size_t space = _command->find(" ") + spaceOffset;
-
-        if(!length) return _command->substr(space);
-        else return _command->substr(0, space);
-    }
-    else {
-        return "error!!";
-    }
-}
-
 string Command::getEffect() {
     if (_effect) {
         string effect = *_effect;
@@ -354,7 +341,7 @@ list<Command>* CommandProcessor::getCommandList() {
 // else save an error message
 bool CommandProcessor::validate(GameEngine* myGame, Command* command) {
     
-    if (myGame != NULL && command != NULL) {
+    if (myGame != NULL && command != NULL && myGame->getStatus()) {
 
         GameState* currentState = myGame->getCurrentState();
 
@@ -400,9 +387,6 @@ bool CommandProcessor::validate(GameEngine* myGame, Command* command) {
             }
         }
 
-    }
-    else {
-        cout << "uninitialized game detected!" << endl;
     }
     return false;
 }
@@ -515,7 +499,6 @@ string FileLineReader::readLineFromFile() {
 
         ifstream fileIn(*_path);
 
-        cout << *_path << " | " << fileIn.is_open() << endl;
         valid = fileIn.is_open();
 
         if (fileIn.is_open()) {

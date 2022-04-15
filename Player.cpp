@@ -97,6 +97,7 @@ void Player::issueOrder(GameEngine* gameEngine, string orderType) {
         std::cout << "~~No strategy set for Player " << this->_name << ". Are you sure you used the right constructor?~~" << std::endl;
 }
 
+
 Hand* Player::getHand() {
     return this->_hand;
 }
@@ -131,6 +132,14 @@ bool Player::wasAttacked()
 void Player::setWasAttacked(bool value)
 {
     *_wasAttacked = value;
+}
+
+void Player::clearPlayerBetweenRounds()
+{
+    getHand()->clearHand();
+    get_territories().clear();
+    setWasAttacked(false);
+    getOrdersList()->clearOrders();
 }
 
 Player::Player(const Player &p){
