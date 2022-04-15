@@ -1207,6 +1207,71 @@ void GameEngine::deploy_phase(Player& player) {
     }
 }
 
+void GameEngine::changePlayerStrategy(Player& player)
+{
+    int option;
+
+    while (true) {
+        try {
+            do {
+                std::cout << "Please enter a number between 1 to 6 to select a new strategy (you will no longer control this player!)."
+                    "\n 1. Aggressive player: computer player that focuses on attack (deploys or advances armies on its strongest country, then always advances to enemy territories until it cannot do so anymore). "
+                    "\n 2. Benevolent player: computer player that focuses on protecting its weak countries (deploys or advances armies on its weakest countries, never advances to enemy territories)."
+                    "\n 3. Cheater player: computer player that automatically conquers all territories that are adjacent to its own territories(only once per turn)."
+                    "\n 4. Neutral player: computer player that never issues any order. If a Neutral player is attacked, it becomes an Aggressive player."
+                    "\n 5. Human player: requires user interactions to make decisions."
+                    "\n 6. Finish"
+                    "\n> ";
+
+                std::cin >> option;
+
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(1000, '\n');
+                    option = -1;
+                }
+            } while (option > 6 || option < 1);
+            cout << endl;
+
+            switch (option)
+            {
+            case 1:
+                std::cout << "Player " << *player.getName() << " is now an Aggressive player!" << std::endl;
+                player.setStrategy(new AggressivePlayerStrategy(&player));
+                break;
+
+            case 2:
+                std::cout << "Player " << *player.getName() << " is now a Benevolent player!" << std::endl;
+                player.setStrategy(new BenevolentPlayerStrategy(&player));
+                break;
+
+            case 3:
+                std::cout << "Player " << *player.getName() << " is now a Cheater player!" << std::endl;
+                player.setStrategy(new CheaterPlayerStrategy(&player));
+                break;
+
+            case 4:
+                std::cout << "Player " << *player.getName() << " is now a Neutral player!" << std::endl;
+                player.setStrategy(new NeutralPlayerStrategy(&player));
+                break;
+            case 5:
+                std::cout << "Player " << *player.getName() << " is now a Human player!" << std::endl;
+                player.setStrategy(new HumanPlayerStrategy(&player));
+                break;
+            }
+        }
+        catch (std::runtime_error e) {
+            std::cout << "ERROR: " << e.what() << std::endl;
+        }
+
+        if (option == 6) {
+            break;
+        }
+
+        cin.ignore();
+    }
+}
+
 
 void GameEngine::ordersPicker(Player& player) {
 
@@ -1223,7 +1288,8 @@ void GameEngine::ordersPicker(Player& player) {
                     "\n 3. Blockade"
                     "\n 4. Bomb"
                     "\n 5. Advance"
-                    "\n 6. Finish"
+                    "\n 6. Auto-Play (WARNING! ONCE SET CANNOT RESUME CONTROL!)"
+                    "\n 7. Finish"
                     "\n> ";
 
                 std::cin >> option;
@@ -1233,7 +1299,7 @@ void GameEngine::ordersPicker(Player& player) {
                     std::cin.ignore(1000, '\n');
                     option = -1;
                 }
-            } while (option > 6 || option < 1);
+            } while (option > 7 || option < 1);
             cout << endl;
 
             switch (option)
@@ -1265,13 +1331,15 @@ void GameEngine::ordersPicker(Player& player) {
             case 5:
                 player.issueOrder(this, "advance");
                 break;
+            case 6:
+                changePlayerStrategy(player);
             }
         }
         catch (std::runtime_error e) {
             std::cout << "ERROR: " << e.what() << std::endl;
         }
 
-        if (option == 6) break;
+        if (option == 7) break;
 
         cin.ignore();
     }

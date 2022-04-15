@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Fri Apr 15 13:55:54 2022
+~~~~ Gamelog for game starting on: Fri Apr 15 18:29:14 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
@@ -10,11 +10,16 @@ Command's Effect: Transitioning to state PlayersAdded
 Game Engine new state: PlayersAdded
 Command's Effect: Transitioning to state PlayersAdded
 Order Issued: deploy
-Order Issued: negotiate
 Order Issued: deploy
 Order Executed: Deploy: place some armies on one of the current player's territories.
 	player2 deploying on territory NU-Victoria_Island-East 58 armies.
 Order Executed: Deploy: place some armies on one of the current player's territories.
 	player1 deploying on territory NT-Victoria_Island-West 58 armies.
-Order Executed: Negotiate: prevent attacks between the current player and another player until the end of the turn.
-	Preventing attacks between player2 and player1
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
+Order Issued: deploy
