@@ -492,26 +492,23 @@ std::string Continent::to_string() const {
 }
 
 void Continent::verify_claims() {
-	Player* tmp = get_territories().front()->get_claimant();
+	Player* claimant = get_territories().front()->get_claimant();
 
-	if (tmp == nullptr) return; // No one claimed territory
+	if (claimant == nullptr) return; // No one claimed continent
 
-	bool first = true;
 
-	for (Territory* terr : get_territories()) {
-		if (first) {
-			first = false;
-			continue;
-		}
+	for (Territory* t : get_territories()) {
 
-		if (tmp->getName() != terr->get_claimant()->getName()) {
-			claim(nullptr);
+		if (t == nullptr) return; // Territory wasn't claimed therefore no one claimed continent
+
+		if (claimant != t->get_claimant()) {
+			claim(nullptr); // No one conquered the entire continent
 			return;
 		}
 	}
 
 	// Player successful conquered the entire continent
-	claim(tmp);
+	claim(claimant);
 }
 
 void Continent::add_territory(Territory& new_territory) {
