@@ -22,7 +22,7 @@ int main(){
     }
     cout << "Game Result:" << *myGame->getResult() <<endl;
     //prevent memory leak:
-    //delete myGame;  
+    delete myGame;  
     delete lo;                                                                                                                                                                                                                                                 
     return 0;
 }

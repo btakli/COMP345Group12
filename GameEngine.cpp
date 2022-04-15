@@ -385,8 +385,6 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
         cout << *player->getName() << "\n" << *player->getHand() << endl;
     }
 
-    //if(input == *_command){
-
         // Add new reinforcements
         engine->addReinforcementsPhase(); 
         engine->deployReinforcementPhase();
@@ -394,10 +392,6 @@ void AssignedReinforcement::transition(GameEngine* engine, string input){
         engine->change_state(new IssueOrders());
         engine->getCurrentState() ->transition(engine, "");
         
-
-    //}else{
-       // std::cout << "ERROR: Please enter a valid command." << endl;
-    //}
 }
 
 AssignedReinforcement::AssignedReinforcement(const AssignedReinforcement& other){
@@ -445,16 +439,9 @@ IssueOrders::~IssueOrders(){
 
 void IssueOrders::transition(GameEngine* engine, string input){
 
-    //if(input == *_command1){ // TODO: Never called 
-
-    //}else if(input == *_command2){
         engine->change_state(new ExecuteOrders());
 
         engine->getCurrentState()->transition(engine, "");
-
-    //}else{
-     //   std::cout << "ERROR: Please enter a valid command." << endl;
-   // }
 }
 
 IssueOrders::IssueOrders(const IssueOrders& other){
@@ -524,7 +511,6 @@ void ExecuteOrders::transition(GameEngine* engine, string input){
                 cout << endl;
                 engine->setWinner("Draw");
                 engine->change_state(new Win());
-                //engine->getCurrentState()->transition(engine, "");
             }else {
                 // modify the turn number by decreasing by 1 after each turn
                 currentTunrsLeftInt -= 1;
@@ -775,6 +761,10 @@ GameEngine::~GameEngine(){
     delete _round;
     delete _currentState;
     delete _myProcessor;
+    delete _winner;
+    delete _game_num;
+    delete _map_num;
+    delete result;
     for (Player* p : *_players_ptr) delete p;
     for (int* i : *_armyPool) delete i;
     for (bool* b : *_conqBool) delete b;
