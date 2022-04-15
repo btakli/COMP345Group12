@@ -626,6 +626,10 @@ void Win::transition(GameEngine* engine, string input){
             cout << "**********Game restarted!!**********" << endl;
             cout << "************************************" << endl;
             cout << endl;
+
+            //Clear 
+            engine->get_ArmyPools().clear();
+
             //RESET PLAYERS BETWEEN ROUNDS!
             for (Player* player : engine->get_players()) {
                 player->clearPlayerBetweenRounds();
