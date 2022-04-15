@@ -234,11 +234,13 @@ void Advance::execute() {
             auto it= targetTerritory->get_claimant()->get_territories().begin();
 
             for (Territory* t : targetTerritory->get_claimant()->get_territories()) {
-                if (t == targetTerritory) break;
+                if (t == targetTerritory) 
+                    break;
                 advance(it, 1);
             }
+            if (it != targetTerritory->get_claimant()->get_territories().end())
+                targetTerritory->get_claimant()->get_territories().erase(it);
 
-            targetTerritory->get_claimant()->get_territories().erase(it);
             targetTerritory->claim(player, false);
             player->get_territories().push_back(targetTerritory);
 
