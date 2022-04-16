@@ -4,11 +4,9 @@
 
 using namespace std;
 
-void main_menu();
-
 int main(){
     LogObserver* lo = new LogObserver();
-    //string input_option;
+    
     GameEngine* myGame; // create a new game
     myGame = new GameEngine(); // initialize the game
     myGame->attach(lo);
