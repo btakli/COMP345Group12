@@ -1,4 +1,4 @@
-~~~~ Gamelog for game starting on: Fri Apr 15 18:29:14 2022
+~~~~ Gamelog for game starting on: Sat Apr 16 13:42:17 2022
 
 Game Engine new state: Start
 Game Engine new state: MapLoaded
@@ -16,10 +16,10 @@ Order Executed: Deploy: place some armies on one of the current player's territo
 Order Executed: Deploy: place some armies on one of the current player's territories.
 	player1 deploying on territory NT-Victoria_Island-West 58 armies.
 Order Issued: deploy
+Order Issued: advance
+Order Executed: Deploy: place some armies on one of the current player's territories.
+	player1 deploying on territory NT-Victoria_Island-West 8 armies.
+Order Executed: Advance: move some armies from one of the current player's territories (source) to an adjacent territory (target).
+	player1 attacking with 66 armies from NT-Victoria_Island-West the enemy territory Northwest_Territories-Continental
 Order Issued: deploy
-Order Issued: deploy
-Order Issued: deploy
-Order Issued: deploy
-Order Issued: deploy
-Order Issued: deploy
-Order Issued: deploy
+Order Issued: advance

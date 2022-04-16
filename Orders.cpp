@@ -216,6 +216,8 @@ void Advance::execute() {
         cout << "Attacking" << endl;
         _currentState->append("\n\t" + *player->getName() + " attacking with " + std::to_string(sourceTerritory->get_stationed_army()) + " armies from "
             + sourceTerritory->get_name() + " the enemy territory " + targetTerritory->get_name());
+        
+        targetTerritory->get_claimant()->setWasAttacked(true);
 
         float attackingChances = sourceTerritory->get_stationed_army() * 0.6;
         float defendingChances = targetTerritory->get_stationed_army() * 0.7;
@@ -246,8 +248,6 @@ void Advance::execute() {
 
             player->drawCard();
         }
-
-        targetTerritory->get_claimant()->setWasAttacked(true);
     }
     notify(this); //Call notify to notify observers
     

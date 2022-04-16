@@ -114,7 +114,7 @@ void NeutralPlayerStrategy::issueOrder(GameEngine* gameEngine, string orderType)
 	//If player was attacked, permanently turn _wasAttacked to true
 	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
-		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+		std::cout << "!!! Neutral player \"" << *p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
 	}
 
 	//No orders to issue UNLESS attacked
@@ -131,7 +131,7 @@ vector<Territory*> NeutralPlayerStrategy::toAttack(Territory* t)
 	//If player was attacked, permanently turn _wasAttacked to true
 	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
-		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+		std::cout << "!!! Neutral player \"" << *p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
 	}
 
 	//Don't attack UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
@@ -147,7 +147,7 @@ vector<Territory*> NeutralPlayerStrategy::toDefend(Territory* t)
 	//If player was attacked, permanently turn _wasAttacked to true
 	if (p->wasAttacked() && *_wasAttacked == false) {
 		*_wasAttacked = true;
-		std::cout << "!!! Neutral player \"" << p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
+		std::cout << "!!! Neutral player \"" << *p->getName() << "\" was attacked! This player will now become aggressive !!!" << std::endl;
 	}
 
 	//Don't defend UNLESS we were attacked at some point in which case we delegate to _agressiveStrategy
