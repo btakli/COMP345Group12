@@ -942,7 +942,10 @@ void GameEngine::add_new_player() {
                     else if (playerName == "2")this->get_players().push_back(new Player("Benevolent" + to_string(++benevolentIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new BenevolentPlayerStrategy()));
                     else if (playerName == "3")this->get_players().push_back(new Player("Neutral" + to_string(++neutralIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new NeutralPlayerStrategy()));
                     else if (playerName == "4")this->get_players().push_back(new Player("Cheater" + to_string(++cheaterIndex), this->getDeck(), (LogObserver*)this->getObservers().at(0), new CheaterPlayerStrategy()));
-                    else cout << "ERROR: Unkown behavior" << endl;
+                    else { 
+                        cout << "\n~~ERROR: Unkown behavior. Exiting~~" << endl; 
+                        exit(0);
+                    }
                 }
                 else { // Normal Mode
                     this->get_players().push_back(new Player(playerName, this->getDeck(), (LogObserver*)this->getObservers().at(0)));

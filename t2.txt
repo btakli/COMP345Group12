@@ -1,1 +1,1 @@
-tournament -M 1 9 -P 1 2 3 -G 2 -D 11
+tournament -M 1 9 -P 2 3 -G 2 -D 11
